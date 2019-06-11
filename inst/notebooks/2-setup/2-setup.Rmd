@@ -1,0 +1,120 @@
+---
+title: "Set up a drake workflow"
+output: html_notebook
+---
+
+```{r, include = FALSE}
+# Set your working directory to 2-setup/.
+# You may have to copy and paste this line into your console:
+setwd(file.path(rprojroot::find_rstudio_root_file(), "2-setup"))
+source("../config/options.R")
+```
+
+# Dependencies
+
+To set up a [`drake`](http://github.com/ropensci/drake) workflow for the customer churn case study, we first load our packages and functions into the current R session. Open up these R scripts and take a look.
+
+```{r message = FALSE}
+source("R/packages.R")  # Load the packages.
+source("R/functions.R") # Define our custom functions.
+```
+
+# Plan
+
+Now, it is time to plan the actual workflow. If you were to write an R script, this is what it would look like.
+
+```{r, eval = FALSE}
+# Get the data.
+data = read_csv(
+  file_in("../data/customer_churn.csv"),
+  col_types = cols()
+) %>%
+  initial_split(prop = 0.3)
+
+# Create the recipe.
+rec <- prepare_recipe(data)
+
+# Train the model.
+model <- train_model(data, rec)
+
+# Compare to testing data.
+conf <- confusion_matrix(data, rec, model)
+
+# Compute performance metrics.
+metrics <- compare_models(conf)
+```
+
+But for [`drake`](http://github.com/ropensci/drake)-powered automation and reproducibility, we use a special data frame called a [`drake` plan](https://ropenscilabs.github.io/drake-manual/plans.html). Fill out the [`drake`](http://github.com/ropensci/drake) plan below. The "targets" (`data`, `rec`, etc.) can be in any order.
+
+```{r}
+plan <- drake_plan(
+  rec = , # Create the recipe.
+
+  model = , # Train the model.
+
+  conf = , # Compare to testing data.
+
+  metrics = , # Compute performance metrics.
+    
+  data = read_csv( # Get the data. Filled in for you already.
+    file_in("../data/customer_churn.csv"),
+    col_types = cols()
+  ) %>%
+    initial_split(prop = 0.3),
+)
+```
+
+The plan is just a fancy data frame. Each command is a step in the workflow, and each target will store the return value of a command. 
+
+```{r, paged.print = FALSE, warning = FALSE}
+plan
+```
+
+# Check the plan.
+
+Did you write the plan correctly? Let's find out with a dependency graph. The graph is interactive. Zoom and drag for a better view.
+
+```{r, message = FALSE}
+config <- drake_config(plan)
+vis_drake_graph(config, hover = TRUE)
+```
+
+If you wrote the plan properly, your graph should look something like this.
+
+```{r}
+library(visNetwork)
+readRDS("img/graph.rds")
+```
+
+# Do the work.
+
+Call [`make()`](https://ropensci.github.io/drake/reference/make.html) to actually run the workflow. `make()` builds the targets from left to right in the dependency graph. The output is stored in a hidden `.drake/` cache.
+
+```{r}
+make(plan)
+```
+
+Try `make()` again. What happens?
+
+```{r}
+make(plan)
+```
+
+The graph displays the status of targets.
+
+```{r}
+vis_drake_graph(config)
+```
+
+Let's load some targets from on-disk storage.
+
+```{r}
+loadd(data)
+training(data) %>%
+  select(Churn, customerID, TotalCharges) %>%
+  head(n = 6)
+```
+
+```{r}
+readd(metrics) # see also loadd()
+```

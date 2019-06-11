@@ -1,0 +1,67 @@
+Package: learndrake
+Title: Materials to Learn Machine Learning Workflow Management With Drake
+Description: Machine learning workflows can be difficult to manage.
+  A single round of computation can take several hours to complete,
+  and routine updates to the code and data tend to invalidate
+  hard-earned results. You can enhance the maintainability, hygiene,
+  speed, scale, and reproducibility of such projects with
+  the drake R package. drake resolves the dependency structure
+  of your analysis pipeline, skips tasks that are already up to date,
+  executes the rest with optional distributed computing,
+  and organizes the output so you rarely have to think about data files.
+  The slides, notebooks, and Shiny apps in this package
+  teach how to create and maintain machine
+  learning projects with drake-powered automation.
+Version: 0.0.1
+License: GPL-3
+URL: https://github.com/wlandau/learndrake
+BugReports: https://github.com/wlandau/learndrake/issues
+Authors@R: c(
+  person(
+    family = "Landau",
+    given = c("William", "Michael"),
+    email = "will.landau@gmail.com",
+    role = c("aut", "cre"),
+    comment = c(ORCID = "0000-0003-1878-3253")
+  ),
+  person(
+    family = "Eli Lilly and Company",
+    role = "cph"
+  ))
+SystemRequirements:
+  Python (>= 2.7.0),
+  TensorFlow (https://www.tensorflow.org/),
+  Keras >= 2.0 (https://keras.io)
+Depends:
+  R (>= 3.5.0)
+Imports:
+  clustermq,
+  drake,
+  drakeplanner,
+  future,
+  future.callr, 
+  fs (>= 1.3.0),
+  keras,
+  learnr,
+  lubridate,
+  recipes,
+  rmarkdown,
+  rprojroot,
+  rsample,
+  shiny,
+  styler,
+  tensorflow,
+  tidyverse,
+  visNetwork,
+  yardstick
+Suggests:
+  prettycode,
+  shinytest,
+  tidyselect (>= 0.2.4),
+  testthat (>= 2.1.0)
+Remotes:
+  wlandau/drakeplanner
+Encoding: UTF-8
+Language: en-US
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 6.1.1

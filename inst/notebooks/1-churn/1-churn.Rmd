@@ -1,0 +1,328 @@
+---
+title: "Building blocks of the customer churn case study"
+output: html_notebook
+---
+
+```{r, include = FALSE}
+# Set your working directory to 1-churn/.
+# You may have to copy and paste this line into your console:
+setwd(file.path(rprojroot::find_rstudio_root_file(), "1-churn"))
+source("../config/options.R")
+```
+
+# Preparation for `drake`
+
+These exercises set up the building blocks of a `drake`-powered data analysis workflow. The goal is to establish the necesary packages, data, *user-defined functions*, and context of the case study.
+
+# Customer churn case study
+
+The objective of this case study is to predict "churn", an industry term for customer dropout. Using the [IBM Watson Telco Customer Churn dataset](https://www.ibm.com/communities/analytics/watson-analytics-blog/predictive-insights-in-the-telco-customer-churn-data-set), we will train deep neural networks to classify customers based on whether they cancel their telecommunications subscriptions (internet, television, etc.) For additional background on this example, please read [this RStudio blog post by Matt Dancho](https://blogs.rstudio.com/tensorflow/posts/2018-01-11-keras-customer-churn/).
+
+# Packages
+
+We need the following packages.
+
+```{r, message = FALSE}
+# Build and train deep neural nets.
+# https://keras.rstudio.com/index.html
+library(keras)
+
+# Custom data preprocessing procedures.
+# https://tidymodels.github.io/recipes/
+library(recipes)
+
+# Data resampling. We will use it to split the customer churn dataset
+# into training and test sets for our deep learning models.
+# https://tidymodels.github.io/rsample
+library(rsample)
+
+# Multiple packages that support clean code and tidy data.
+# https://tidyverse.tidyverse.org/
+library(tidyverse)
+
+# Tidy methods to measure model performance.
+# We will use the conf_mat() function to cross-tabulate
+# observed and predicted classes.
+# https://tidymodels.github.io/yardstick
+library(yardstick)
+```
+
+# Data
+
+The dataset has one row per customer.
+
+```{r}
+raw_data <- read_csv("../data/customer_churn.csv", col_types = cols())
+print(raw_data)
+```
+
+We have 21 variables (columns) on 7043 customers. Most variables are categorical, and some are numeric.
+
+```{r}
+# View(raw_data)
+glimpse(raw_data)
+```
+
+`Churn` is our response variable, and `customerID` identifies customers.
+
+```{r}
+raw_data %>%
+  select(customerID, Churn) %>%
+  print()
+```
+
+The rest of the variables are covariates.
+
+- Subscriptions each customer signed up for: `PhoneService`, `MultipleLines`, `InternetService`, `OnlineSecurity`, `OnlineBackup`, `TechSupport`, `DeviceProtection`, `StreamingTV`, and `StreamingMovies`.
+- Account information: `Contract`, `PaymentMethod`, `PaperlessBilling`, `tenure`, `MonthlyCharges`, and `TotalCharges`.
+- Demographic info: `gender`, `SeniorCitizen`, `Partner`, and `Dependents`.
+
+# Train/test split
+
+In machine learning, we split up the data (rows) into a training dataset and a testing dataset.
+
+```{r}
+data <- initial_split(raw_data, prop = 0.3) # from the rsample package
+```
+
+Our training set has 2113 customers (rows) and our testing set has 4930.
+
+```{r}
+print(data)
+```
+
+Functions from [`rsample`](https://tidymodels.github.io/rsample) can recover the training and testing sets.
+
+```{r}
+training(data)
+```
+
+```{r}
+testing(data)
+```
+
+# Preprocessing
+
+Let's get our data ready for the machine learning models.
+
+1. Partition the `tenure` variable into 6 bins.
+2. Take the log of `TotalCharges` (strengthens the association with `Churn`).
+3. One-hot encode all categorical variables.
+4. Center and scale all covariates.
+
+We translate this preprocessing workflow into a recipe ([`recipes`](https://tidymodels.github.io/recipes) package).
+
+```{r}
+prepare_recipe <- function(data) {
+  data %>%
+    training() %>%
+    recipe(Churn ~ .) %>%
+    step_rm(customerID) %>%
+    step_naomit(all_outcomes(), all_predictors()) %>%
+    step_discretize(tenure, options = list(cuts = 6)) %>%
+    step_log(TotalCharges) %>%
+    step_mutate(Churn = ifelse(Churn == "Yes", 1, 0)) %>%
+    step_dummy(all_nominal(), -all_outcomes()) %>%
+    step_center(all_predictors(), -all_outcomes()) %>%
+    step_scale(all_predictors(), -all_outcomes()) %>%
+    prep()
+}
+```
+
+Our custom `prepare_recipe()` function creates a new recipe and applies it to a dataset. The return values is a prepped recipe.
+
+```{r}
+rec <- prepare_recipe(data)
+print(rec)
+```
+
+Retrieve the preprocessed training data with [`juice()`](https://tidymodels.github.io/recipes/reference/juice.html).
+
+```{r}
+juice(rec, all_outcomes())
+```
+
+```{r}
+juice(rec, all_predictors()) %>%
+  glimpse()
+```
+
+Keras will expect our predictors to be in matrix form.
+
+```{r}
+juice(rec, all_predictors(), composition = "matrix")[1:6, 1:4]
+```
+
+`bake()` runs the same preprocessing steps on a new dataset, borrowing the centering and scaling constants from the original dataset.
+
+```{r}
+bake(rec, testing(data))
+```
+
+# Modeling
+
+We write a *function* to define a [`keras`](https://keras.rstudio.com) deep neural network. The function accepts a recipe (with the data) and some tuning parameters we can tweak to improve the model.
+
+```{r}
+define_model <- function(rec, units1, units2, act1, act2, act3) {
+  input_shape <- ncol(
+    juice(rec, all_predictors(), composition = "matrix")
+  )
+  keras_model_sequential() %>%
+    layer_dense(
+      units = units1,
+      kernel_initializer = "uniform",
+      activation = act1,
+      input_shape = input_shape
+    ) %>%
+    layer_dropout(rate = 0.1) %>%
+    layer_dense(
+      units = units2,
+      kernel_initializer = "uniform",
+      activation = act2
+    ) %>%
+    layer_dropout(rate = 0.1) %>%
+    layer_dense(
+      units = 1,
+      kernel_initializer = "uniform",
+      activation = act3
+    )
+}
+```
+
+We write another function to compile, train, and serialize the deep neural net. 
+
+```{r}
+train_model <- function(
+  data,
+  rec,
+  units1 = 16,
+  units2 = 16,
+  act1 = "relu",
+  act2 = "relu",
+  act3 = "sigmoid"
+) {
+  model <- define_model(
+    rec = rec,
+    units1 = units1,
+    units2 = units2,
+    act1 = act1,
+    act2 = act2,
+    act3 = act3
+  )
+  compile(
+    model,
+    optimizer = "adam",
+    loss = "binary_crossentropy",
+    metrics = c("accuracy")
+  )
+  x_train_tbl <- juice(
+    rec,
+    all_predictors(),
+    composition = "matrix"
+  )
+  y_train_vec <- juice(rec, all_outcomes()) %>%
+    pull()
+  fit(
+    object = model,
+    x = x_train_tbl,
+    y = y_train_vec,
+    batch_size = 32,
+    epochs = 32,
+    validation_split = 0.3,
+    verbose = 0
+  )
+  serialize_model(model)
+}
+```
+
+Let's try out `train_model()`. Notice how long it takes. Larger, more serious models can take much longer.
+
+```{r, output = FALSE}
+model_16 <- train_model(data, rec, units1 = 16, units2 = 16)
+```
+
+```{r}
+str(model_16)
+```
+
+`train_model()` returns a [*serialized*](https://keras.rstudio.com/reference/serialize_model.html) model. The model is a string of raw bytes that we can save and then load into a different R session (important for [`drake`](https://github.com/ropensci/drake)).
+We have to call [`unserialize_model()`](https://keras.rstudio.com/reference/serialize_model.html) to convert it back into a usable format.
+
+```{r}
+unserialized_model_16 <- unserialize_model(model_16)
+print(unserialized_model_16)
+```
+
+# Performance
+
+A [confusion matrix](https://www.dataschool.io/simple-guide-to-confusion-matrix-terminology) summarizes the performance of a binary classifier. Let's write a custom function to create one for a given model.
+
+```{r}
+confusion_matrix <- function(data, rec, serialized_model) {
+  model <- unserialize_model(serialized_model)
+  testing_data <- bake(rec, testing(data))
+  x_test_tbl <- testing_data %>%
+    select(-Churn) %>%
+    as.matrix()
+  y_test_vec <- testing_data %>%
+    select(Churn) %>%
+    pull()
+  yhat_keras_class_vec <- model %>%
+    predict_classes(x_test_tbl) %>%
+    as.factor() %>%
+    fct_recode(yes = "1", no = "0")
+  yhat_keras_prob_vec <-
+    model %>%
+    predict_proba(x_test_tbl) %>%
+    as.vector()
+  test_truth <- y_test_vec %>%
+    as.factor() %>%
+    fct_recode(yes = "1", no = "0")
+  estimates_keras_tbl <- tibble(
+    truth = test_truth,
+    estimate = yhat_keras_class_vec,
+    class_prob = yhat_keras_prob_vec
+  )
+  estimates_keras_tbl %>%
+    conf_mat(truth, estimate) # from the yardstick package
+}
+```
+
+Try it out.
+
+```{r}
+conf_16 <- confusion_matrix(data, rec, model_16)
+print(conf_16)
+```
+
+# Compare
+
+To compare the performance of multiple models, we define a [*function*](https://swcarpentry.github.io/r-novice-inflammation/02-func-R/) to stack up metrics on our [confusion matrices](https://www.dataschool.io/simple-guide-to-confusion-matrix-terminology).
+
+```{r}
+compare_models <- function(...) {
+  name <- match.call()[-1] %>%
+    as.character()
+  df <- map_df(list(...), summary) %>%
+    filter(.metric %in% c("accuracy", "sens", "spec")) %>%
+    mutate(name = rep(name, each = n() / length(name))) %>%
+    rename(metric = .metric, estimate = .estimate)
+  ggplot(df) +
+    geom_line(aes(x = metric, y = estimate, color = name, group = name)) +
+    theme_gray(16)
+}
+```
+
+`compare_models()` compares the accuracy, sensitivity, and specificity of multiple models. Let's use it to compare two models with different numbers of neurons.
+
+```{r}
+model_32 <- train_model(data, rec, units1 = 32, units2 = 32) # Previously we used 16.
+conf_32 <- confusion_matrix(data, rec, model_32)
+
+compare_models(conf_16, conf_32)
+```
+
+# Now with `drake`...
+
+Let's put these pieces together in an end-to-end reproducible [`drake`](https://ropensci.github.io/drake) pipeline.

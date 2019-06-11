@@ -1,0 +1,25 @@
+---
+title: "Practice the workflow"
+output: html_notebook
+---
+
+```{r, include = FALSE}
+# Set your working directory to 3-flow/.
+# You may have to copy and paste this line into your console:
+setwd(file.path(rprojroot::find_rstudio_root_file(), "3-flow"))
+source("../config/options.R")
+```
+
+# Instructions 
+
+Navigate to the [`learndrakeflow` app](https://wlandau.shinyapps.io/learndrakeflow) and complete the exercises in order. If the app does not load in the browser, you can launch it locally with [`learndrake::launch_app("flow")`](https://github.com/wlandau/learndrake).
+
+# Scratch
+
+You may wish to write scratch work below as you complete the exercises. Otherwise, use an R script (`scratch.R`) or use the console.
+
+```{r, scratch}
+
+
+
+```

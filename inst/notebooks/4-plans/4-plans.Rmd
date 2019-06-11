@@ -1,0 +1,210 @@
+---
+title: "Advanced plans"
+output: html_notebook
+---
+
+```{r, include = FALSE}
+# Set your working directory to 4-plans/.
+# You may have to copy and paste this line into your console:
+setwd(file.path(rprojroot::find_rstudio_root_file(), "4-plans"))
+source("../config/options.R")
+```
+
+# Transformations
+
+`drake_plan()` supports a special shorthand to wrangle large collections of targets. As [described in the manual](https://ropenscilabs.github.io/drake-manual/plans.html#large-plans), there are four "transformations". In this workshop, we will cover `map()`, `cross()`, and `combine()`.
+
+| `drake`     | Tidyverse analogue          |
+|-------------|-----------------------------|
+| `map()`     | `pmap()` from `purrr`       |
+| `split()`   | `group_map()` from `dplyr`  |
+| `cross()`   | `crossing()` from `tidyr`   |
+| `combine()` | `summarize()` from `dplyr`  |
+
+Let's use `map()` and `combine()` to compare different activation functions.
+
+```{r, paged.print = FALSE, message = FALSE, warning = FALSE}
+library(drake)
+
+plan <- drake_plan(
+  data = read_csv(
+    file_in("../data/customer_churn.csv"),
+    col_types = cols()
+  ) %>%
+    initial_split(prop = 0.3),
+  rec = prepare_recipe(data),
+  model = target(
+    train_model(data, rec, act1 = activation),
+    transform = map(activation = c("relu", "sigmoid", "softmax"))
+  ),
+  conf = target(
+    confusion_matrix(data, rec, model),
+    transform = map(model)
+  ),
+  metrics = target(
+    compare_models(conf),
+    transform = combine(conf)
+  )
+)
+
+plan
+```
+
+Use `drake_plan_source()` to take a clearer look.
+
+```{r}
+drake_plan_source(plan)
+```
+
+We have 3 models, 3 confusion matrices, and one final target with the performance metrics.
+
+```{r}
+config <- drake_config(plan)
+vis_drake_graph(config, targets_only = TRUE)
+```
+
+Let's see how those models compare.
+
+```{r, message = FALSE}
+# Needed for make(), but not drake_plan()
+source("R/packages.R")
+source("R/functions.R")
+```
+
+```{r}
+make(plan)
+
+readd(metrics)
+```
+
+
+# Tidy evaluation
+
+To work with a large number of models, it is convenient to generate the settings programmatically.
+
+```{r}
+units <- seq(16, 64, by = 2)
+```
+
+However, when we plug `neurons` into `map()`, we get the wrong plan.
+
+```{r, paged.print = FALSE}
+drake_plan(
+  data = read_csv(
+    file_in("../data/customer_churn.csv"),
+    col_types = cols()
+  ) %>%
+    initial_split(prop = 0.3),
+  rec = prepare_recipe(data),
+  model = target(
+    train_model(data, rec, units1 = units),
+    transform = map(units = units)
+  ),
+  conf = target(
+    confusion_matrix(data, rec, model),
+    transform = map(model)
+  ),
+  metrics = target(
+    compare_models(conf),
+    transform = combine(conf)
+  )
+)
+```
+
+We want the **values** stored in `units`, not the name of the symbol. To get the correct plan, we use `!!` from [tidy evaluation](https://tidyeval.tidyverse.org/).
+
+```{r, paged.print = FALSE}
+plan <- drake_plan(
+  data = read_csv(
+    file_in("../data/customer_churn.csv"),
+    col_types = cols()
+  ) %>%
+    initial_split(prop = 0.3),
+  rec = prepare_recipe(data),
+  model = target(
+    train_model(data, rec, units1 = units),
+    transform = map(units = !!units) # Use tidy evaluation here.
+  ),
+  conf = target(
+    confusion_matrix(data, rec, model),
+    transform = map(model)
+  ),
+  metrics = target(
+    compare_models(conf),
+    transform = combine(conf)
+  )
+)
+
+plan
+```
+
+
+```{r}
+config <- drake_config(plan)
+vis_drake_graph(config)
+```
+
+Now that may be too many targets to test, debug, run, and visualize right away. When you are still in the initial stages of your workflow, you may want to work with a smaller set of targets before scaling up. Let's try `drake_plan(max_expand = 2)` for a more manageable workflow. After we are done testing, we can remove `max_expand` to scale up again.
+
+```{r, paged.print = FALSE}
+plan <- drake_plan(
+  max_expand = 2,
+  data = read_csv(
+    file_in("../data/customer_churn.csv"),
+    col_types = cols()
+  ) %>%
+    initial_split(prop = 0.3),
+  rec = prepare_recipe(data),
+  model = target(
+    train_model(data, rec, units1 = units),
+    transform = map(units = !!units) # Use tidy evaluation here.
+  ),
+  conf = target(
+    confusion_matrix(data, rec, model),
+    transform = map(model)
+  ),
+  metrics = target(
+    compare_models(conf),
+    transform = combine(conf)
+  )
+)
+
+plan
+```
+
+```{r}
+config <- drake_config(plan)
+vis_drake_graph(config)
+```
+
+Commands understand `!!` too. You can use it to execute code when the plan is created (i.e. during `drake_plan()`, before `make()`).
+
+```{r, paged.print = FALSE}
+file_name <- "../data/customer_churn.csv"
+
+drake_plan(
+  data = read_csv(
+    file_in(!!file_name), # Use tidy evaluation to insert a value into a command.
+    col_types = cols()
+  ) %>%
+    initial_split(prop = 0.3),
+  rec = prepare_recipe(data),
+  model = target(
+    train_model(data, rec, units1 = units),
+    transform = map(units = !!units)
+  ),
+  conf = target(
+    confusion_matrix(data, rec, model),
+    transform = map(model)
+  ),
+  metrics = target(
+    compare_models(conf),
+    transform = combine(conf)
+  )
+)
+```
+
+# Exercises
+
+- Navigate to the [`learndrakeplans` app](https://wlandau.shinyapps.io/learndrakeplans) and complete the exercises in order. If the app does not load in the browser, you can launch it locally with [`learndrake::launch_app("plans")`](https://github.com/wlandau/learndrake).
+- Optinoal: use [`drake-planner`](https://wlandau.shinyapps.io/drake-planner) to help write and check your plans.

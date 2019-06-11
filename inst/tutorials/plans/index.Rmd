@@ -1,0 +1,965 @@
+---
+title: "Advanced plans"
+output: learnr::tutorial
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+library(drake)
+library(DT)
+library(learnr)
+library(praise)
+library(tidyverse)
+options(
+  drake_make_menu = FALSE,
+  drake_clean_menu = FALSE,
+  warnPartialMatchArgs = FALSE,
+  crayon.enabled = FALSE,
+  readr.show_progress = FALSE,
+  tibble.print_max = 25
+)
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  echo = FALSE
+)
+laud <- function() {
+  praise("${Exclamation}! ${Adverb} ${adjective} answer.")
+}
+drake_checker <- function(
+  label,
+  user_code,
+  solution_code,
+  check_code,
+  envir_result,
+  evaluate_result,
+  envir_prep,
+  ...
+) {
+  out <- eval(parse(text = user_code))
+  exp <- eval(parse(text = check_code))
+  ans <- same_plan(out, exp)
+  msg <- ifelse(ans, laud(), "Try again.")
+  list(message = msg, correct = ans, location = "append")
+}
+tutorial_options(exercise.checker = drake_checker)
+safe_deparse <- function (x, collapse = "\n") {
+  paste(deparse(x, control = c("keepInteger", "keepNA")), collapse = collapse)
+}
+deparse_commands <- function (x) {
+  unlist(lapply(x, safe_deparse, collapse = " "))
+}
+deparse_plan <- function(plan) {
+  plan$command <- deparse_commands(plan$command)
+  plan
+}
+same_plan <- function (out, exp) {
+  out <- deparse_plan(out)
+  exp <- deparse_plan(exp)
+  out <- out[order(out$target), ]
+  exp <- exp[order(exp$target), ]
+  all(out$target == exp$target & out$command == exp$command)
+}
+dp_graph <- function(plan) {
+  config <- drake_config(plan, cache = storr::storr_environment(), session_info = FALSE)
+  vis_drake_graph(
+    config,
+    main = "",
+    hover = TRUE,
+    from = file_store("data/customer_churn.csv")
+  )
+}
+dp_table <- function(plan) {
+  DT::datatable(deparse_plan(plan), rownames = FALSE)
+}
+```
+
+## Instructions
+
+Repair the unfinished [drake plans](https://ropenscilabs.github.io/drake-manual/plans.html#large-plans) in the following exercises. Optional: use [drakeplanner](https://wlandau.shinyapps.io/drakeplanner) to help write and check your plans.
+
+```{r q0}
+question(
+  "Okay?",
+  correct = laud(),
+  incorrect = "Let's talk.",
+  allow_retry = TRUE,
+  random_answer_order = TRUE,
+  answer("Yes", correct = TRUE),
+  answer("No"),
+  answer("You lost me way back at the beginning."),
+  answer("I cannot find `drakeplanner` or `4-plans.Rmd`."),
+  answer("Wait, what is a drake plan?")
+)
+```
+
+## Exercise 1
+
+Write a plan that tries different layer sizes. For each model, `units1` must equal `units2`.
+
+```{r e1, exercise = TRUE, exercise.lines = 23}
+plan <- drake_plan(
+  data = read_csv(
+    file_in("data/customer_churn.csv"),
+    col_types = cols()
+  ) %>%
+    initial_split(prop = 0.3),
+  rec = prepare_recipe(data),
+  model = target(
+    train_model(data, rec, units1 = u1, units2 = u2),
+    transform = map(
+      u1 = c(16, 32, 64),
+      # Your turn: set the units of the second layer to the same ones as u1.
+    )
+  ),
+  conf = target(
+    confusion_matrix(data, rec, model),
+    transform = map(model)
+  ),
+  metrics = target(
+    compare_models(conf),
+    transform = combine(conf)
+  )
+)
+```
+
+Expected [drakeplanner](https://wlandau.shinyapps.io/drakeplanner) output:
+
+```{r}
+expected1 <- drake_plan(
+  data = read_csv(
+    file_in("data/customer_churn.csv"),
+    col_types = cols()
+  ) %>%
+    initial_split(prop = 0.3),
+  rec = prepare_recipe(data),
+  model = target(
+    train_model(data, rec, units1 = u1, units2 = u2),
+    transform = map(
+      u1 = c(16, 32, 64),
+      u2 = c(16, 32, 64)
+    )
+  ),
+  conf = target(
+    confusion_matrix(data, rec, model),
+    transform = map(model)
+  ),
+  metrics = target(
+    compare_models(conf),
+    transform = combine(conf)
+  )
+)
+```
+
+```{r}
+dp_graph(expected1)
+```
+
+```{r}
+dp_table(expected1)
+```
+
+```{r e1-check}
+drake_plan(
+  data = read_csv(
+    file_in("data/customer_churn.csv"),
+    col_types = cols()
+  ) %>%
+    initial_split(prop = 0.3),
+  rec = prepare_recipe(data),
+  model = target(
+    train_model(data, rec, units1 = u1, units2 = u2),
+    transform = map(
+      u1 = c(16, 32, 64),
+      u2 = c(16, 32, 64)
+    )
+  ),
+  conf = target(
+    confusion_matrix(data, rec, model),
+    transform = map(model)
+  ),
+  metrics = target(
+    compare_models(conf),
+    transform = combine(conf)
+  )
+)
+```
+
+## Exercise 2
+
+Now, use `cross()` to create a new model for each combination of `units1` and `units2`
+
+```{r e2, exercise = TRUE, exercise.lines = 23}
+plan <- drake_plan(
+  data = read_csv(
+    file_in("data/customer_churn.csv"),
+    col_types = cols()
+  ) %>%
+    initial_split(prop = 0.3),
+  rec = prepare_recipe(data),
+  model = target(
+    train_model(data, rec, units1 = u1, units2 = u2),
+    transform = map( # Your turn: change map() to cross().
+      u1 = c(16, 32, 64),
+      # Your turn: set the units of the second layer to the same ones as u1.
+    )
+  ),
+  conf = target(
+    confusion_matrix(data, rec, model),
+    transform = map(model)
+  ),
+  metrics = target(
+    compare_models(conf),
+    transform = combine(conf)
+  )
+)
+```
+
+Expected [drakeplanner](https://wlandau.shinyapps.io/drakeplanner) output:
+
+```{r}
+expected2 <- drake_plan(
+  data = read_csv(
+    file_in("data/customer_churn.csv"),
+    col_types = cols()
+  ) %>%
+    initial_split(prop = 0.3),
+  rec = prepare_recipe(data),
+  model = target(
+    train_model(data, rec, units1 = u1, units2 = u2),
+    transform = cross(
+      u1 = c(16, 32, 64),
+      u2 = c(16, 32, 64)
+    )
+  ),
+  conf = target(
+    confusion_matrix(data, rec, model),
+    transform = map(model)
+  ),
+  metrics = target(
+    compare_models(conf),
+    transform = combine(conf)
+  )
+)
+```
+
+```{r}
+dp_graph(expected2)
+```
+
+```{r}
+dp_table(expected2)
+```
+
+```{r e2-check}
+drake_plan(
+  data = read_csv(
+    file_in("data/customer_churn.csv"),
+    col_types = cols()
+  ) %>%
+    initial_split(prop = 0.3),
+  rec = prepare_recipe(data),
+  model = target(
+    train_model(data, rec, units1 = u1, units2 = u2),
+    transform = cross(
+      u1 = c(16, 32, 64),
+      u2 = c(16, 32, 64)
+    )
+  ),
+  conf = target(
+    confusion_matrix(data, rec, model),
+    transform = map(model)
+  ),
+  metrics = target(
+    compare_models(conf),
+    transform = combine(conf)
+  )
+)
+```
+
+## Exercise 3
+
+Recall: with `!!`, you can generate commands programmatically.
+
+```{r, paged.print = FALSE, echo = TRUE}
+xs <- seq_len(100)
+drake_plan(
+  y = target(
+    f(x),
+    transform = map(x = !!xs)
+  )
+)
+```
+
+Try it with our deep learning plan. Use `!!` to insert lots of models with different values of `units1`.
+
+```{r e3, exercise = TRUE, exercise.lines = 24}
+my_units1 <- seq(8, 64, by = 1) # Use these values.
+
+plan <- drake_plan(
+  data = read_csv(
+    file_in("data/customer_churn.csv"),
+    col_types = cols()
+  ) %>%
+    initial_split(prop = 0.3),
+  rec = prepare_recipe(data),
+  model = target(
+    train_model(data, rec, units1 = u1),
+    transform = map(
+      # Your turn: use !! to insert the values of my_units1 in for u1.
+    )
+  ),
+  conf = target(
+    confusion_matrix(data, rec, model),
+    transform = map(model)
+  ),
+  metrics = target(
+    compare_models(conf),
+    transform = combine(conf)
+  )
+)
+```
+
+Expected [drakeplanner](https://wlandau.shinyapps.io/drakeplanner) output:
+
+```{r}
+my_units1 <- seq(8, 64, by = 1) # Use these values.
+
+expected3 <- drake_plan(
+  data = read_csv(
+    file_in("data/customer_churn.csv"),
+    col_types = cols()
+  ) %>%
+    initial_split(prop = 0.3),
+  rec = prepare_recipe(data),
+  model = target(
+    train_model(data, rec, units1 = u1),
+    transform = map(
+      u1 = !!my_units1
+    )
+  ),
+  conf = target(
+    confusion_matrix(data, rec, model),
+    transform = map(model)
+  ),
+  metrics = target(
+    compare_models(conf),
+    transform = combine(conf)
+  )
+)
+```
+
+```{r}
+dp_graph(expected3)
+```
+
+```{r}
+dp_table(expected3)
+```
+
+```{r e3-check}
+my_units1 <- seq(8, 64, by = 1)
+
+drake_plan(
+  data = read_csv(
+    file_in("data/customer_churn.csv"),
+    col_types = cols()
+  ) %>%
+    initial_split(prop = 0.3),
+  rec = prepare_recipe(data),
+  model = target(
+    train_model(data, rec, units1 = u1),
+    transform = map(
+      u1 = !!my_units1
+    )
+  ),
+  conf = target(
+    confusion_matrix(data, rec, model),
+    transform = map(model)
+  ),
+  metrics = target(
+    compare_models(conf),
+    transform = combine(conf)
+  )
+)
+```
+
+## Exercise 4
+
+Now that was too many targets to visualize! Let's scale down with `max_expand`.
+
+```{r, paged.print = FALSE, echo = TRUE}
+xs <- seq_len(100)
+drake_plan(
+  y = target(f(x), transform = map(x = !!xs)),
+  max_expand = 4
+)
+```
+
+Try it with our deep learning plan. Set `max_expand = 4` in `drake_plan()`.
+
+```{r e4, exercise = TRUE, exercise.lines = 24}
+my_units1 <- seq(8, 64, by = 1) # Use these values.
+
+plan <- drake_plan(
+  # Your turn: set max_expand to 4.
+  data = read_csv(
+    file_in("data/customer_churn.csv"),
+    col_types = cols()
+  ) %>%
+    initial_split(prop = 0.3),
+  rec = prepare_recipe(data),
+  model = target(
+    train_model(data, rec, units1 = u1),
+    transform = map(
+      # Your turn: use !! to insert the values of my_units1 in for u1.
+    )
+  ),
+  conf = target(
+    confusion_matrix(data, rec, model),
+    transform = map(model)
+  ),
+  metrics = target(
+    compare_models(conf),
+    transform = combine(conf)
+  )
+)
+```
+
+Expected [drakeplanner](https://wlandau.shinyapps.io/drakeplanner) output:
+
+```{r}
+my_units1 <- seq(8, 64, by = 1) # Use these values.
+
+expected4 <- drake_plan(
+  max_expand = 4,
+  data = read_csv(
+    file_in("data/customer_churn.csv"),
+    col_types = cols()
+  ) %>%
+    initial_split(prop = 0.3),
+  rec = prepare_recipe(data),
+  model = target(
+    train_model(data, rec, units1 = u1),
+    transform = map(
+      u1 = !!my_units1
+    )
+  ),
+  conf = target(
+    confusion_matrix(data, rec, model),
+    transform = map(model)
+  ),
+  metrics = target(
+    compare_models(conf),
+    transform = combine(conf)
+  )
+)
+```
+
+```{r}
+dp_graph(expected4)
+```
+
+```{r}
+dp_table(expected4)
+```
+
+```{r e4-check}
+my_units1 <- seq(8, 64, by = 1)
+
+drake_plan(
+  max_expand = 4,
+  data = read_csv(
+    file_in("data/customer_churn.csv"),
+    col_types = cols()
+  ) %>%
+    initial_split(prop = 0.3),
+  rec = prepare_recipe(data),
+  model = target(
+    train_model(data, rec, units1 = u1),
+    transform = map(
+      u1 = !!my_units1
+    )
+  ),
+  conf = target(
+    confusion_matrix(data, rec, model),
+    transform = map(model)
+  ),
+  metrics = target(
+    compare_models(conf),
+    transform = combine(conf)
+  )
+)
+```
+
+
+## Exercise 5
+
+You can make a custom grid of grouping variables for `map()` and `cross()`. Note the use of `!!`.
+
+```{r, paged.print = FALSE, echo = TRUE}
+grid <- data.frame(x = c(1, 1, 2), y = c(3, 4, 4))
+drake_plan(z = target(f(x, y), transform = map(.data = !!grid)))
+```
+
+Try it with our deep learning plan. Use a custom grid of layer 1 model settings: `"relu"` activation with 32 units, `"relu"` activation with 64 units, and `"sigmoid"` activation with 64 units.
+
+```{r e5, exercise = TRUE, exercise.lines = 29}
+# This is our grid.
+my_grid <- tibble(
+  my_units1 = c(32, 64, 64),
+  my_act1 = c("relu", "relu", "sigmoid")
+)
+
+# And this is our plan.
+plan <- drake_plan(
+  data = read_csv(
+    file_in("data/customer_churn.csv"),
+    col_types = cols()
+  ) %>%
+    initial_split(prop = 0.3),
+  rec = prepare_recipe(data),
+  model = target(
+    train_model(data, rec, units1 = my_units1, act1 = my_act1),
+    transform = map(
+      ... = # Use !! to apply the grid of settings.
+    )
+  ),
+  conf = target(
+    confusion_matrix(data, rec, model),
+    transform = map(model)
+  ),
+  metrics = target(
+    compare_models(conf),
+    transform = combine(conf)
+  )
+)
+```
+
+Expected [drakeplanner](https://wlandau.shinyapps.io/drakeplanner) output:
+
+```{r}
+my_grid <- tibble(
+  my_units1 = c(32, 64, 64),
+  my_act1 = c("relu", "relu", "sigmoid")
+)
+
+expected5 <- drake_plan(
+  data = read_csv(
+    file_in("data/customer_churn.csv"),
+    col_types = cols()
+  ) %>%
+    initial_split(prop = 0.3),
+  rec = prepare_recipe(data),
+  model = target(
+    train_model(data, rec, units1 = my_units1, act1 = my_act1),
+    transform = map(
+      .data = !!my_grid
+    )
+  ),
+  conf = target(
+    confusion_matrix(data, rec, model),
+    transform = map(model)
+  ),
+  metrics = target(
+    compare_models(conf),
+    transform = combine(conf)
+  )
+)
+```
+
+```{r}
+dp_graph(expected5)
+```
+
+```{r}
+dp_table(expected5)
+```
+
+```{r e5-check}
+my_grid <- tibble(
+  my_units1 = c(32, 64, 64),
+  my_act1 = c("relu", "relu", "sigmoid")
+)
+
+drake_plan(
+  data = read_csv(
+    file_in("data/customer_churn.csv"),
+    col_types = cols()
+  ) %>%
+    initial_split(prop = 0.3),
+  rec = prepare_recipe(data),
+  model = target(
+    train_model(data, rec, units1 = my_units1, act1 = my_act1),
+    transform = map(
+      .data = !!my_grid
+    )
+  ),
+  conf = target(
+    confusion_matrix(data, rec, model),
+    transform = map(model)
+  ),
+  metrics = target(
+    compare_models(conf),
+    transform = combine(conf)
+  )
+)
+```
+
+
+## Exercise 6
+
+Now, try using `cross()` instead of `map()` when you apply the grid. (Note: we have a different grid now.)
+
+```{r e6, exercise = TRUE, exercise.lines = 27}
+my_grid <- tibble(
+  my_units1 = c(16, 32, 64),
+  my_act1 = c("relu", "sigmoid", "softmax")
+)
+
+plan <- drake_plan(
+  data = read_csv(
+    file_in("data/customer_churn.csv"),
+    col_types = cols()
+  ) %>%
+    initial_split(prop = 0.3),
+  rec = prepare_recipe(data),
+  model = target(
+    train_model(data, rec, units1 = my_units1, act1 = my_act1),
+    transform = map( # Use cross() instead of map()
+      ... = # Use !! to apply the grid of settings.
+    )
+  ),
+  conf = target(
+    confusion_matrix(data, rec, model),
+    transform = map(model)
+  ),
+  metrics = target(
+    compare_models(conf),
+    transform = combine(conf)
+  )
+)
+```
+
+```{r}
+my_grid <- tibble(
+  my_units1 = c(16, 32, 64),
+  my_act1 = c("relu", "sigmoid", "softmax")
+)
+
+expected6 <- drake_plan(
+  data = read_csv(
+    file_in("data/customer_churn.csv"),
+    col_types = cols()
+  ) %>%
+    initial_split(prop = 0.3),
+  rec = prepare_recipe(data),
+  model = target(
+    train_model(data, rec, units1 = my_units1, act1 = my_act1),
+    transform = cross(
+      .data = !!my_grid
+    )
+  ),
+  conf = target(
+    confusion_matrix(data, rec, model),
+    transform = map(model)
+  ),
+  metrics = target(
+    compare_models(conf),
+    transform = combine(conf)
+  )
+)
+```
+
+```{r e6-check}
+my_grid <- tibble(
+  my_units1 = c(16, 32, 64),
+  my_act1 = c("relu", "sigmoid", "softmax")
+)
+
+drake_plan(
+  data = read_csv(
+    file_in("data/customer_churn.csv"),
+    col_types = cols()
+  ) %>%
+    initial_split(prop = 0.3),
+  rec = prepare_recipe(data),
+  model = target(
+    train_model(data, rec, units1 = my_units1, act1 = my_act1),
+    transform = cross(
+      .data = !!my_grid
+    )
+  ),
+  conf = target(
+    confusion_matrix(data, rec, model),
+    transform = map(model)
+  ),
+  metrics = target(
+    compare_models(conf),
+    transform = combine(conf)
+  )
+)
+```
+
+Use [drakeplanner](https://wlandau.shinyapps.io/drakeplanner) to visualize the plan.
+
+```{r q6}
+question(
+  "How many models did you get?",
+  correct = laud(),
+  incorrect = "Don't worry, you'll kick that football someday.",
+  allow_retry = TRUE,
+  answer("I got 9 models.", correct = TRUE),
+  answer("I got 3 models."),
+  answer("I got 1 model."),
+  answer("I got a rock.")
+)
+```
+
+## Exercise 7
+
+Now, let's talk about `combine()`. With the `.by` argument of `combine()`, you can create grouped summaries of targets.
+
+```{r, echo = TRUE, paged.print = FALSE}
+drake_plan(
+  z = target(
+    f(x, y),
+    transform = cross(x = c(1, 2), y = c(3, 4))
+  ),
+  w = target(
+    bind_rows(z),
+    transform = combine(z, .by = x)
+  )
+)
+```
+
+In our deep learning plan, create a `metrics_*` target for each **activation function**.
+
+```{r e7, exercise = TRUE, exercise.lines = 30}
+my_grid <- tibble(
+  my_units1 = c(16, 32, 64),
+  my_act1 = c("relu", "sigmoid", "softmax")
+)
+
+plan <- drake_plan(
+  data = read_csv(
+    file_in("data/customer_churn.csv"),
+    col_types = cols()
+  ) %>%
+    initial_split(prop = 0.3),
+  rec = prepare_recipe(data),
+  model = target(
+    train_model(data, rec, units1 = my_units1, act1 = my_act1),
+    transform = map( # Use cross() instead of map().
+      ... = # Use !! to apply the grid of settings.
+    )
+  ),
+  conf = target(
+    confusion_matrix(data, rec, model),
+    transform = map(model)
+  ),
+  metrics = target(
+    compare_models(conf),
+    transform = combine(
+      conf,
+      # Use .by to create a metrics_* target for each activation function.
+    )
+  )
+)
+```
+
+Expected [drakeplanner](https://wlandau.shinyapps.io/drakeplanner) output:
+
+```{r}
+my_grid <- tibble(
+  my_units1 = c(16, 32, 64),
+  my_act1 = c("relu", "sigmoid", "softmax")
+)
+
+expected7 <- drake_plan(
+  data = read_csv(
+    file_in("data/customer_churn.csv"),
+    col_types = cols()
+  ) %>%
+    initial_split(prop = 0.3),
+  rec = prepare_recipe(data),
+  model = target(
+    train_model(data, rec, units1 = my_units1, act1 = my_act1),
+    transform = cross(
+      .data = !!my_grid
+    )
+  ),
+  conf = target(
+    confusion_matrix(data, rec, model),
+    transform = map(model)
+  ),
+  metrics = target(
+    compare_models(conf),
+    transform = combine(conf, .by = my_act1)
+  )
+)
+```
+
+```{r}
+dp_graph(expected7)
+```
+
+```{r}
+dp_table(expected7)
+```
+
+```{r e7-check}
+my_grid <- tibble(
+  my_units1 = c(16, 32, 64),
+  my_act1 = c("relu", "sigmoid", "softmax")
+)
+
+drake_plan(
+  data = read_csv(
+    file_in("data/customer_churn.csv"),
+    col_types = cols()
+  ) %>%
+    initial_split(prop = 0.3),
+  rec = prepare_recipe(data),
+  model = target(
+    train_model(data, rec, units1 = my_units1, act1 = my_act1),
+    transform = cross(
+      .data = !!my_grid
+    )
+  ),
+  conf = target(
+    confusion_matrix(data, rec, model),
+    transform = map(model)
+  ),
+  metrics = target(
+    compare_models(conf),
+    transform = combine(conf, .by = my_act1)
+  )
+)
+```
+
+
+## Exercise 8
+
+Now, create a `metrics_*` target for each **combination of `units1` and `units2`** (in that order).
+
+```{r e8, exercise = TRUE, exercise.lines = 34}
+my_grid <- tibble(
+  my_act1 = c("relu", "sigmoid", "softmax"),
+  my_units1 = c(16, 32, 64),
+  my_units2 = c(16, 32, 64)
+)
+
+plan <- drake_plan(
+  data = read_csv(
+    file_in("data/customer_churn.csv"),
+    col_types = cols()
+  ) %>%
+    initial_split(prop = 0.3),
+  rec = prepare_recipe(data),
+  model = target(
+    train_model(
+      data,
+      rec,
+      units1 = my_units1,
+      units2 = my_units2,
+      act1 = my_act1
+    ),
+    transform = cross(
+      .data = !!my_grid
+    )
+  ),
+  conf = target(
+    confusion_matrix(data, rec, model),
+    transform = map(model)
+  ),
+  metrics = target(
+    compare_models(conf),
+    transform = combine(conf, .by = c(...)) # What goes in place of the dots?
+  )
+)
+```
+
+Expected [drakeplanner](https://wlandau.shinyapps.io/drakeplanner) output:
+
+```{r}
+my_grid <- tibble(
+  my_act1 = c("relu", "sigmoid", "softmax"),
+  my_units1 = c(16, 32, 64),
+  my_units2 = c(16, 32, 64)
+)
+
+expected8 <- drake_plan(
+  data = read_csv(
+    file_in("data/customer_churn.csv"),
+    col_types = cols()
+  ) %>%
+    initial_split(prop = 0.3),
+  rec = prepare_recipe(data),
+  model = target(
+    train_model(
+      data,
+      rec,
+      units1 = my_units1,
+      units2 = my_units2,
+      act1 = my_act1
+    ),
+    transform = cross(
+      .data = !!my_grid
+    )
+  ),
+  conf = target(
+    confusion_matrix(data, rec, model),
+    transform = map(model)
+  ),
+  metrics = target(
+    compare_models(conf),
+    transform = combine(conf, .by = c(my_units1, my_units2))
+  )
+)
+```
+
+```{r}
+dp_graph(expected8)
+```
+
+```{r}
+dp_table(expected8)
+```
+
+```{r e8-check}
+my_grid <- tibble(
+  my_act1 = c("relu", "sigmoid", "softmax"),
+  my_units1 = c(16, 32, 64),
+  my_units2 = c(16, 32, 64)
+)
+
+drake_plan(
+  data = read_csv(
+    file_in("data/customer_churn.csv"),
+    col_types = cols()
+  ) %>%
+    initial_split(prop = 0.3),
+  rec = prepare_recipe(data),
+  model = target(
+    train_model(
+      data,
+      rec,
+      units1 = my_units1,
+      units2 = my_units2,
+      act1 = my_act1
+    ),
+    transform = cross(
+      .data = !!my_grid
+    )
+  ),
+  conf = target(
+    confusion_matrix(data, rec, model),
+    transform = map(model)
+  ),
+  metrics = target(
+    compare_models(conf),
+    transform = combine(conf, .by = c(my_units1, my_units2))
+  )
+)
+```

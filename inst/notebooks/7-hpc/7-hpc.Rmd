@@ -1,0 +1,89 @@
+---
+title: "High-performance computing"
+output: html_notebook
+---
+
+```{r, include = FALSE}
+# Set your working directory to 7-hpc/.
+# You may have to copy and paste this line into your console:
+setwd(file.path(rprojroot::find_rstudio_root_file(), "7-hpc"))
+source("../config/options.R")
+```
+
+`drake` can run targets in parallel. Workers are either persistent or transient, and they can run locally (multicore paralllelism) or on a cluster (distributed computing). See <https://ropenscilabs.github.io/drake-manual/hpc.html> for details.
+
+# Persistent workers
+
+To understand persistent workers, watch the short animation at <https://ropenscilabs.github.io/drake-manual/hpc.html#persistent-workers>. A collection of parallel processes launches at the beginning of `make()`. Those workers coordinate to build and check the whole collection of targets in the pipeline, staying alive until there are no more targets to process.
+
+To use persistent workers, we need the `clustermq` package and the [ZeroMQ library](http://zeromq.org).
+
+```{r}
+library(clustermq)
+```
+
+We could configure `clustermq` to launch workers to a cluster / resource manager such as SLURM or SGE (see <https://github.com/mschubert/clustermq> and <https://ropenscilabs.github.io/drake-manual/hpc.html#persistent-workers> for details). However, for this workshop, we will use local multicore parallelism.
+
+```{r}
+options(clustermq.scheduler = "multicore")
+```
+
+Then, using the `parallelism` and `jobs` arguments of `make()`, we run the pipeline with 2 persistent workers. Notice how both our models run at the same time. (Extra credit: while `make()` is running, check `progress()` in another R session.)
+
+```{r, message = FALSE}
+source("R/packages.R")
+source("R/functions.R")
+source("R/plan.R")
+```
+
+```{r}
+make(plan) # In case something is wrong with the local installation.
+# make(plan, parallelism = "clustermq", jobs = 2)
+```
+
+If you were to start the pipeline over from scratch, how much time would it take with one worker?
+
+```{r}
+config <- drake_config(plan)
+predict_runtime(config, jobs = 1, from_scratch = TRUE)
+```
+
+Less time with 2 workers, right?
+
+```{r}
+predict_runtime(config, jobs = 2, from_scratch = TRUE)
+```
+
+But no expected improvement with 3 workers.
+
+```{r}
+predict_runtime(config, jobs = 3, from_scratch = TRUE)
+```
+
+# Transient workers
+
+There are situations where you may not want to use persistent workers. For example, your cluster may impose frugal walltime restrictions, or you may not be able to install ZeroMQ. Whatever the reason, transient workers are an alternative. Here, we launch a dedicated worker process for every single target (more accurately, every target without `drake_plan(x = target(..., hpc = FALSE))`). Watch the animation at <https://ropenscilabs.github.io/drake-manual/hpc.html#transient-workers>.
+
+Transient workers rely on the [`future`](https://github.com/HenrikBengtsson/future) package.
+
+```{r, message = FALSE}
+library(future)
+```
+
+To set a parallel backend for transient workers, use the `future::plan()` function. See the [`future.batchtools` package](https://github.com/HenrikBengtsson/future.batchtools) and <https://ropenscilabs.github.io/drake-manual/hpc.html#transient-workers> for instructions deploying to a high-performance computing cluster (distributed computing). For now, we will use local parallel processes with [`future.callr`](https://github.com/HenrikBengtsson/future.callr).
+
+```{r}
+library(future.callr)
+future::plan(callr)
+```
+
+To run the pipeline with transient workers, use `parallelism = "future"` and set `jobs` to the maximum number of simultaneous worker processes you want ot allow.
+
+```{r}
+clean() # Invalidate all the targets so we can run from scratch.
+make(plan, parallelism = "future", jobs = 2)
+```
+
+# Tips
+
+See <https://ropenscilabs.github.io/drake-manual/hpc.html#advanced-options> for tips on advanced configuration, including `drake_plan(stuff = target(..., hpc = FALSE))`, which allows you to pick and choose which targets to run locally and which to run on parallel workers.
