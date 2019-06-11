@@ -47,7 +47,7 @@ materials.
 
 The workshop begins with an introductory presentation on
 [`drake`](https://github.com/ropensci/drake). View the slides at
-<https://wlandau.github.io/learndrake/slides/index.html> or open them
+<https://wlandau.github.io/learndrake/index.html> or open them
 yourself in a browser with `view_slides()`.
 
 # Tutorials
