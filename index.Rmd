@@ -1,0 +1,518 @@
+---
+title: "Machine learning workflow management in R"
+author: Will Landau
+output: 
+  xaringan::moon_reader:
+    nature:
+      highlightLines: true
+---
+
+<style>
+.inverse {
+  background-color: transparent;
+  text-shadow: 0 0 0px transparent;
+}
+.title-slide {
+  vertical-align: bottom !important; 
+  text-align: center !important;
+}
+.title-slide h1 {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  line-height: 4em;
+  color: #666666;
+}
+.title-slide h3 {
+  line-height: 6em;
+  color: #666666;
+}
+.title-slide {
+  background-color: white;
+  background-image: url('images/logo.png');
+  background-repeat: no-repeat;
+  background-size: 25%;
+}
+.remark-slide-content:after {
+  content: "Copyright Eli Lilly and Company";
+  position: absolute;
+  bottom: -5px;
+  left: 20px;
+  height: 40px;
+  width: 100%;
+  font-family: Helvetica, Arial, sans-serif;
+  color: gray;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+</style>
+
+```{r c1, include = FALSE}
+options(
+  warnPartialMatchArgs = FALSE,
+  drake_clean_menu = FALSE,
+  drake_make_menu = FALSE,
+  htmltools.dir.version = FALSE
+)
+packages <- c(
+  "drake",
+  "keras",
+  "recipes",
+  "rsample",
+  "tidyverse",
+  "yardstick"
+)
+unlink(".RData")
+purrr::walk(
+  packages,
+  function(pkg) {
+    suppressMessages(suppressWarnings(library(pkg, character.only = TRUE)))
+  }
+)
+clean(destroy = TRUE, verbose = FALSE)
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  warning = FALSE,
+  fig.align = "center",
+  fig.width = 10,
+  fig.height = 7,
+  out.width = "80%",
+  out.height = "80%"
+)
+```
+
+
+## Workflows have interconnected steps.
+<center>
+<img src = "./images/workflow.png" align="middle" style="border: none; box-shadow: none; text-align: center;">
+</center>
+
+---
+
+## When you change something...
+<center>
+<img src = "./images/change.png" align="middle" style="border: none; box-shadow: none; text-align: center;">
+</center>
+
+---
+
+## ...the downstream steps are **no longer valid**.
+
+<center>
+<img src = "./images/downstream.png" align="middle" style="border: none; box-shadow: none; text-align: center;">
+</center>
+
+---
+
+## Do you rerun **everything** from scratch?
+
+- Not if you deal with long runtimes!
+
+<center>
+<img src = "./images/sisyphus.svg" align="middle" style="border: none; box-shadow: none; height: 375px; text-align: center;">
+<div style="font-size: 0.5em; text-align: center"><a href="https://openclipart.org/detail/275842/sisyphus-overcoming-silhouette">https://openclipart.org/detail/275842/sisyphus-overcoming-silhouette</a></div>
+</center>
+
+---
+
+## Do you pick and choose what to update?
+
+- Messy.
+- Prone to human error.
+- Not reproducible.
+
+<center>
+<img src = "./images/mess.svg" align="middle" style="border: none; box-shadow: none; height: 400px; text-align: center;">
+<div style="font-size: 0.5em; text-align: center;"><a href="https://openclipart.org/detail/216179/messy-desk">https://openclipart.org/detail/216179/messy-desk</a></div>
+</center>
+
+---
+
+## When do we face these issues?
+
+<br>
+- Long computation!
+    - Clinical trial modeling and simulation
+    - Subgroup identification
+    - Bayesian data analysis
+    - Graph-based multiple comparison procedures
+    - Bayesian networks in genomics
+    - PK/PD modeling (e.g. [`mrgsolve`](https://github.com/metrumresearchgroup/mrgsolve))
+    - **Deep learning**
+    - ...
+
+---
+
+## Solution: pipeline tools
+
+<center>
+<img src = "./images/infographic.svg" align="middle" style="border: none; box-shadow: none; text-align: center;">
+</center>
+
+- Tons exist already: [github.com/pditommaso/awesome-pipeline](https://github.com/pditommaso/awesome-pipeline).
+- Most are language-agnostic or designed for Python or the shell.
+
+---
+
+## What makes `drake` different?
+
+<center>
+<img src = "./images/R.png" align="middle" style="border: none; box-shadow: none; text-align: center; height: 200px">
+</center>
+
+- Aggressively designed for R.
+    - Think **functions**, not script files.
+    - Think **variables**, not output files.
+    - Think **data frames**, not `Makefile`s.
+- Major improvements in late 2018 and early 2019:
+    - A [domain-specific language](https://ropenscilabs.github.io/drake-manual/plans.html#large-plans) for workflows.
+    - Massive improvements in speed and memory usage.
+    - Special [functions and checks](https://ropensci.org/technotes/2019/03/18/drake-700/#reproducibility) to safeguard reproducibility.
+
+---
+
+## Example: a deep learning workflow
+
+- Goal: predict customers who cancel their subscriptions with a telecom company.
+- Data: [IBM Watson Telco Customer Churn dataset](https://www.ibm.com/communities/analytics/watson-analytics-blog/predictive-insights-in-the-telco-customer-churn-data-set/).
+- Workflow principles generalize to other industries.
+
+<img src = "./images/combine.png" style="border: none; box-shadow: none; height: 200px">
+
+<div style="font-size: 0.5em;"><a href="https://openclipart.org/detail/90739/newplus">https://openclipart.org/detail/90739/newplus</a>, <a href="https://github.com/rstudio/keras">https://github.com/rstudio/keras</a></div>
+
+---
+
+## File structure
+
+<br>
+<br>
+
+```{r files, eval = FALSE}
+make.R
+R/
+├── packages.R
+├── functions.R
+└── plan.R
+data/
+└── customer_churn.csv
+```
+
+---
+
+## packages.R
+
+```{r c2, eval = FALSE}
+library(drake)
+library(keras)
+library(recipes)
+library(rsample)
+library(tidyverse)
+library(yardstick)
+```
+
+---
+
+## functions.R
+
+```{r c3, eval = FALSE}
+prepare_recipe <- function(data) {
+  # ... 
+}
+
+define_model <- function(rec, units1, units2, act1, act2, act3) {
+  # ...
+}
+
+train_model <- function(data, rec, units1, units2, act1, act2, act3) {
+  # ...
+}
+
+confusion_matrix <- function(data, rec, serialized_model) {
+  # ...
+}
+
+compare_models <- function(...) {
+  # ...
+}
+```
+
+---
+
+## plan.R
+
+```{r c4}
+activations <- c("relu", "sigmoid")
+
+plan <- drake_plan(
+  data = read_csv(file_in("data/customer_churn.csv"), col_types = cols()) %>%
+    initial_split(prop = 0.3),
+  rec = prepare_recipe(data),
+  model = target(
+    train_model(data, rec, act1 = act),
+    transform = map(act = !!activations)
+  ),
+  conf = target(
+    confusion_matrix(data, rec, model),
+    transform = map(model, .id = act)
+  ),
+  metrics = target(
+    compare_models(conf),
+    transform = combine(conf)
+  )
+)
+```
+
+---
+
+## Data frame of workflow steps
+
+```{r c5}
+plan
+```
+
+---
+
+## The workflow
+
+<br>
+<center>
+<img align="middle" src = "./images/vis1.png" style="border: none; box-shadow: none;">
+</center>
+
+---
+
+## Run the project in make.R.
+
+```{r c6}
+source("R/packages.R")
+source("R/functions.R")
+source("R/plan.R")
+
+make(plan)
+```
+
+---
+
+## Compare models.
+
+```{r c7}
+readd(metrics) # See also loadd()
+```
+
+---
+
+## Try another activation function.
+
+```{r c8}
+activations <- c("relu", "sigmoid", "softmax") #<<
+
+plan <- drake_plan(
+  data = read_csv(file_in("data/customer_churn.csv"), col_types = cols()) %>%
+    initial_split(prop = 0.3),
+  rec = prepare_recipe(data),
+  model = target(
+    train_model(data, rec, act1 = act),
+    transform = map(act = !!activations) #<<
+  ),
+  conf = target(
+    confusion_matrix(data, rec, model),
+    transform = map(model, .id = act)
+  ),
+  metrics = target(
+    compare_models(conf),
+    transform = combine(conf)
+  )
+)
+```
+
+```{r c8write, echo = FALSE}
+tmp <- file.copy("R/plan.R", "R/tmp.R", overwrite = TRUE)
+tmp <- file.copy("R/plan2.R", "R/plan.R", overwrite = TRUE)
+```
+
+---
+
+## vis_drake_graph()
+
+<center>
+<img align="middle" src = "./images/vis2.png" style="border: none; box-shadow: none;">
+</center>
+
+---
+
+## Refresh the results in make.R.
+
+```{r c9}
+source("R/packages.R")
+source("R/functions.R")
+source("R/plan.R") # modified #<<
+
+make(plan)
+```
+
+---
+
+## Compare models.
+
+```{r c7updated}
+readd(metrics)
+```
+
+---
+
+## Evidence of reproducibility
+
+```{r c10}
+source("R/packages.R")
+source("R/functions.R")
+source("R/plan.R")
+
+make(plan)
+```
+
+- See also `outdated()`.
+
+---
+
+## High-performance computing
+
+```{r c11, eval = FALSE}
+# template file with configuration
+drake_hpc_template_file("slurm_clustermq.tmpl")
+
+# Use SLURM resource manager with the template.
+options(
+  clustermq.scheduler = "slurm",
+  clustermq.template = "slurm_clustermq.tmpl"
+)
+
+# make() is the basically the same.
+make(plan, jobs = 2, parallelism = "clustermq")
+```
+
+---
+
+## High-performance computing
+
+<iframe width="800" height="450" src="https://www.powtoon.com/embed/bUfSIaXjrw5/" frameborder="0"></iframe>
+
+---
+
+## Resources
+
+- Get [`drake`](https://github.com/ropensci/drake):
+
+```{r c12, eval = FALSE}
+install.packages("drake")
+```
+
+- Workshop materials:
+
+```{r c13, eval = FALSE}
+remotes::install_github("wlandau/learndrake")
+```
+
+- Example code from these slides:
+
+```{r c14, eval = FALSE}
+drake::drake_example("customer-churn-simple")
+```
+
+---
+
+## Links
+
+- Development repository: <https://github.com/ropensci/drake>
+- Full user manual <https://ropenscilabs.github.io/drake-manual>
+- Reference website: <https://ropensci.github.io/drake>
+- Code examples: <https://github.com/wlandau/drake-examples>
+- Discuss at rOpenSci.org: <https://discuss.ropensci.org>
+
+## rOpenSci use cases
+
+- Use [`drake`](https://github.com/ropensci/drake)? Share your use case at <https://ropensci.org/usecases>.
+
+<center>
+<img src = "./images/ropensci.png" style="border: none; box-shadow: none; height: 150px">
+</center>
+
+---
+
+## Thanks
+
+<br>
+<br>
+<table style = "border: none">
+<tr>
+<td style = "padding-right: 125px">
+<ul style>
+<img src = "./images/edgar.jpg" style="border: none; box-shadow: none; height: 150px">
+<li><a href = "https://github.com/edgararuiz">Edgar Ruiz</a></li>
+<li><a href = "https://github.com/sol-eng/tensorflow-w-r/blob/master/workflow/tensorflow-drake.Rmd">example code</a></li>
+</ul>
+</td>
+<td>
+<ul>
+<img src = "./images/matt.jpg" style="border: none; box-shadow: none; height: 150px">
+<li><a href = "https://github.com/mdancho84">Matt Dancho</a></li>
+<li><a href = "https://blogs.rstudio.com/tensorflow/posts/2018-01-11-keras-customer-churn/">blog post</a></li>
+</ul>
+</td>
+</tr>
+</table>
+
+---
+
+## Thanks
+
+<table style = "border: none">
+<tr>
+<td>
+<br>
+<ul>
+<img src = "./images/ropensci.png" style="border: none; box-shadow: none; height: 150px">
+<li><a href = "https://github.com/maelle">Maëlle Salmon</a></li>
+<li><a href = "https://github.com/benmarwick">Ben Marwick</a></li>
+<li><a href = "https://github.com/jules32">Julia Lowndes</a></li>
+<li><a href = "https://github.com/gothub">Peter Slaughter</a></li>
+<li><a href = "https://github.com/jennybc">Jenny Bryan</a></li>
+<li><a href = "https://github.com/richfitz">Rich FitzJohn</a></li>
+<li><a href = "https://github.com/stefaniebutland">Stefanie Butland</a></li>
+</ul>
+</td>
+<td>
+<ul>
+<li><a href = "https://github.com/jarad">Jarad Niemi</a></li>
+<li><a href = "https://github.com/krlmlr">Kirill Müller</a></li>
+<li><a href = "https://github.com/HenrikBengtsson">Henrik Bengtsson</a></li>
+<li><a href = "https://github.com/mschubert">Michael Schubert</a></li>
+<li><a href = "https://github.com/kendonB">Kendon Bell</a></li>
+<li><a href = "https://github.com/milesmcbain">Miles McBain</a></li>
+<li><a href = "https://github.com/pat-s">Patrick Schratz</a></li>
+<li><a href = "https://github.com/AlexAxthelm">Alex Axthelm</a></li>
+<li><a href = "https://github.com/dapperjapper">Jasper Clarkberg</a></li>
+<li><a href = "https://github.com/tiernanmartin">Tiernan Martin</a></li>
+<li><a href = "https://github.com/BListyg">Ben Listyg</a></li>
+<li><a href = "https://github.com/tjmahr">TJ Mahr</a></li>
+<li><a href = "https://github.com/bpbond">Ben Bond-Lamberty</a></li>
+<li><a href = "https://github.com/tmastny">Tim Mastny</a></li>
+<li><a href = "https://github.com/billdenney">Bill Denney</a></li>
+<li><a href = "https://github.com/aedobbyn">Amanda Dobbyn</a></li>
+<li><a href = "https://github.com/dfalster">Daniel Falster</a></li>
+<li><a href = "https://github.com/rkrug">Rainer Krug</a></li>
+<li><a href = "https://github.com/bmchorse">Brianna McHorse</a></li>
+<li><a href = "https://github.com/mrchypark">Chan-Yub Park</a></li>
+</ul>
+</td>
+</tr>
+</table>
+
+```{r c15, include = FALSE}
+tmp <- file.copy("R/plan.R", "R/plan2.R", overwrite = TRUE)
+tmp <- file.copy("R/tmp.R", "R/plan.R", overwrite = TRUE)
+unlink("R/tmp.R")
+clean(destroy = TRUE)
+```
