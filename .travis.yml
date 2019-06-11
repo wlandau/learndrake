@@ -3,6 +3,11 @@ cache: packages
 
 warnings_are_errors: true
 
+addons:
+  apt:
+    packages:
+      - libzmq3-dev
+
 r_packages:
   - covr
   - lintr
