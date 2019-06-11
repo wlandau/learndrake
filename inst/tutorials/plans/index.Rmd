@@ -9,7 +9,9 @@ library(drake)
 library(DT)
 library(learnr)
 library(praise)
+library(styler)
 library(tidyverse)
+library(visNetwork)
 options(
   drake_make_menu = FALSE,
   drake_clean_menu = FALSE,
