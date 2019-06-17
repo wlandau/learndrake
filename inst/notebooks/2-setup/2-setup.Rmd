@@ -10,14 +10,18 @@ setwd(file.path(rprojroot::find_rstudio_root_file(), "2-setup"))
 source("../config/options.R")
 ```
 
+After working through `1-churn.Rmd`, we have the building blocks of our data analysis project. Now, let's put the pieces together in a `drake`-powered reproducible workflow.
+
 # Dependencies
 
-To set up a [`drake`](http://github.com/ropensci/drake) workflow for the customer churn case study, we first load our packages and functions into the current R session. Open up these R scripts and take a look.
+To set up a [`drake`](http://github.com/ropensci/drake) workflow for the customer churn case study, we first load our packages and functions into the current R session.
 
 ```{r message = FALSE}
 source("R/packages.R")  # Load the packages.
 source("R/functions.R") # Define our custom functions.
 ```
+
+ Open up `packages.R` and `functions.R` scripts and take a look at how they are organized.
 
 # Plan
 
