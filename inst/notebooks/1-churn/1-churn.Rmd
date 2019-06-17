@@ -10,9 +10,7 @@ setwd(file.path(rprojroot::find_rstudio_root_file(), "1-churn"))
 source("../config/options.R")
 ```
 
-# Preparation for `drake`
-
-These exercises set up the building blocks of a `drake`-powered data analysis workflow. The goal is to establish the necesary packages, data, *user-defined functions*, and context of the case study.
+This notebook introduces the workshop's underlying data analysis case study. The exercises establish the necesary packages, data, *user-defined functions*, and motivating context.
 
 # Customer churn case study
 
