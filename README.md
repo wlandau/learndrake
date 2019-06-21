@@ -3,6 +3,8 @@
 status](https://travis-ci.org/wlandau/learndrake.svg?branch=master)](https://travis-ci.org/wlandau/learndrake)
 [![Codecov test
 coverage](https://codecov.io/gh/wlandau/learndrake/branch/master/graph/badge.svg)](https://codecov.io/gh/wlandau/learndrake?branch=master)
+[![Launch Rstudio
+Binder](http://mybinder.org/badge.svg)](https://mybinder.org/v2/gh/wlandau/learndrake/master?urlpath=rstudio)
 
 # Machine learning workflow management with drake
 
@@ -31,7 +33,16 @@ library(remotes)
 install_github("wlandau/learndrake")
 ```
 
-# Usage
+# Usage: browser
+
+To open the workshop materials through RStudio in a browser, click this
+badge: [![Launch Rstudio
+Binder](http://mybinder.org/badge.svg)](https://mybinder.org/v2/gh/wlandau/learndrake/master?urlpath=rstudio).
+Then, navigate to
+[`inst/notebooks`](https://github.com/wlandau/learndrake/tree/master/inst/notebooks)
+to get started.
+
+# Usage: local
 
 The functions in `learndrake` help navigate and deploy the workshop
 materials.
@@ -47,8 +58,8 @@ materials.
 
 The workshop begins with an introductory presentation on
 [`drake`](https://github.com/ropensci/drake). View the slides at
-<https://wlandau.github.io/learndrake/index.html> or open them
-yourself in a browser with `view_slides()`.
+<https://wlandau.github.io/learndrake/index.html> or open them yourself
+in a browser with `view_slides()`.
 
 # Tutorials
 
