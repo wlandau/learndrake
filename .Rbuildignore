@@ -1,7 +1,8 @@
 ^Thumbs\.db$
 ^build_site.R$
 ^pkgdown$
-\.DS_Store
+\.binder$
+\.DS_Store$
 \.drake$
 \.future$
 \.git$
