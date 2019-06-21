@@ -37,7 +37,8 @@ source("R/plan.R")
 ```
 
 ```{r}
-make(plan) # In case something is wrong with the local installation.
+make(plan)
+# Only attempt if you have clustermq and ZeroMQ installed:
 # make(plan, parallelism = "clustermq", jobs = 2)
 ```
 
