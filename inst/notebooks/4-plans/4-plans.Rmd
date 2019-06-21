@@ -86,7 +86,7 @@ To work with a large number of models, it is convenient to generate the settings
 units <- seq(16, 64, by = 2)
 ```
 
-However, when we plug `neurons` into `map()`, we get the wrong plan.
+However, when we plug `units` into `map()`, we get the wrong plan.
 
 ```{r, paged.print = FALSE}
 drake_plan(
