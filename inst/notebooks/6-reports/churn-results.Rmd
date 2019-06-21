@@ -6,6 +6,7 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
+library(drake)
 knitr::opts_chunk$set(echo = TRUE)
 ```
 

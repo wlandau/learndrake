@@ -79,7 +79,7 @@ You should see `churn-results.html` in the output. Open it to verify that the ou
 
 Edit on the report and compile it as you would normally.
 
-1. Open `churn-results.Rmd` in the RStudio IDE and add language to summarize the performance metrics. What conclusions can you draw?
+1. Open `churn-results.Rmd` in the RStudio IDE and add prose to summarize the performance metrics. Write about the conclusions you can draw.
 2. Press the "Knit" button to re-render the HTML report to your heart's content.
 
 Now, go back to the `drake` pipeline. The `report_step` target should be out of date because you worked on it.
