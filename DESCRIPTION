@@ -36,7 +36,6 @@ SystemRequirements:
 Depends:
   R (>= 3.5.0)
 Imports:
-  clustermq,
   drake,
   drakeplanner,
   future,
@@ -56,6 +55,7 @@ Imports:
   visNetwork,
   yardstick
 Suggests:
+  clustermq,
   prettycode,
   shinytest,
   tidyselect (>= 0.2.4),
