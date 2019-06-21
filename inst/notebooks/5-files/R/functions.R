@@ -48,7 +48,7 @@ train_model <- function(
   act3 = "sigmoid"
   # Add a new model_file argument to train_model().
 ) {
-  model <- define_model(rec)
+  model <- define_model(rec, units1, units2, act1, act2, act3)
   compile(
     model,
     optimizer = "adam",
