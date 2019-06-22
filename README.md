@@ -35,9 +35,9 @@ install_github("wlandau/learndrake")
 
 # Usage: browser
 
-To open the workshop materials through RStudio in a browser, click this
-badge: [![Launch Rstudio
+Just click this badge: [![Launch Rstudio
 Binder](http://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/wlandau/learndrake/binder?urlpath=rstudio).
+Your browser will open the materials in a free RStudio Server instance.
 The exercises are in the notebooks (`1-churn/1-churn.Rmd`,
 `2-setup/2-setup.Rmd`, etc.).
 
