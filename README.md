@@ -4,7 +4,7 @@ status](https://travis-ci.org/wlandau/learndrake.svg?branch=master)](https://tra
 [![Codecov test
 coverage](https://codecov.io/gh/wlandau/learndrake/branch/master/graph/badge.svg)](https://codecov.io/gh/wlandau/learndrake?branch=master)
 [![Launch Rstudio
-Binder](http://mybinder.org/badge.svg)](https://mybinder.org/v2/gh/wlandau/learndrake/master?urlpath=rstudio)
+Binder](http://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/wlandau/learndrake/binder?urlpath=rstudio)
 
 # Machine learning workflow management with drake
 
@@ -37,10 +37,9 @@ install_github("wlandau/learndrake")
 
 To open the workshop materials through RStudio in a browser, click this
 badge: [![Launch Rstudio
-Binder](http://mybinder.org/badge.svg)](https://mybinder.org/v2/gh/wlandau/learndrake/master?urlpath=rstudio).
-Then, navigate to
-[`inst/notebooks`](https://github.com/wlandau/learndrake/tree/master/inst/notebooks)
-to get started.
+Binder](http://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/wlandau/learndrake/binder?urlpath=rstudio).
+The exercises are in the notebooks (`1-churn/1-churn.Rmd`,
+`2-setup/2-setup.Rmd`, etc.).
 
 # Usage: local
 
