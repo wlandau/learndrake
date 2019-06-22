@@ -43,6 +43,6 @@ RUN install2.r reticulate tensorflow keras
 COPY . ${HOME}
 RUN chown -R ${NB_USER} ${HOME}
 USER ${NB_USER}
-
 RUN R -e 'options(repos = list(CRAN = "http://cran.rstudio.com")); remotes::install_github("wlandau/learndrake")'
-RUN cd ${HOME}/inst/notebooks
+
+WORKDIR ${HOME}/inst/notebooks
