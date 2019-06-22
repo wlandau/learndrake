@@ -46,3 +46,4 @@ USER ${NB_USER}
 RUN R -e 'options(repos = list(CRAN = "http://cran.rstudio.com")); remotes::install_github("wlandau/learndrake")'
 
 WORKDIR ${HOME}/inst/notebooks
+CMD jupyter notebook --ip 0.0.0.0
