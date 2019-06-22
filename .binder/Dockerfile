@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 RUN python3 -m venv ${PYTHON_VENV_PATH}
 
-RUN chown -R rstudio:rstudio ${WORKON_HOME}
+RUN chown -R ${NB_USER} ${WORKON_HOME}
 
 ENV PATH ${PYTHON_VENV_PATH}/bin:${PATH}
 ## And set ENV for R! It doesn't read from the environment...
@@ -25,7 +25,7 @@ RUN ln -s ${PYTHON_VENV_PATH}/bin/pip /usr/local/bin/pip && \
     ln -s ${PYTHON_VENV_PATH}/bin/virtualenv /usr/local/bin/virtualenv
 
 ## install as user to avoid venv issues later
-USER rstudio
+USER ${NB_USER}
 RUN pip3 install \
     h5py==2.9.0 \
     pyyaml==3.13 \
@@ -36,6 +36,7 @@ RUN pip3 install \
     keras==2.2.4 \
     --no-cache-dir
 
+USER root
 RUN install2.r reticulate tensorflow keras
 
 COPY . ${HOME}
