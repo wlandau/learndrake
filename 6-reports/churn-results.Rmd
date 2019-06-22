@@ -1,0 +1,24 @@
+---
+title: "knitr within drake"
+author: "you"
+date: "5/15/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(drake)
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Confusion matrix
+
+This is the confusion matrix of `model_16`.
+
+```{r}
+loadd(conf_model_16)
+conf_model_16
+```
+
+## Metrics
+
+Exercise: use `readd()` to display the `metrics` target in an active code chunk.
