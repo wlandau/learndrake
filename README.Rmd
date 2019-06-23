@@ -1,3 +1,7 @@
+---
+output: github_document
+---
+
 # Testing `holepunch`
 
 The goal of the `test-holepunch` branch is to try out <https://github.com/karthik/holepunch/issues/20#issuecomment-504701582>. If successful, this badge should launch an RStudio Server instance at the package root: [![Launch Rstudio Binder](http://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/wlandau/learndrake/test-holepunch?urlpath=rstudio)
