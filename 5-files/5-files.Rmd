@@ -136,11 +136,11 @@ outdated(config)
 make(plan)
 ```
 
-Our file-based approach frees us up to see the history of the model fit.
+Our file-based approach frees us up to see the progression of the model run.
 
 ```{r}
-loadd(history)
-plot(history)
+loadd(progression)
+plot(progression)
 ```
 
 
