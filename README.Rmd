@@ -12,12 +12,13 @@ Machine learning workflows can be difficult to manage. A single round of computa
 
 # Installation
 
-To obtain the workshop materials, simply install the `learndrake` package.
+To obtain the workshop materials, install the [`learndrake`](https://github.com/wlandau/learndrake) package, [TensorFlow](https://www.tensorflow.org), and [Keras](https://keras.io/).
 
 ```{r eval = FALSE}
 install.packages("remotes")
-library(remotes)
-install_github("wlandau/learndrake")
+remotes::install_github("wlandau/learndrake")
+tensorflow::install_tensorflow()
+keras::install_keras()
 ```
 
 # Usage: browser
@@ -26,7 +27,7 @@ Just click this badge: [![Launch Rstudio Binder](http://mybinder.org/badge_logo.
 
 # Usage: local
 
-The functions in `learndrake` help navigate and deploy the workshop materials.
+The functions in `learndrake` help navigate and deploy the workshop materials. If you installed the package and dependencies as above, you can take the workshop locally without an internet connection.
 
 Function | Purpose
 ---|---

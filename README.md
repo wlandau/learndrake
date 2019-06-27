@@ -24,13 +24,16 @@ automation.
 
 # Installation
 
-To obtain the workshop materials, simply install the `learndrake`
-package.
+To obtain the workshop materials, install the
+[`learndrake`](https://github.com/wlandau/learndrake) package,
+[TensorFlow](https://www.tensorflow.org), and
+[Keras](https://keras.io/).
 
 ``` r
 install.packages("remotes")
-library(remotes)
-install_github("wlandau/learndrake")
+remotes::install_github("wlandau/learndrake")
+tensorflow::install_tensorflow()
+keras::install_keras()
 ```
 
 # Usage: browser
@@ -44,7 +47,9 @@ The exercises are in the notebooks (`1-churn/1-churn.Rmd`,
 # Usage: local
 
 The functions in `learndrake` help navigate and deploy the workshop
-materials.
+materials. If you installed the package and dependencies as above, you
+can take the workshop locally without an internet
+connection.
 
 | Function           | Purpose                                                                                                                                                  |
 | ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
