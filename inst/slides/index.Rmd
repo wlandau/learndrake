@@ -64,7 +64,7 @@ packages <- c(
   "tidyverse",
   "yardstick"
 )
-unlink(".RData")
+unlink(c(".RData", ".drake_history"), recursive = TRUE)
 purrr::walk(
   packages,
   function(pkg) {
@@ -522,6 +522,6 @@ drake::drake_example("customer-churn-simple")
 ```{r c15, include = FALSE}
 tmp <- file.copy("R/plan.R", "R/plan2.R", overwrite = TRUE)
 tmp <- file.copy("R/tmp.R", "R/plan.R", overwrite = TRUE)
-unlink("R/tmp.R")
+unlink(c("R/tmp.R", ".drake_history"), recursive = TRUE)
 clean(destroy = TRUE)
 ```
