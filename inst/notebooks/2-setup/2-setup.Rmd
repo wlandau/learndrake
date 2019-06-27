@@ -122,3 +122,38 @@ training(data) %>%
 ```{r}
 readd(metrics) # see also loadd()
 ```
+
+# Start over
+
+If you ever want to start over, use `clean()` to "invalidate" the targets (force them to be out of date).
+
+```{r}
+clean()
+```
+
+The next `make()` runs everything from scratch.
+
+```{r}
+make(plan)
+```
+
+# History
+
+`drake` version 7.5.0 and above tracks history and provenance. You can see which models you ran, when you ran them, how long they took, and which settings you tried.
+
+```{r churnhistory}
+history <- drake_history()
+history
+```
+
+And as long as you did not run `clean(garbage_collection = TRUE)`, you can get the old data back. Let's find the oldest run of the model.
+
+```{r churnhistory2}
+hash <- history %>%
+  filter(target == "model") %>%
+  pull(hash) %>%
+  head(n = 1)
+cache <- drake_cache()
+cache$get_value(hash) %>%
+  unserialize_model()
+```
