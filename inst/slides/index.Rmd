@@ -377,6 +377,15 @@ make(plan)
 
 ---
 
+## History and provenance
+
+```{r h1}
+history <- drake_history()
+history
+```
+
+---
+
 ## High-performance computing
 
 ```{r c11, eval = FALSE}
