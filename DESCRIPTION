@@ -61,6 +61,7 @@ Suggests:
   tidyselect (>= 0.2.4),
   testthat (>= 2.1.0)
 Remotes:
+  ropensci/drake
   wlandau/drakeplanner
 Encoding: UTF-8
 Language: en-US
