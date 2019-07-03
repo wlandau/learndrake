@@ -6,7 +6,7 @@ output: html_notebook
 # Do first
 
 1. Navigate to the `2-setup/` folder.
-2. Open `2-setup.Rproj` as an RStudio project.
+2. Open `2-setup.Rproj` as an RStudio project. (Click on `2-setup.Rproj` in RStudio's file manager.)
 3. Run the setup chunk below.
 
 ```{r, include = FALSE}

@@ -6,7 +6,7 @@ output: html_notebook
 # Do first
 
 1. Navigate to the `5-files/` folder.
-2. Open `5-files.Rproj` as an RStudio project.
+2. Open `5-files.Rproj` as an RStudio project. (Click on `5-files.Rproj` in RStudio's file manager.)
 3. Run the setup chunk below.
 
 ```{r, include = FALSE}

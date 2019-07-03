@@ -6,7 +6,7 @@ output: html_notebook
 # Do first
 
 1. Navigate to the `1-churn/` folder.
-2. Open `1-churn.Rproj` as an RStudio project.
+2. Open `1-churn.Rproj` as an RStudio project. (Click on `1-churn.Rproj` in RStudio's file manager.)
 3. Run the setup chunk below.
 
 ```{r, include = FALSE}

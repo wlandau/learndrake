@@ -6,7 +6,7 @@ output: html_notebook
 # Do first
 
 1. Navigate to the `6-reports/` folder.
-2. Open `6-reports.Rproj` as an RStudio project.
+2. Open `6-reports.Rproj` as an RStudio project. (Click on `6-reports.Rproj` in RStudio's file manager.)
 3. Run the setup chunk below.
 
 ```{r, include = FALSE}
