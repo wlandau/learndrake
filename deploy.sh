@@ -13,7 +13,7 @@ then
   git clone -b binder https://${GITHUB_PAT}@github.com/${TRAVIS_REPO_SLUG}.git binder
   cd binder
   shopt -s extglob
-  rm -r ./!(.git)
+  rm -r !(.git)
   cp -r ../inst/notebooks/* ./
   git add --all *
   git commit -m "Update binder workspace" || true
