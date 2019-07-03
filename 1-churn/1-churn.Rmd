@@ -52,7 +52,7 @@ library(yardstick)
 
 # Data
 
-The dataset has one row per customer.
+The dataset has one row per customer. 
 
 ```{r}
 raw_data <- read_csv("../data/customer_churn.csv", col_types = cols())
