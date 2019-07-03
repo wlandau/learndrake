@@ -3,12 +3,17 @@ title: "High-performance computing"
 output: html_notebook
 ---
 
+# Do first
+
+1. Navigate to the `7-hpc/` folder.
+2. Open `7-hpc.Rproj` as an RStudio project. (Click on `7-hpc.Rproj` in RStudio's file manager.)
+3. Run the setup chunk below.
+
 ```{r, include = FALSE}
-# Set your working directory to 7-hpc/.
-# You may have to copy and paste this line into your console:
-setwd(file.path(rprojroot::find_rstudio_root_file(), "7-hpc"))
 source("../config/options.R")
 ```
+
+# About
 
 `drake` can run targets in parallel. Workers are either persistent or transient, and they can run locally (multicore paralllelism) or on a cluster (distributed computing). See <https://ropenscilabs.github.io/drake-manual/hpc.html> for details.
 
