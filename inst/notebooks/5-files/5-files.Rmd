@@ -3,13 +3,17 @@ title: "Custom input and output files"
 output: html_notebook
 ---
 
+# Do first
+
+1. Navigate to the `5-files/` folder.
+2. Open `5-files.Rproj` as an RStudio project.
+3. Run the setup chunk below.
+
 ```{r, include = FALSE}
-# Set your working directory to 5-files/.
-# You may have to copy and paste this line into your console:
-setwd(file.path(rprojroot::find_rstudio_root_file(), "5-files"))
 source("../config/options.R")
-library(tidyverse)
 ```
+
+# About
 
 This part of the workshop aims to demonstrate how to reproducibly track input and output files with `drake`.
 

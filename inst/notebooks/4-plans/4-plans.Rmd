@@ -3,10 +3,13 @@ title: "Advanced plans"
 output: html_notebook
 ---
 
+# Do first
+
+1. Navigate to the `4-plans/` folder.
+2. Open `4-plans.Rproj` as an RStudio project. (Click on `4-plans.Rproj` in RStudio's file manager.)
+3. Run the setup chunk below.
+
 ```{r, include = FALSE}
-# Set your working directory to 4-plans/.
-# You may have to copy and paste this line into your console:
-setwd(file.path(rprojroot::find_rstudio_root_file(), "4-plans"))
 source("../config/options.R")
 ```
 
