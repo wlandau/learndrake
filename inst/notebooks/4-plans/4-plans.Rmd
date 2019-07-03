@@ -207,4 +207,4 @@ drake_plan(
 # Exercises
 
 - Navigate to the [`learndrakeplans` app](https://wlandau.shinyapps.io/learndrakeplans) and complete the exercises in order. If the app does not load in the browser, you can launch it locally with [`learndrake::launch_app("plans")`](https://github.com/wlandau/learndrake).
-- Optinoal: use [`drake-planner`](https://wlandau.shinyapps.io/drake-planner) to help write and check your plans.
+- Optinoal: use [`drake-planner`](https://wlandau.shinyapps.io/drakeplanner) to help write and check your plans.
