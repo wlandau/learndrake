@@ -12,9 +12,9 @@ then
   git config --global user.name "wlandau"
   git clone -b binder https://${GITHUB_PAT}@github.com/${TRAVIS_REPO_SLUG}.git binder
   cd binder
-  ls -a | grep -Ev "^\.$|^..$|^\.git$" | xargs rm -rf
+  ls -a | grep -Ev "^\.$|^\.\.$|^\.git$|^\.binder$" | xargs rm -rf
   cp -r ../inst/notebooks/* ./
-  git add --all *
+  git add *
   git commit -m "Update binder workspace" || true
   git push -q origin binder
 fi
