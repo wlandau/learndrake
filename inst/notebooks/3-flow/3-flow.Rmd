@@ -6,7 +6,7 @@ output: html_notebook
 # Do first
 
 1. Navigate to the `3-flow/` folder.
-2. Open `3-flow.Rproj` as an RStudio project. (Click on `3-flow.Rproj` in RStudio's file manager.)
+2. Open `3-flow.Rproj` as an RStudio project in a new R session. (Click on `3-flow.Rproj` in RStudio's file manager.)
 3. Run the setup chunk below.
 
 ```{r, include = FALSE}
