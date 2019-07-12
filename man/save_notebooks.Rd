@@ -4,12 +4,12 @@
 \alias{save_notebooks}
 \title{Save the tutorials to your computer}
 \usage{
-save_notebooks(path = "learndrake", overwrite = FALSE)
+save_notebooks(path = "learndrake-notebooks", overwrite = FALSE)
 }
 \arguments{
-\item{path}{Character, where to write the files}
+\item{path}{Character, where to write the files.}
 
-\item{overwrite}{Logical, whether to over}
+\item{overwrite}{Logical, whether to overwrite the files.}
 }
 \description{
 The tutorials are a sequence of R notebooks

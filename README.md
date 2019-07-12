@@ -3,19 +3,20 @@
 status](https://travis-ci.org/wlandau/learndrake.svg?branch=master)](https://travis-ci.org/wlandau/learndrake)
 [![Codecov test
 coverage](https://codecov.io/gh/wlandau/learndrake/branch/master/graph/badge.svg)](https://codecov.io/gh/wlandau/learndrake?branch=master)
-[![Launch Rstudio
+[![Launch RStudio
 Binder](http://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/wlandau/learndrake/binder?urlpath=rstudio)
 
-# Machine learning workflow management with drake
+# Reproducible workflows at scale with `drake`
 
-Machine learning workflows can be difficult to manage. A single round of
-computation can take several hours to complete, and routine updates to
-the code and data tend to invalidate hard-earned results. You can
-enhance the maintainability, hygiene, speed, scale, and reproducibility
-of such projects with the [`drake`](https://github.com/ropensci/drake) R
-package. [`drake`](https://github.com/ropensci/drake) resolves the
-dependency structure of your analysis pipeline, skips tasks that are
-already up to date, executes the rest with [optional distributed
+Ambitious workflows in R, such as machine learning analyses, can be
+difficult to manage. A single round of computation can take several
+hours to complete, and routine updates to the code and data tend to
+invalidate hard-earned results. You can enhance the maintainability,
+hygiene, speed, scale, and reproducibility of such projects with the
+[`drake`](https://github.com/ropensci/drake) R package.
+[`drake`](https://github.com/ropensci/drake) resolves the dependency
+structure of your analysis pipeline, skips tasks that are already up to
+date, executes the rest with [optional distributed
 computing](https://ropenscilabs.github.io/drake-manual/hpc.html), and
 organizes the output so you rarely have to think about data files. This
 workshop will teach you how to create and maintain machine learning
@@ -38,7 +39,7 @@ keras::install_keras()
 
 # Usage: browser
 
-Just click this badge: [![Launch Rstudio
+Just click this badge: [![Launch RStudio
 Binder](http://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/wlandau/learndrake/binder?urlpath=rstudio).
 Your browser will open the materials in a free RStudio Server instance.
 The exercises are in the notebooks (`1-churn/1-churn.Rmd`,
@@ -48,15 +49,18 @@ The exercises are in the notebooks (`1-churn/1-churn.Rmd`,
 
 The functions in `learndrake` help navigate and deploy the workshop
 materials. If you installed the package and dependencies as above, you
-can take the workshop locally without an internet
-connection.
+can take the workshop locally without an internet connection. Start with
+the introductory slides, then move on to the notebooks. Launch apps
+along the way as
+directed.
 
 | Function           | Purpose                                                                                                                                                  |
 | ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `view_slides()`    | Open the introductory slides in a web browser.                                                                                                           |
-| `save_notebooks()` | Save the tutorials to your computer: R notebooks and supporting files.                                                                                   |
 | `launch_app()`     | Launch a Shiny app that accompanies a tutorial.                                                                                                          |
 | `save_app()`       | Save the app files so you can deploy to [shinyapps.io](https://www.shinyapps.io) or [Shiny Server](https://www.rstudio.com/products/shiny/shiny-server). |
+| `save_notebooks()` | Save the tutorials to your computer: R notebooks and supporting files.                                                                                   |
+| `save_slides()`    | Save the introductory slides to your computer.                                                                                                           |
+| `view_slides()`    | Open the introductory slides in a web browser.                                                                                                           |
 
 # Introductory slides
 
