@@ -95,7 +95,7 @@ outdated(config)
 vis_drake_graph(config)
 ```
 
-For production, use `make()` to re-synchronize the report with the rest of the pipeline.
+For production, call `make(plan)` to re-synchronize the report with the rest of the pipeline.
 
 ```{r}
 make(plan)
