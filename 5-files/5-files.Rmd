@@ -166,7 +166,7 @@ Which targets are outdated now?
 outdated(config)
 ```
 
-Which targets get rebuilt when we call `make()`?
+Which targets get rebuilt when we call `make(plan)`?
 
 ```{r}
 make(plan)

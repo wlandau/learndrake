@@ -19,7 +19,7 @@ Now that you worked through `1-churn.Rmd`, you have the building blocks of our d
 
 # Dependencies
 
-To set up a [`drake`](http://github.com/ropensci/drake) workflow for the customer churn case study, we first load our packages and functions into the current R session.
+To set up a `drake` workflow for the customer churn case study, we first load our packages and functions into the current R session.
 
 ```{r message = FALSE}
 source("R/packages.R")  # Load the packages.
@@ -53,7 +53,7 @@ conf <- confusion_matrix(data, rec, model)
 metrics <- compare_models(conf)
 ```
 
-But for [`drake`](http://github.com/ropensci/drake)-powered automation and reproducibility, we use a special data frame called a [`drake` plan](https://ropenscilabs.github.io/drake-manual/plans.html). Fill out the [`drake`](http://github.com/ropensci/drake) plan below. The "targets" (`data`, `rec`, etc.) can be in any order.
+But for `drake`-powered automation and reproducibility, we use a special data frame called a [`drake` plan](https://ropenscilabs.github.io/drake-manual/plans.html). **As a first exercise, take the commands from the code chunk above and fill them into the `drake` plan below.** The "targets" (`data`, `rec`, etc.) can be in any order.
 
 ```{r}
 plan <- drake_plan(
@@ -97,13 +97,13 @@ readRDS("img/graph.rds")
 
 # Do the work.
 
-Call [`make()`](https://ropensci.github.io/drake/reference/make.html) to actually run the workflow. `make()` builds the targets from left to right in the dependency graph. The output is stored in a hidden `.drake/` cache.
+Call `make(plan)` to actually run the workflow. `make()` builds the targets from left to right in the dependency graph. The output is stored in a hidden `.drake/` cache.
 
 ```{r}
 make(plan)
 ```
 
-Try `make()` again. What happens?
+Try `make(plan)` again. What happens?
 
 ```{r}
 make(plan)
@@ -136,7 +136,7 @@ If you ever want to start over, use `clean()` to "invalidate" the targets (force
 clean()
 ```
 
-The next `make()` runs everything from scratch.
+The next `make(plan)` runs everything from scratch.
 
 ```{r}
 make(plan)
