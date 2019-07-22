@@ -172,7 +172,7 @@ knitr::opts_chunk$set(
     - Increased speed and reduced memory usage.
     - [More reproducibility safeguards](https://ropensci.org/technotes/2019/03/18/drake-700/#reproducibility).
     - [History and provenance](https://ropenscilabs.github.io/drake-manual/walkthrough.html#history-and-provenance).
-    - [Automated data recovery and renaming (experimental)](https://ropenscilabs.github.io/drake-manual/walkthrough.html#automated-recovery-and-renaming).
+    - [Reproducible data recovery and renaming (experimental)](https://ropenscilabs.github.io/drake-manual/walkthrough.html#reproducible-recovery-and-renaming).
 
 ---
 
@@ -388,7 +388,7 @@ drake_history()
 
 ---
 
-## Data recovery (experimental)
+## Reproducible data recovery (experimental)
 
 ```{r recovery}
 clean() # Oops!
