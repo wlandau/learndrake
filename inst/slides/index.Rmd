@@ -1,5 +1,5 @@
 ---
-title: "Reproducible workflows at scale with drake"
+title: "Machine learning workflow management in R"
 author: Will Landau
 output: 
   xaringan::moon_reader:
@@ -64,7 +64,7 @@ packages <- c(
   "tidyverse",
   "yardstick"
 )
-unlink(c(".RData", ".drake_history"), recursive = TRUE)
+unlink(".RData")
 purrr::walk(
   packages,
   function(pkg) {
@@ -72,6 +72,7 @@ purrr::walk(
   }
 )
 clean(destroy = TRUE, verbose = FALSE)
+unlink(".drake_history", recursive = TRUE, force = TRUE)
 knitr::opts_chunk$set(
   collapse = TRUE,
   warning = FALSE,
@@ -133,17 +134,15 @@ knitr::opts_chunk$set(
 ## When do we face these issues?
 
 <br>
-Long computation!
-
-- **Machine learning**
-- Bayesian data analysis
-- Social network analysis
-- Spatial statistics
-- Econometrics
-- Bayesian causal networks
-- Clinical trial simulation
-- PK/PD modeling (e.g. [`mrgsolve`](https://github.com/metrumresearchgroup/mrgsolve))
-- ...
+- Long computation!
+    - Clinical trial modeling and simulation
+    - Subgroup identification
+    - Bayesian data analysis
+    - Graph-based multiple comparison procedures
+    - Bayesian networks in genomics
+    - PK/PD modeling (e.g. [`mrgsolve`](https://github.com/metrumresearchgroup/mrgsolve))
+    - **Deep learning**
+    - ...
 
 ---
 
@@ -170,8 +169,10 @@ Long computation!
     - Think **data frames**, not `Makefile`s.
 - Major improvements in late 2018 and early 2019:
     - A [domain-specific language](https://ropenscilabs.github.io/drake-manual/plans.html#large-plans) for workflows.
-    - Massive improvements in speed and memory usage.
-    - Special [functions and checks](https://ropensci.org/technotes/2019/03/18/drake-700/#reproducibility) to safeguard reproducibility.
+    - Increased speed and reduced memory usage.
+    - [More reproducibility safeguards](https://ropensci.org/technotes/2019/03/18/drake-700/#reproducibility).
+    - [History and provenance](https://ropenscilabs.github.io/drake-manual/walkthrough.html#history-and-provenance).
+    - [Automated data recovery and renaming (experimental)](https://ropenscilabs.github.io/drake-manual/walkthrough.html#automated-recovery-and-renaming).
 
 ---
 
@@ -381,10 +382,24 @@ make(plan)
 
 ## History and provenance
 
-```{r h1}
-history <- drake_history()
-history
+```{r history}
+drake_history()
 ```
+
+---
+
+## Data recovery (experimental)
+
+```{r recovery}
+clean() # Oops!
+
+start <- proc.time()
+make(plan, recover = TRUE)
+
+proc.time() - start
+```
+
+- Details + how to rename a target: <https://ropenscilabs.github.io/drake-manual/walkthrough.html#automated-recovery-and-renaming>
 
 ---
 
@@ -524,6 +539,7 @@ drake::drake_example("customer-churn-simple")
 ```{r c15, include = FALSE}
 tmp <- file.copy("R/plan.R", "R/plan2.R", overwrite = TRUE)
 tmp <- file.copy("R/tmp.R", "R/plan.R", overwrite = TRUE)
-unlink(c("R/tmp.R", ".drake_history"), recursive = TRUE)
+unlink("R/tmp.R")
 clean(destroy = TRUE)
+unlink(".drake_history", recursive = TRUE, force = TRUE)
 ```

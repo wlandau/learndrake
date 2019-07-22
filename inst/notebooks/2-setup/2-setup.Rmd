@@ -3,23 +3,18 @@ title: "Set up a drake workflow"
 output: html_notebook
 ---
 
-# Do first
-
-1. Navigate to the `2-setup/` folder.
-2. Open `2-setup.Rproj` as an RStudio project in a new R session. (Click on `2-setup.Rproj` in RStudio's file manager.)
-3. Run the setup chunk below.
-
 ```{r, include = FALSE}
+# Set your working directory to 2-setup/.
+# You may have to copy and paste this line into your console:
+setwd(file.path(rprojroot::find_rstudio_root_file(), "2-setup"))
 source("../config/options.R")
 ```
 
-# About
-
-Now that you worked through `1-churn.Rmd`, you have the building blocks of our data analysis project. Now, let's put the pieces together in a `drake`-powered reproducible workflow.
+After working through `1-churn.Rmd`, we have the building blocks of our data analysis project. Now, let's put the pieces together in a `drake`-powered reproducible workflow.
 
 # Dependencies
 
-To set up a `drake` workflow for the customer churn case study, we first load our packages and functions into the current R session.
+To set up a [`drake`](http://github.com/ropensci/drake) workflow for the customer churn case study, we first load our packages and functions into the current R session.
 
 ```{r message = FALSE}
 source("R/packages.R")  # Load the packages.
@@ -53,7 +48,7 @@ conf <- confusion_matrix(data, rec, model)
 metrics <- compare_models(conf)
 ```
 
-But for `drake`-powered automation and reproducibility, we use a special data frame called a [`drake` plan](https://ropenscilabs.github.io/drake-manual/plans.html). **As a first exercise, take the commands from the code chunk above and fill them into the `drake` plan below.** The "targets" (`data`, `rec`, etc.) can be in any order.
+But for [`drake`](http://github.com/ropensci/drake)-powered automation and reproducibility, we use a special data frame called a [`drake` plan](https://ropenscilabs.github.io/drake-manual/plans.html). Fill out the [`drake`](http://github.com/ropensci/drake) plan below. The "targets" (`data`, `rec`, etc.) can be in any order.
 
 ```{r}
 plan <- drake_plan(
@@ -97,13 +92,13 @@ readRDS("img/graph.rds")
 
 # Do the work.
 
-Call `make(plan)` to actually run the workflow. `make()` builds the targets from left to right in the dependency graph. The output is stored in a hidden `.drake/` cache.
+Call [`make()`](https://ropensci.github.io/drake/reference/make.html) to actually run the workflow. `make()` builds the targets from left to right in the dependency graph. The output is stored in a hidden `.drake/` cache.
 
 ```{r}
 make(plan)
 ```
 
-Try `make(plan)` again. What happens?
+Try `make()` again. What happens?
 
 ```{r}
 make(plan)
@@ -128,32 +123,18 @@ training(data) %>%
 readd(metrics) # see also loadd()
 ```
 
-# Start over
-
-If you ever want to start over, use `clean()` to "invalidate" the targets (force them to be out of date).
-
-```{r}
-clean()
-```
-
-The next `make(plan)` runs everything from scratch.
-
-```{r}
-make(plan)
-```
-
 # History
 
-`drake` version 7.5.0 and above tracks history and provenance. You can see which models you ran, when you ran them, how long they took, and which settings you tried.
+Using `drake_history()`, you can see which models you ran, when you ran them, how long they took, and which settings you tried.
 
-```{r churnhistory}
+```{r, paged.print = FALSE}
 history <- drake_history()
 history
 ```
 
 And as long as you did not run `clean(garbage_collection = TRUE)`, you can get the old data back. Let's find the oldest run of the model.
 
-```{r churnhistory2}
+```{r}
 hash <- history %>%
   filter(target == "model") %>%
   pull(hash) %>%
@@ -162,3 +143,19 @@ cache <- drake_cache()
 cache$get_value(hash) %>%
   unserialize_model()
 ```
+
+# Data recovery (experimental)
+
+Repeated `make()`s, as well as `clean()`, can alter the status of current targets. 
+
+```{r}
+clean()
+```
+
+But again, unless you call `clean(garbage_collection = TRUE)`, the actual data is still there! `make(plan, recover = TRUE)` can reinsert an old target back into the pipeline, as long as there exists an old run with the same command, function dependencies, etc. that it has right now.
+
+```{r}
+make(plan, recover = TRUE)
+```
+
+In fact, you can even rename a target this way: <https://ropenscilabs.github.io/drake-manual/walkthrough.html#automated-recovery-and-renaming>.
