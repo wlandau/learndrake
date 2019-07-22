@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
   <head>
-    <title>Machine learning workflow management in R</title>
+    <title>Reproducible workflows at scale with drake</title>
     <meta charset="utf-8" />
     <meta name="author" content="Will Landau" />
     <link href="index_files/remark-css/default.css" rel="stylesheet" />
@@ -11,7 +11,7 @@
     <textarea id="source">
 class: center, middle, inverse, title-slide
 
-# Machine learning workflow management in R
+# Reproducible workflows at scale with drake
 ### Will Landau
 
 ---
@@ -112,13 +112,15 @@ class: center, middle, inverse, title-slide
 
 &lt;br&gt;
 - Long computation!
-    - Clinical trial modeling and simulation
-    - Subgroup identification
-    - Bayesian data analysis
-    - Graph-based multiple comparison procedures
-    - Bayesian networks in genomics
-    - PK/PD modeling (e.g. [`mrgsolve`](https://github.com/metrumresearchgroup/mrgsolve))
     - **Deep learning**
+    - Classical machine learning.
+    - Bayesian computation, e.g. Markov chain Monte Carlo.
+    - Spatial data analysis.
+    - Clinical trial modeling and simulation.
+    - Subgroup identification.
+    - Graph-based multiple comparison procedures.
+    - Genomics pipelines.
+    - PK/PD modeling (e.g. [`mrgsolve`](https://github.com/metrumresearchgroup/mrgsolve))
     - ...
 
 ---
@@ -398,16 +400,16 @@ drake_history()
 ## # A tibble: 10 x 10
 ##    target  current built  exists hash  command     seed runtime  prop act1 
 ##    &lt;chr&gt;   &lt;lgl&gt;   &lt;chr&gt;  &lt;lgl&gt;  &lt;chr&gt; &lt;chr&gt;      &lt;int&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;
-##  1 conf_r… TRUE    2019-… TRUE   3cc5… confusio… 4.05e8  1.65    NA   &lt;NA&gt; 
-##  2 conf_s… TRUE    2019-… TRUE   9c3e… confusio… 1.93e9  1.78    NA   &lt;NA&gt; 
-##  3 conf_s… TRUE    2019-… TRUE   527e… confusio… 1.80e9  2.40    NA   &lt;NA&gt; 
-##  4 data    TRUE    2019-… TRUE   ca84… "read_cs… 1.29e9  0.118    0.3 &lt;NA&gt; 
-##  5 metrics FALSE   2019-… TRUE   6cbb… compare_… 1.21e9  0.0250  NA   &lt;NA&gt; 
-##  6 metrics TRUE    2019-… TRUE   5103… compare_… 1.21e9  0.021   NA   &lt;NA&gt; 
-##  7 model_… TRUE    2019-… TRUE   ba33… "train_m… 1.47e9 35.6     NA   relu 
-##  8 model_… TRUE    2019-… TRUE   c86c… "train_m… 1.26e9  6.09    NA   sigm…
-##  9 model_… TRUE    2019-… TRUE   19d9… "train_m… 8.05e8  7.34    NA   soft…
-## 10 rec     TRUE    2019-… TRUE   40e5… prepare_… 6.29e8  0.191   NA   &lt;NA&gt;
+##  1 conf_r… TRUE    2019-… TRUE   f58a… confusio… 4.05e8  1.71    NA   &lt;NA&gt; 
+##  2 conf_s… TRUE    2019-… TRUE   562f… confusio… 1.93e9  1.88    NA   &lt;NA&gt; 
+##  3 conf_s… TRUE    2019-… TRUE   6213… confusio… 1.80e9  2.53    NA   &lt;NA&gt; 
+##  4 data    TRUE    2019-… TRUE   ca84… "read_cs… 1.29e9  0.1000   0.3 &lt;NA&gt; 
+##  5 metrics FALSE   2019-… TRUE   95db… compare_… 1.21e9  0.0260  NA   &lt;NA&gt; 
+##  6 metrics TRUE    2019-… TRUE   e8e2… compare_… 1.21e9  0.0220  NA   &lt;NA&gt; 
+##  7 model_… TRUE    2019-… TRUE   7f05… "train_m… 1.47e9 13.4     NA   relu 
+##  8 model_… TRUE    2019-… TRUE   3b54… "train_m… 1.26e9  6.59    NA   sigm…
+##  9 model_… TRUE    2019-… TRUE   58f8… "train_m… 8.05e8  7.41    NA   soft…
+## 10 rec     TRUE    2019-… TRUE   40e5… prepare_… 6.29e8  0.197   NA   &lt;NA&gt;
 ```
 
 ---
@@ -432,7 +434,7 @@ make(plan, recover = TRUE)
 
 proc.time() - start
 ##    user  system elapsed 
-##   0.089   0.043   0.256
+##   0.087   0.041   0.251
 ```
 
 - Details + how to rename a target: &lt;https://ropenscilabs.github.io/drake-manual/walkthrough.html#automated-recovery-and-renaming&gt;
