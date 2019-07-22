@@ -11,9 +11,9 @@ save_app(app = c("flow", "plans", "drakeplanner"), path = app,
 \item{app}{Character, name of the app to launch. Must be one of
 \code{"flow"}, \code{"plans"}, or \code{"drakeplanner"}.}
 
-\item{path}{Character, where to write the files}
+\item{path}{Character, where to write the files.}
 
-\item{overwrite}{Logical, whether to over}
+\item{overwrite}{Logical, whether to overwrite the files.}
 }
 \description{
 The notebooks \code{3-flow.Rmd} and \code{4-plans.Rmd}

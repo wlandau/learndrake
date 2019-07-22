@@ -3,12 +3,17 @@ title: "Building blocks of the customer churn case study"
 output: html_notebook
 ---
 
+# Do first
+
+1. Navigate to the `1-churn/` folder.
+2. Open `1-churn.Rproj` as an RStudio project in a new R session. (Click on `1-churn.Rproj` in RStudio's file manager.)
+3. Run the setup chunk below.
+
 ```{r, include = FALSE}
-# Set your working directory to 1-churn/.
-# You may have to copy and paste this line into your console:
-setwd(file.path(rprojroot::find_rstudio_root_file(), "1-churn"))
 source("../config/options.R")
 ```
+
+# About
 
 This notebook introduces the workshop's underlying data analysis case study. The exercises establish the necesary packages, data, *user-defined functions*, and motivating context.
 
@@ -47,7 +52,7 @@ library(yardstick)
 
 # Data
 
-The dataset has one row per customer.
+The dataset has one row per customer. 
 
 ```{r}
 raw_data <- read_csv("../data/customer_churn.csv", col_types = cols())

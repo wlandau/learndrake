@@ -11,6 +11,7 @@ Thumbs.db
 *.nav
 *.nb.html
 *.out
+*.nb.html
 *.o
 *.snm
 *.Rout

@@ -113,7 +113,7 @@ Let's look at the row order of the [plan](https://ropenscilabs.github.io/drake-m
 print(plan)
 ```
 
-When you call [`make()`](https://ropensci.github.io/drake/reference/make.html) in your R console, which target runs *first*? Why?
+When you call [`make(plan)`](https://ropensci.github.io/drake/reference/make.html) in your R console, which target runs *first*? Why?
 
 ```r
 make(plan)
@@ -134,7 +134,7 @@ question(
 
 ## Exercise 4
 
-When you called [`make()`](https://ropensci.github.io/drake/reference/make.html) in the previous exercise, which target ran *last*? Why?
+When you called [`make(plan)`](https://ropensci.github.io/drake/reference/make.html) in the previous exercise, which target ran *last*? Why?
 
 ```{r q4}
 question(
@@ -174,7 +174,7 @@ question(
 
 ## Exercise 6
 
-Run [`make()`](https://ropensci.github.io/drake/reference/make.html) again. What happens?
+Run [`make(plan)`](https://ropensci.github.io/drake/reference/make.html) again. What happens?
 
 ```r
 make(plan)
@@ -223,7 +223,7 @@ question(
 
 ## Exercise 8
 
-Open `R/functions.R` for editing. At the bottom of `compare_models()`, change `theme_gray(16)` to `theme_gray(24)`. Save the file but **do not run it or `source()` it into your R session**.
+Open `R/functions.R` for editing (in the `3-flow/` folder). At the bottom of `compare_models()`, change `theme_gray(16)` to `theme_gray(24)`. Save the file but **do not run it or `source()` it into your R session**.
 
 ```r
 compare_models <- function(...) {
@@ -232,7 +232,7 @@ compare_models <- function(...) {
 }
 ```
 
-Run [`make()`](https://ropensci.github.io/drake/reference/make.html) only (*without* `source("R/functions.R")`).
+Then, run `make(plan)`.
 
 ```r
 # Edit and save R/functions.R.
@@ -256,7 +256,7 @@ question(
 
 ## Exercise 9
 
-Now, run `R/functions.R` and then run [`make()`](https://ropensci.github.io/drake/reference/make.html) again.
+Now, run `R/functions.R` and then run [`make(plan)`](https://ropensci.github.io/drake/reference/make.html) again.
 
 ```r
 # Edit and save R/functions.R.
@@ -281,7 +281,7 @@ question(
 
 ## Exercise 10
 
-In `R/plan.R`, choose `"sigmoid"` for the activation function of the first layer of our deep neural network.
+In `R/plan.R` (in the `3-flow/` folder) choose `"sigmoid"` for the activation function of the first layer of our deep neural network.
 
 ```r
 # Make this change in R/plan.R.
@@ -293,7 +293,7 @@ plan <- drake_plan(
 )
 ```
 
-Save `R/plan.R`, source it, and run [`make()`](https://ropensci.github.io/drake/reference/make.html) again. Which targets rebuild, if any?
+Save `R/plan.R`, source it, and run [`make(plan)`](https://ropensci.github.io/drake/reference/make.html) again. Which targets rebuild, if any?
 
 ```r
 # Edit and save R/plan.R.
@@ -316,7 +316,7 @@ question(
 
 ## Exercise 11
 
-In `R/functions.R`, add a comment inside the body of `confusion_matrix()`. Leave the rest of the function alone.
+In `R/functions.R` (in `3-flow/`) add a comment inside the body of `confusion_matrix()`. Leave the rest of the function alone.
 
 ```r
 confusion_matrix <- function(data, rec, serialized_model) {
@@ -326,7 +326,7 @@ confusion_matrix <- function(data, rec, serialized_model) {
 }
 ```
 
-Save and run `R/functions.R` and then run [`make()`](https://ropensci.github.io/drake/reference/make.html).
+Save and run `R/functions.R` and then run [`make(plan)`](https://ropensci.github.io/drake/reference/make.html).
 
 ```r
 # Edit and save R/functions.R
@@ -386,7 +386,7 @@ confusion_matrix <- function(data, rec, serialized_model) {
 }
 ```
 
-Save and run `R/functions.R` and then run [`make()`](https://ropensci.github.io/drake/reference/make.html).
+Save and run `R/functions.R` and then run [`make(plan)`](https://ropensci.github.io/drake/reference/make.html).
 
 ```r
 # Edit and save R/functions.R.
@@ -412,7 +412,7 @@ question(
 
 ## Exercise 14
 
-Delete the last record of `../data/customer_churn.csv` and run [`make()`](https://ropensci.github.io/drake/reference/make.html) again. Which targets  rebuild? Why?
+Delete the last record of `../data/customer_churn.csv` and run [`make(plan)`](https://ropensci.github.io/drake/reference/make.html) again. Which targets  rebuild? Why?
 
 ```r
 # Open ../data/customer_churn.csv in the RStudio IDE ("View File").

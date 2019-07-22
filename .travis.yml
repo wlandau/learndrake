@@ -12,7 +12,11 @@ r_packages:
   - covr
   - lintr
 
+before_script:
+  - chmod +x ./deploy.sh
+
 after_success:
+  - ./deploy.sh
   - Rscript -e 'covr::codecov()'
   - Rscript -e 'lintr::lint_package()'
 

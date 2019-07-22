@@ -3,10 +3,13 @@ title: "Practice the workflow"
 output: html_notebook
 ---
 
+# Do first
+
+1. Navigate to the `3-flow/` folder.
+2. Open `3-flow.Rproj` as an RStudio project in a new R session. (Click on `3-flow.Rproj` in RStudio's file manager.)
+3. Run the setup chunk below.
+
 ```{r, include = FALSE}
-# Set your working directory to 3-flow/.
-# You may have to copy and paste this line into your console:
-setwd(file.path(rprojroot::find_rstudio_root_file(), "3-flow"))
 source("../config/options.R")
 ```
 

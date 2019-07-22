@@ -1,6 +1,6 @@
 # Contributing
 
-Development is a community effort, and we encourage participation.
+Development is a community effort, and participation is welcome.
 
 ## Code of Conduct
 

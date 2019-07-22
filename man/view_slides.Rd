@@ -19,5 +19,5 @@ view_slides()
 }
 }
 \seealso{
-\code{\link[=save_notebooks]{save_notebooks()}}, \code{\link[=launch_app]{launch_app()}}
+\code{\link[=save_slides]{save_slides()}}, \code{\link[=save_notebooks]{save_notebooks()}}, \code{\link[=launch_app]{launch_app()}}
 }

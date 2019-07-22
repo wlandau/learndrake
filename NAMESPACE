@@ -3,6 +3,7 @@
 export(launch_app)
 export(save_app)
 export(save_notebooks)
+export(save_slides)
 export(view_slides)
 importFrom(drake,drake_plan)
 importFrom(drake,make)

@@ -62,7 +62,7 @@ train_model <- function(
   )
   y_train_vec <- juice(rec, all_outcomes()) %>%
     pull()
-  # Define a new `history` variable with the return value of fit().
+  # Define a new `progression` variable with the return value of fit().
   fit(
     object = model,
     x = x_train_tbl,
@@ -73,7 +73,7 @@ train_model <- function(
     verbose = 0
   )
   serialize_model(model) # Replace with save_model_hdf5(model, model_file).
-  # Return `history`.
+  # Return `progression`.
 }
 
 # Rename the `serialized_model` argument to `model_file`.

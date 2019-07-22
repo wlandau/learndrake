@@ -2,7 +2,9 @@ context("materials")
 
 test_that("slides", {
   expect_silent(view_slides(browse = FALSE))
-  # view_slides() # nolint
+  path <- tempfile()
+  expect_silent(save_slides(path))
+  expect_true("index.Rmd" %in% list.files(path))
 })
 
 test_that("notebooks", {
