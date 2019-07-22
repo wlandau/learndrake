@@ -9,6 +9,7 @@ Thumbs.db
 *.httr-oauth
 *.log
 *.nav
+*.nb.html
 *.out
 *.o
 *.snm
