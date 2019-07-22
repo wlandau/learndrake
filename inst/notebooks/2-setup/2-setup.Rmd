@@ -122,3 +122,40 @@ training(data) %>%
 ```{r}
 readd(metrics) # see also loadd()
 ```
+
+# History
+
+Using `drake_history()`, you can see which models you ran, when you ran them, how long they took, and which settings you tried.
+
+```{r, paged.print = FALSE}
+history <- drake_history()
+history
+```
+
+And as long as you did not run `clean(garbage_collection = TRUE)`, you can get the old data back. Let's find the oldest run of the model.
+
+```{r}
+hash <- history %>%
+  filter(target == "model") %>%
+  pull(hash) %>%
+  head(n = 1)
+cache <- drake_cache()
+cache$get_value(hash) %>%
+  unserialize_model()
+```
+
+# Data recovery (experimental)
+
+Repeated `make()`s, as well as `clean()`, can alter the status of current targets. 
+
+```{r}
+clean()
+```
+
+But again, unless you call `clean(garbage_collection = TRUE)`, the actual data is still there! `make(plan, recover = TRUE)` can reinsert an old target back into the pipeline, as long as there exists an old run with the same command, function dependencies, etc. that it has right now.
+
+```{r}
+make(plan, recover = TRUE)
+```
+
+In fact, you can even rename a target this way: <https://ropenscilabs.github.io/drake-manual/walkthrough.html#automated-recovery-and-renaming>.
