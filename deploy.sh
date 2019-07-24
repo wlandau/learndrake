@@ -17,4 +17,13 @@ then
   git add *
   git commit -am "Update binder workspace" || true
   git push -q origin binder
+
+  echo "Deploying to gh-pages."
+  git clone -b gh-pages https://${GITHUB_PAT}@github.com/${TRAVIS_REPO_SLUG}.git gh-pages
+  cd gh-pages
+  ls -a | grep -Ev "^\.$|^\.\.$|^\.git$" | xargs rm -rf
+  Rscript -e 'learndrake::save_slides(".", overwrite = TRUE)'
+  git add *
+  git commit -am "Update gh-pages slides" || true
+  git push -q origin gh-pages
 fi
