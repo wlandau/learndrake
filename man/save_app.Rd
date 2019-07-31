@@ -4,8 +4,8 @@
 \alias{save_app}
 \title{Save the files for a supporting Shiny app}
 \usage{
-save_app(app = c("flow", "plans", "drakeplanner"), path = app,
-  overwrite = FALSE)
+save_app(app = c("learndrakeflow", "learndrakeplans", "drakeplanner"),
+  path = app, overwrite = FALSE)
 }
 \arguments{
 \item{app}{Character, name of the app to launch. Must be one of
@@ -22,17 +22,17 @@ to conduct the exercises. Use \code{save_app()} to save the files
 for an so you can deploy it to Shiny Server.
 }
 \details{
-For \code{3-flow.Rmd}, \code{save_app("flow")} saves
+For \code{3-flow.Rmd}, \code{save_app("learndrakeflow")} saves
 a collection of exercises for iterating on a \code{drake} workflow.
-For \code{4-plans.Rmd}, \code{save_app("plans")} saves guided exercises
+For \code{4-plans.Rmd}, \code{save_app("learndrakeplans")} saves guided exercises
 on constructing \code{drake} plans,
 and \code{save_app("drakeplanner")} saves an app
 for visualizing and understanding plans.
 }
 \examples{
 \dontrun{
-save_app("flow")
-save_app("plans")
+save_app("learndrakeflow")
+save_app("learndrakeplans")
 save_app("drakeplanner")
 }
 }
