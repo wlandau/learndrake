@@ -235,7 +235,7 @@ train_model <- function(data, rec, units1, units2, act1, act2, act3) {
   # ...
 }
 
-confusion_matrix <- function(data, rec, serialized_model) {
+confusion_matrix <- function(data, rec, model) {
   # ...
 }
 
@@ -257,6 +257,7 @@ plan <- drake_plan(
   rec = prepare_recipe(data),
   model = target(
     train_model(data, rec, act1 = act),
+    format = "keras",
     transform = map(act = !!activations)
   ),
   conf = target(
@@ -320,6 +321,7 @@ plan <- drake_plan(
   rec = prepare_recipe(data),
   model = target(
     train_model(data, rec, act1 = act),
+    format = "keras",
     transform = map(act = !!activations) #<<
   ),
   conf = target(
@@ -382,6 +384,33 @@ make(plan)
 
 ---
 
+## Specialized data formats
+
+- Increased speed and reduced memory consumption.
+
+```{r, eval = FALSE}
+library(drake)
+n <- 1e8 # Each target is 1.6 GB in memory.
+plan <- drake_plan(
+  data_fst = target(
+    data.frame(x = runif(n), y = runif(n)),
+    format = "fst" #<<
+  ),
+  data_old = data.frame(x = runif(n), y = runif(n))
+)
+make(plan)
+#> target data_fst
+#> target data_old
+build_times(type = "build")
+#> # A tibble: 2 x 4
+#>   target   elapsed              user                 system    
+#>   <chr>    <Duration>           <Duration>           <Duration>
+#> 1 data_fst 13.93s               37.562s              7.954s #<<
+#> 2 data_old 184s (~3.07 minutes) 177s (~2.95 minutes) 4.157s #<<
+```
+
+---
+
 ## History and provenance
 
 ```{r history}
@@ -390,7 +419,7 @@ drake_history()
 
 ---
 
-## Reproducible data recovery (experimental)
+## Reproducible data recovery
 
 ```{r recovery}
 clean() # Oops!
@@ -446,7 +475,7 @@ remotes::install_github("wlandau/learndrake")
 - Example code from these slides:
 
 ```{r c14, eval = FALSE}
-drake::drake_example("customer-churn-simple")
+drake::drake_example("customer-churn")
 ```
 
 ---

@@ -77,11 +77,10 @@ train_model <- function(
     validation_split = 0.3,
     verbose = 0
   )
-  serialize_model(model)
+  model
 }
 
-confusion_matrix <- function(data, rec, serialized_model) {
-  model <- unserialize_model(serialized_model)
+confusion_matrix <- function(data, rec, model) {
   testing_data <- bake(rec, testing(data))
   x_test_tbl <- testing_data %>%
     select(-Churn) %>%

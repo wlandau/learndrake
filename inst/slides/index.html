@@ -215,7 +215,7 @@ train_model &lt;- function(data, rec, units1, units2, act1, act2, act3) {
   # ...
 }
 
-confusion_matrix &lt;- function(data, rec, serialized_model) {
+confusion_matrix &lt;- function(data, rec, model) {
   # ...
 }
 
@@ -238,6 +238,7 @@ plan &lt;- drake_plan(
   rec = prepare_recipe(data),
   model = target(
     train_model(data, rec, act1 = act),
+    format = "keras",
     transform = map(act = !!activations)
   ),
   conf = target(
@@ -258,16 +259,16 @@ plan &lt;- drake_plan(
 
 ```r
 plan
-## # A tibble: 7 x 2
-##   target       command                                                     
-##   &lt;chr&gt;        &lt;expr&gt;                                                      
-## 1 data         read_csv(file_in("data/customer_churn.csv"), col_types = co…
-## 2 rec          prepare_recipe(data)                                       …
-## 3 model_relu   train_model(data, rec, act1 = "relu")                      …
-## 4 model_sigmo… train_model(data, rec, act1 = "sigmoid")                   …
-## 5 conf_relu    confusion_matrix(data, rec, model_relu)                    …
-## 6 conf_sigmoid confusion_matrix(data, rec, model_sigmoid)                 …
-## 7 metrics      compare_models(conf_relu, conf_sigmoid)                    …
+## # A tibble: 7 x 3
+##   target      command                                                format
+##   &lt;chr&gt;       &lt;expr&gt;                                                 &lt;chr&gt; 
+## 1 data        read_csv(file_in("data/customer_churn.csv"), col_type… &lt;NA&gt;  
+## 2 rec         prepare_recipe(data)                                 … &lt;NA&gt;  
+## 3 model_relu  train_model(data, rec, act1 = "relu")                … keras 
+## 4 model_sigm… train_model(data, rec, act1 = "sigmoid")             … keras 
+## 5 conf_relu   confusion_matrix(data, rec, model_relu)              … &lt;NA&gt;  
+## 6 conf_sigmo… confusion_matrix(data, rec, model_sigmoid)           … &lt;NA&gt;  
+## 7 metrics     compare_models(conf_relu, conf_sigmoid)              … &lt;NA&gt;
 ```
 
 ---
@@ -324,6 +325,7 @@ plan &lt;- drake_plan(
   rec = prepare_recipe(data),
   model = target(
     train_model(data, rec, act1 = act),
+    format = "keras",
 *   transform = map(act = !!activations)
   ),
   conf = target(
@@ -392,6 +394,34 @@ make(plan)
 
 ---
 
+## Specialized data formats
+
+- Increased speed and reduced memory consumption
+
+
+```r
+library(drake)
+n &lt;- 1e8 # Each target is 1.6 GB in memory.
+plan &lt;- drake_plan(
+  data_fst = target(
+    data.frame(x = runif(n), y = runif(n)),
+*   format = "fst"
+  ),
+  data_old = data.frame(x = runif(n), y = runif(n))
+)
+make(plan)
+#&gt; target data_fst
+#&gt; target data_old
+build_times(type = "build")
+#&gt; # A tibble: 2 x 4
+#&gt;   target   elapsed              user                 system    
+#&gt;   &lt;chr&gt;    &lt;Duration&gt;           &lt;Duration&gt;           &lt;Duration&gt;
+*#&gt; 1 data_fst 13.93s               37.562s              7.954s
+*#&gt; 2 data_old 184s (~3.07 minutes) 177s (~2.95 minutes) 4.157s
+```
+
+---
+
 ## History and provenance
 
 
@@ -400,21 +430,21 @@ drake_history()
 ## # A tibble: 10 x 10
 ##    target  current built  exists hash  command     seed runtime  prop act1 
 ##    &lt;chr&gt;   &lt;lgl&gt;   &lt;chr&gt;  &lt;lgl&gt;  &lt;chr&gt; &lt;chr&gt;      &lt;int&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;
-##  1 conf_r… TRUE    2019-… TRUE   f58a… confusio… 4.05e8  1.71    NA   &lt;NA&gt; 
-##  2 conf_s… TRUE    2019-… TRUE   562f… confusio… 1.93e9  1.88    NA   &lt;NA&gt; 
-##  3 conf_s… TRUE    2019-… TRUE   6213… confusio… 1.80e9  2.53    NA   &lt;NA&gt; 
-##  4 data    TRUE    2019-… TRUE   ca84… "read_cs… 1.29e9  0.1000   0.3 &lt;NA&gt; 
-##  5 metrics FALSE   2019-… TRUE   95db… compare_… 1.21e9  0.0260  NA   &lt;NA&gt; 
-##  6 metrics TRUE    2019-… TRUE   e8e2… compare_… 1.21e9  0.0220  NA   &lt;NA&gt; 
-##  7 model_… TRUE    2019-… TRUE   7f05… "train_m… 1.47e9 13.4     NA   relu 
-##  8 model_… TRUE    2019-… TRUE   3b54… "train_m… 1.26e9  6.59    NA   sigm…
-##  9 model_… TRUE    2019-… TRUE   58f8… "train_m… 8.05e8  7.41    NA   soft…
-## 10 rec     TRUE    2019-… TRUE   40e5… prepare_… 6.29e8  0.197   NA   &lt;NA&gt;
+##  1 conf_r… TRUE    2019-… TRUE   880e… confusio… 4.05e8  0.224   NA   &lt;NA&gt; 
+##  2 conf_s… TRUE    2019-… TRUE   9211… confusio… 1.93e9  0.238   NA   &lt;NA&gt; 
+##  3 conf_s… TRUE    2019-… TRUE   793c… confusio… 1.80e9  0.228   NA   &lt;NA&gt; 
+##  4 data    TRUE    2019-… TRUE   1347… "read_cs… 1.29e9  0.0410   0.3 &lt;NA&gt; 
+##  5 metrics FALSE   2019-… TRUE   3b36… compare_… 1.21e9  0.0290  NA   &lt;NA&gt; 
+##  6 metrics TRUE    2019-… TRUE   fd9a… compare_… 1.21e9  0.0270  NA   &lt;NA&gt; 
+##  7 model_… TRUE    2019-… TRUE   d623… "train_m… 1.47e9  5.06    NA   relu 
+##  8 model_… TRUE    2019-… TRUE   5228… "train_m… 1.26e9  3.21    NA   sigm…
+##  9 model_… TRUE    2019-… TRUE   283a… "train_m… 8.05e8  3.62    NA   soft…
+## 10 rec     TRUE    2019-… TRUE   1478… prepare_… 6.29e8  0.181   NA   &lt;NA&gt;
 ```
 
 ---
 
-## Reproducible data recovery (experimental)
+## Reproducible data recovery
 
 
 ```r
@@ -434,7 +464,7 @@ make(plan, recover = TRUE)
 
 proc.time() - start
 ##    user  system elapsed 
-##   0.087   0.041   0.251
+##   0.088   0.036   0.232
 ```
 
 - Details + how to rename a target: &lt;https://ropenscilabs.github.io/drake-manual/walkthrough.html#automated-recovery-and-renaming&gt;
@@ -486,7 +516,7 @@ remotes::install_github("wlandau/learndrake")
 
 
 ```r
-drake::drake_example("customer-churn-simple")
+drake::drake_example("customer-churn")
 ```
 
 ---
