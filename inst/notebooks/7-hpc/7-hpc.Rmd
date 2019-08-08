@@ -10,6 +10,7 @@ output: html_notebook
 3. Run the setup chunk below.
 
 ```{r, include = FALSE}
+setwd(file.path(rprojroot::find_rstudio_root_file(), "7-hpc"))
 source("../config/options.R")
 ```
 
