@@ -84,6 +84,26 @@ knitr::opts_chunk$set(
 )
 ```
 
+## Large data science projects
+
+1. Long runtimes.
+2. Many steps.
+3. Steps are interconnected.
+
+<br>
+- Examples
+    - Deep learning
+    - Classical machine learning.
+    - Bayesian computation, e.g. Markov chain Monte Carlo.
+    - Spatial data analysis.
+    - Clinical trial modeling and simulation.
+    - Subgroup identification.
+    - Graph-based multiple comparison procedures.
+    - Genomics pipelines.
+    - PK/PD modeling (e.g. [`mrgsolve`](https://github.com/metrumresearchgroup/mrgsolve))
+    - ...
+
+---
 
 ## Workflows have interconnected steps.
 <center>
@@ -128,23 +148,6 @@ knitr::opts_chunk$set(
 <img src = "./images/mess.svg" align="middle" style="border: none; box-shadow: none; height: 400px; text-align: center;">
 <div style="font-size: 0.5em; text-align: center;"><a href="https://openclipart.org/detail/216179/messy-desk">https://openclipart.org/detail/216179/messy-desk</a></div>
 </center>
-
----
-
-## When do we face these issues?
-
-<br>
-- Long computation!
-    - **Deep learning**
-    - Classical machine learning.
-    - Bayesian computation, e.g. Markov chain Monte Carlo.
-    - Spatial data analysis.
-    - Clinical trial modeling and simulation.
-    - Subgroup identification.
-    - Graph-based multiple comparison procedures.
-    - Genomics pipelines.
-    - PK/PD modeling (e.g. [`mrgsolve`](https://github.com/metrumresearchgroup/mrgsolve))
-    - ...
 
 ---
 
