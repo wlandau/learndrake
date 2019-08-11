@@ -6,6 +6,7 @@ plan <- drake_plan(
   rec = prepare_recipe(data),
   model = target(
     train_model(data, rec, act1 = act),
+    format = "keras",
     transform = map(act = !!activations)
   ),
   conf = target(
