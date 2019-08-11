@@ -90,18 +90,16 @@ knitr::opts_chunk$set(
 2. Many steps.
 3. Steps are interconnected.
 
-<br>
-- Examples
-    - Deep learning
-    - Classical machine learning.
-    - Bayesian computation, e.g. Markov chain Monte Carlo.
-    - Spatial data analysis.
-    - Clinical trial modeling and simulation.
-    - Subgroup identification.
-    - Graph-based multiple comparison procedures.
-    - Genomics pipelines.
-    - PK/PD modeling (e.g. [`mrgsolve`](https://github.com/metrumresearchgroup/mrgsolve))
-    - ...
+- Deep learning
+- Classical machine learning.
+- Bayesian computation, e.g. Markov chain Monte Carlo.
+- Spatial data analysis.
+- Clinical trial modeling and simulation.
+- Subgroup identification.
+- Graph-based multiple comparison procedures.
+- Genomics pipelines.
+- PK/PD modeling (e.g. [`mrgsolve`](https://github.com/metrumresearchgroup/mrgsolve))
+- ...
 
 ---
 
