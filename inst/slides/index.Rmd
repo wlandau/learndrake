@@ -446,7 +446,7 @@ remotes::install_github("wlandau/learndrake")
 - Example code from these slides:
 
 ```{r c14, eval = FALSE}
-drake::drake_example("customer-churn-simple")
+drake::drake_example("customer-churn")
 ```
 
 ---
