@@ -99,7 +99,7 @@ question(
 
 Write a plan that tries different layer sizes. For each model, `units1` must equal `units2`.
 
-```{r e1, exercise = TRUE, exercise.lines = 23}
+```{r e1, exercise = TRUE, exercise.lines = 24}
 plan <- drake_plan(
   data = read_csv(
     file_in("data/customer_churn.csv"),
@@ -109,6 +109,7 @@ plan <- drake_plan(
   rec = prepare_recipe(data),
   model = target(
     train_model(data, rec, units1 = u1, units2 = u2),
+    format = "keras",
     transform = map(
       u1 = c(16, 32, 64),
       # Your turn: set the units of the second layer to the same ones as u1.
@@ -137,6 +138,7 @@ expected1 <- drake_plan(
   rec = prepare_recipe(data),
   model = target(
     train_model(data, rec, units1 = u1, units2 = u2),
+    format = "keras",
     transform = map(
       u1 = c(16, 32, 64),
       u2 = c(16, 32, 64)
@@ -171,6 +173,7 @@ drake_plan(
   rec = prepare_recipe(data),
   model = target(
     train_model(data, rec, units1 = u1, units2 = u2),
+    format = "keras",
     transform = map(
       u1 = c(16, 32, 64),
       u2 = c(16, 32, 64)
@@ -191,7 +194,7 @@ drake_plan(
 
 Now, use `cross()` to create a new model for each combination of `units1` and `units2`
 
-```{r e2, exercise = TRUE, exercise.lines = 23}
+```{r e2, exercise = TRUE, exercise.lines = 24}
 plan <- drake_plan(
   data = read_csv(
     file_in("data/customer_churn.csv"),
@@ -201,6 +204,7 @@ plan <- drake_plan(
   rec = prepare_recipe(data),
   model = target(
     train_model(data, rec, units1 = u1, units2 = u2),
+    format = "keras",
     transform = map( # Your turn: change map() to cross().
       u1 = c(16, 32, 64),
       # Your turn: set the units of the second layer to the same ones as u1.
@@ -229,6 +233,7 @@ expected2 <- drake_plan(
   rec = prepare_recipe(data),
   model = target(
     train_model(data, rec, units1 = u1, units2 = u2),
+    format = "keras",
     transform = cross(
       u1 = c(16, 32, 64),
       u2 = c(16, 32, 64)
@@ -263,6 +268,7 @@ drake_plan(
   rec = prepare_recipe(data),
   model = target(
     train_model(data, rec, units1 = u1, units2 = u2),
+    format = "keras",
     transform = cross(
       u1 = c(16, 32, 64),
       u2 = c(16, 32, 64)
@@ -295,7 +301,7 @@ drake_plan(
 
 Try it with our deep learning plan. Use `!!` to insert lots of models with different values of `units1`.
 
-```{r e3, exercise = TRUE, exercise.lines = 24}
+```{r e3, exercise = TRUE, exercise.lines = 25}
 my_units1 <- seq(8, 64, by = 1) # Use these values.
 
 plan <- drake_plan(
@@ -307,6 +313,7 @@ plan <- drake_plan(
   rec = prepare_recipe(data),
   model = target(
     train_model(data, rec, units1 = u1),
+    format = "keras",
     transform = map(
       # Your turn: use !! to insert the values of my_units1 in for u1.
     )
@@ -336,6 +343,7 @@ expected3 <- drake_plan(
   rec = prepare_recipe(data),
   model = target(
     train_model(data, rec, units1 = u1),
+    format = "keras",
     transform = map(
       u1 = !!my_units1
     )
@@ -371,6 +379,7 @@ drake_plan(
   rec = prepare_recipe(data),
   model = target(
     train_model(data, rec, units1 = u1),
+    format = "keras",
     transform = map(
       u1 = !!my_units1
     )
@@ -400,7 +409,7 @@ drake_plan(
 
 Try it with our deep learning plan. Set `max_expand = 4` in `drake_plan()`.
 
-```{r e4, exercise = TRUE, exercise.lines = 24}
+```{r e4, exercise = TRUE, exercise.lines = 25}
 my_units1 <- seq(8, 64, by = 1) # Use these values.
 
 plan <- drake_plan(
@@ -413,6 +422,7 @@ plan <- drake_plan(
   rec = prepare_recipe(data),
   model = target(
     train_model(data, rec, units1 = u1),
+    format = "keras",
     transform = map(
       # Your turn: use !! to insert the values of my_units1 in for u1.
     )
@@ -443,6 +453,7 @@ expected4 <- drake_plan(
   rec = prepare_recipe(data),
   model = target(
     train_model(data, rec, units1 = u1),
+    format = "keras",
     transform = map(
       u1 = !!my_units1
     )
@@ -479,6 +490,7 @@ drake_plan(
   rec = prepare_recipe(data),
   model = target(
     train_model(data, rec, units1 = u1),
+    format = "keras",
     transform = map(
       u1 = !!my_units1
     )
@@ -506,7 +518,7 @@ drake_plan(z = target(f(x, y), transform = map(.data = !!grid)))
 
 Try it with our deep learning plan. Use a custom grid of layer 1 model settings: `"relu"` activation with 32 units, `"relu"` activation with 64 units, and `"sigmoid"` activation with 64 units.
 
-```{r e5, exercise = TRUE, exercise.lines = 29}
+```{r e5, exercise = TRUE, exercise.lines = 30}
 # This is our grid.
 my_grid <- tibble(
   my_units1 = c(32, 64, 64),
@@ -523,6 +535,7 @@ plan <- drake_plan(
   rec = prepare_recipe(data),
   model = target(
     train_model(data, rec, units1 = my_units1, act1 = my_act1),
+    format = "keras",
     transform = map(
       ... = # Use !! to apply the grid of settings.
     )
@@ -555,6 +568,7 @@ expected5 <- drake_plan(
   rec = prepare_recipe(data),
   model = target(
     train_model(data, rec, units1 = my_units1, act1 = my_act1),
+    format = "keras",
     transform = map(
       .data = !!my_grid
     )
@@ -593,6 +607,7 @@ drake_plan(
   rec = prepare_recipe(data),
   model = target(
     train_model(data, rec, units1 = my_units1, act1 = my_act1),
+    format = "keras",
     transform = map(
       .data = !!my_grid
     )
@@ -613,7 +628,7 @@ drake_plan(
 
 Now, try using `cross()` instead of `map()` when you apply the grid. (Note: we have a different grid now.)
 
-```{r e6, exercise = TRUE, exercise.lines = 27}
+```{r e6, exercise = TRUE, exercise.lines = 28}
 my_grid <- tibble(
   my_units1 = c(16, 32, 64),
   my_act1 = c("relu", "sigmoid", "softmax")
@@ -628,6 +643,7 @@ plan <- drake_plan(
   rec = prepare_recipe(data),
   model = target(
     train_model(data, rec, units1 = my_units1, act1 = my_act1),
+    format = "keras",
     transform = map( # Use cross() instead of map()
       ... = # Use !! to apply the grid of settings.
     )
@@ -658,6 +674,7 @@ expected6 <- drake_plan(
   rec = prepare_recipe(data),
   model = target(
     train_model(data, rec, units1 = my_units1, act1 = my_act1),
+    format = "keras",
     transform = cross(
       .data = !!my_grid
     )
@@ -688,6 +705,7 @@ drake_plan(
   rec = prepare_recipe(data),
   model = target(
     train_model(data, rec, units1 = my_units1, act1 = my_act1),
+    format = "keras",
     transform = cross(
       .data = !!my_grid
     )
@@ -737,7 +755,7 @@ drake_plan(
 
 In our deep learning plan, create a `metrics_*` target for each **activation function**.
 
-```{r e7, exercise = TRUE, exercise.lines = 30}
+```{r e7, exercise = TRUE, exercise.lines = 31}
 my_grid <- tibble(
   my_units1 = c(16, 32, 64),
   my_act1 = c("relu", "sigmoid", "softmax")
@@ -752,6 +770,7 @@ plan <- drake_plan(
   rec = prepare_recipe(data),
   model = target(
     train_model(data, rec, units1 = my_units1, act1 = my_act1),
+    format = "keras",
     transform = map( # Use cross() instead of map().
       ... = # Use !! to apply the grid of settings.
     )
@@ -787,6 +806,7 @@ expected7 <- drake_plan(
   rec = prepare_recipe(data),
   model = target(
     train_model(data, rec, units1 = my_units1, act1 = my_act1),
+    format = "keras",
     transform = cross(
       .data = !!my_grid
     )
@@ -825,6 +845,7 @@ drake_plan(
   rec = prepare_recipe(data),
   model = target(
     train_model(data, rec, units1 = my_units1, act1 = my_act1),
+    format = "keras",
     transform = cross(
       .data = !!my_grid
     )
@@ -845,7 +866,7 @@ drake_plan(
 
 Now, create a `metrics_*` target for each **combination of `units1` and `units2`** (in that order).
 
-```{r e8, exercise = TRUE, exercise.lines = 34}
+```{r e8, exercise = TRUE, exercise.lines = 35}
 my_grid <- tibble(
   my_act1 = c("relu", "sigmoid", "softmax"),
   my_units1 = c(16, 32, 64),
@@ -867,6 +888,7 @@ plan <- drake_plan(
       units2 = my_units2,
       act1 = my_act1
     ),
+    format = "keras",
     transform = cross(
       .data = !!my_grid
     )
@@ -906,6 +928,7 @@ expected8 <- drake_plan(
       units2 = my_units2,
       act1 = my_act1
     ),
+    format = "keras",
     transform = cross(
       .data = !!my_grid
     )
@@ -951,6 +974,7 @@ drake_plan(
       units2 = my_units2,
       act1 = my_act1
     ),
+    format = "keras",
     transform = cross(
       .data = !!my_grid
     )
