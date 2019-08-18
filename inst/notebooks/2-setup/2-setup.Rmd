@@ -3,29 +3,44 @@ title: "Set up a drake workflow"
 output: html_notebook
 ---
 
+# Do first
+
+1. Navigate to the `2-setup/` folder.
+2. Open `2-setup.Rproj` as an RStudio project in a new R session. (Click on `2-setup.Rproj` in RStudio's file manager.)
+3. Run the setup chunk below.
+
 ```{r, include = FALSE}
-# Set your working directory to 2-setup/.
-# You may have to copy and paste this line into your console:
-setwd(file.path(rprojroot::find_rstudio_root_file(), "2-setup"))
 source("../config/options.R")
 ```
 
-After working through `1-churn.Rmd`, we have the building blocks of our data analysis project. Now, let's put the pieces together in a `drake`-powered reproducible workflow.
+# About
+
+After working through `1-churn.Rmd`, we have the building blocks (i.e. functions) of our data analysis project. Now, let's put the pieces together in a `drake`-powered reproducible workflow.
+
+References about `drake`:
+
+- GitHub page: <https://github.com/ropensci/drake>
+- Reference website: <https://ropensci.github.io/drake/>
+- User manual: <https://ropenscilabs.github.io/drake-manual/>
+- Example code: <https://github.com/wlandau/drake-examples>
+- `drakeplanner` app: <https://github.com/wlandau/drakeplanner>
+- Existing presentations: <https://ropenscilabs.github.io/drake-manual/index.html#presentations>
+- This workshop: <https://github.com/wlandau/learndrake>
 
 # Dependencies
 
-To set up a [`drake`](http://github.com/ropensci/drake) workflow for the customer churn case study, we first load our packages and functions into the current R session.
+To set up a `drake` workflow for the customer churn case study, we first load our packages and functions into the current R session.
 
 ```{r message = FALSE}
 source("R/packages.R")  # Load the packages.
 source("R/functions.R") # Define our custom functions.
 ```
 
- Open up `packages.R` and `functions.R` scripts and take a look at how they are organized.
+Open up `packages.R` and `functions.R` scripts and take a look at how they are organized.
 
 # Plan
 
-Now, it is time to plan the actual workflow. If you were to write an R script, this is what it would look like.
+Now, it is time to plan the actual data analysis. If you were to write an R script, this is what the workflow would look like.
 
 ```{r, eval = FALSE}
 # Get the data.
@@ -48,23 +63,33 @@ conf <- confusion_matrix(data, rec, model)
 metrics <- compare_models(conf)
 ```
 
-But for [`drake`](http://github.com/ropensci/drake)-powered automation and reproducibility, we use a special data frame called a [`drake` plan](https://ropenscilabs.github.io/drake-manual/plans.html). Fill out the [`drake`](http://github.com/ropensci/drake) plan below. The "targets" (`data`, `rec`, etc.) can be in any order.
+But for `drake`-powered automation and reproducibility, we use a special data frame called a "`drake` plan" (<https://ropenscilabs.github.io/drake-manual/plans.html>).
+
+Now it is your turn: fill out the `drake` plan below using the code from the previous chunk. The "targets" (`data`, `rec`, etc.) can be in any order.
 
 ```{r}
 plan <- drake_plan(
-  rec = , # Create the recipe.
+	# Create the recipe.
+  rec = ,
 
-  model = , # Train the model.
+  # Train the model.
+  model = target(
+  	, # Put the command to the left of the comma.
+    format = "keras" # Tells drake to save the model as an HDF5 file.
+  ),
 
-  conf = , # Compare to testing data.
+  # Compare to testing data.
+  conf = ,
 
-  metrics = , # Compute performance metrics.
-    
-  data = read_csv( # Get the data. Filled in for you already.
+  # Compute performance metrics.
+  metrics = ,
+
+  # Get the data. Filled in for you already.
+  data = read_csv(
     file_in("../data/customer_churn.csv"),
     col_types = cols()
   ) %>%
-    initial_split(prop = 0.3),
+    initial_split(prop = 0.3)
 )
 ```
 
