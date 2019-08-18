@@ -288,7 +288,10 @@ In `R/plan.R` (in the `3-flow/` folder) choose `"sigmoid"` for the activation fu
 # Do not run in the console.
 plan <- drake_plan(
   # ...
-  model = train_model(data, rec, act1 = "sigmoid") # edit here
+  model = target(
+    train_model(data, rec, act1 = "sigmoid"), # edit here
+    format = "keras"
+  ),
   # ...
 )
 ```
@@ -319,9 +322,9 @@ question(
 In `R/functions.R` (in `3-flow/`) add a comment inside the body of `confusion_matrix()`. Leave the rest of the function alone.
 
 ```r
-confusion_matrix <- function(data, rec, serialized_model) {
+confusion_matrix <- function(data, rec, model) {
   # Add a comment anywhere in the body.
-  model <- unserialize_model(serialized_model) # Leave the rest alone.
+  testing_data <- bake(rec, testing(data))
   # ...
 }
 ```
@@ -379,9 +382,10 @@ question(
 In `R/functions.R`, add a print statement in the body of `confusion_matrix()`. Leave the rest of the function alone.
 
 ```r
-confusion_matrix <- function(data, rec, serialized_model) {
+confusion_matrix <- function(data, rec, model) {
   print("Building a confusion matrix.") # Add something like this.
-  model <- unserialize_model(serialized_model)
+  # Comment from before (optional)
+  testing_data <- bake(rec, testing(data))
   # ...
 }
 ```

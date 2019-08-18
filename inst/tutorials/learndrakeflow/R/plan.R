@@ -1,7 +1,10 @@
 plan <- drake_plan(
   metrics = compare_models(conf),
   rec = prepare_recipe(data),
-  model = train_model(data, rec),
+  model = target(
+  	train_model(data, rec),
+  	format = "keras"
+  ),
   conf = confusion_matrix(data, rec, model),
   data = read_csv(
     file_in("../data/customer_churn.csv"),
