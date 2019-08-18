@@ -164,9 +164,7 @@ hash <- history %>%
   filter(target == "model") %>%
   pull(hash) %>%
   head(n = 1)
-cache <- drake_cache()
-cache$get_value(hash) %>%
-  unserialize_model()
+drake_cache()$get_value(hash)
 ```
 
 # Data recovery (experimental)
