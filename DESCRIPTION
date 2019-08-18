@@ -36,7 +36,7 @@ SystemRequirements:
 Depends:
   R (>= 3.5.0)
 Imports:
-  drake (>= 7.4.0.9000),
+  drake (>= 7.5.2.9000),
   drakeplanner,
   future,
   future.callr, 
