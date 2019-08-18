@@ -42,7 +42,7 @@ source("R/plan.R")
 ```
 
 ```{r}
-make(plan)
+make(plan) # Sometimes multicore parallelism and keras don't work together.
 # Only attempt if you have clustermq and ZeroMQ installed:
 # make(plan, parallelism = "clustermq", jobs = 2)
 ```
