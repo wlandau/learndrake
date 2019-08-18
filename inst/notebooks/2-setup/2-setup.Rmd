@@ -74,7 +74,7 @@ plan <- drake_plan(
 
   # Train the model.
   model = target(
-  	, # Put the command to the left of the comma.
+  	, # Write a call to train_model() to the left of the comma.
     format = "keras" # Tells drake to save the model as an HDF5 file.
   ),
 
