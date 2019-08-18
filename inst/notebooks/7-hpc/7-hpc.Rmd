@@ -44,8 +44,10 @@ source("R/plan.R")
 ```{r}
 make(plan) # Sometimes multicore parallelism and keras don't work together.
 # Only attempt if you have clustermq and ZeroMQ installed:
-# make(plan, parallelism = "clustermq", jobs = 2)
+# make(plan, parallelism = "clustermq", jobs = 2, caching = "worker")
 ```
+
+Above, `caching = "worker"` tells `drake` to save the models in the workers instead of the master process. This is important for Keras because a model is no longer valid if you simply send it to another R process. To ensure validity across sessions, you either have to return a [serialized model](https://tensorflow.rstudio.com/keras/reference/serialize_model.html) from the `train_model()` function or [save the model as an HDF5 file](https://tensorflow.rstudio.com/keras/reference/save_model_hdf5.html).
 
 If you were to start the pipeline over from scratch, how much time would it take with one worker?
 
@@ -87,7 +89,7 @@ To run the pipeline with transient workers, use `parallelism = "future"` and set
 
 ```{r}
 clean() # Invalidate all the targets so we can run from scratch.
-make(plan, parallelism = "future", jobs = 2)
+make(plan, parallelism = "future", jobs = 2, caching = "worker")
 ```
 
 # Tips
