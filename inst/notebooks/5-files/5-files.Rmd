@@ -10,58 +10,12 @@ output: html_notebook
 3. Run the setup chunk below.
 
 ```{r, include = FALSE}
-setwd(file.path(rprojroot::find_rstudio_root_file(), "5-files"))
 source("../config/options.R")
 ```
 
-# About
+# Reproducible file management
 
-This part of the workshop aims to demonstrate how to reproducibly track input and output files with `drake`.
-
-# Motivation: possible storage slowness
-
-When `drake` runs your model, it [serializes](https://en.wikipedia.org/wiki/Serialization) the output twice: once in `keras::serialize_model()` and again in [`drake`'s storage system](https://github.com/richfitz/storr). This may slow down workflows with quick models and enormous datasets.
-
-Let's find out if our own workflow suffers such slowness. First, we run the workflow.
-
-```{r}
-source("R/packages.R")
-source("R/functions.R")
-source("R/plan.R")
-make(plan)
-```
-
-Then, we look at build times.
-
-```{r}
-build_times()
-```
-
-`drake` records the time it took to fully process the model.
-
-```{r}
-build <- build_times(model, type = "build")$elapsed
-build
-```
-
-And the time it took just to run the command
-
-```{r}
-command <- build_times(model, type = "command")$elapsed
-command
-```
-
-The relative difference is the overhead incurred by `drake`.
-
-```{r}
-sprintf("%.2f%%", 100 * (build - command) / build)
-```
-
-In the customer churn case study, the overhead is not so bad. However, you should perform this runtime check in your own deep learning projects. If the overhead is too high, you should avoid `drake`'s one-size-fits-all storage system and save your models to custom files. 
-
-# How to track files reproducibly.
-
-For `drake` plans, there are three functions to reproducibly track files.
+Some targets depend on external files. When you edit a file, you want `make()` to run all the affected targets. To tell `drake` to pay attention to files, there are special functions to identify files in your plan. 
 
 Function | Purpose | Works with directories? | Works inside custom functions?
 ---|---|---|---
@@ -69,23 +23,26 @@ Function | Purpose | Works with directories? | Works inside custom functions?
 `file_out()` | Track **output** files | Yes | No
 `knitr_in()` | Track `knitr` report files | No | No
 
-For now, let's focus on `file_in()` and` file_out()`. We already have an example of `file_in()` to load our data.
+For now, let's focus on `file_in()` and` file_out()`. We have already seen `file_in()` in our previous plans.
 
 ```{r}
+source("R/packages.R")
+source("R/functions.R")
+source("R/plans.R")
 plan %>%
   filter(target == "data") %>%
   pull(command) %>%
   `[[`(1)
 ```
 
-`file_in()` tells `make()` to fingerprint and track `customer_churn.csv`. As we saw in the `3-iterate` exercises, `drake` updates the downstream targets when the data file changes.
+`file_in()` tells `make()` to fingerprint and track `customer_churn.csv`. As we saw in the `3-flow` exercises, `drake` updates the downstream targets when the data file changes.
 
 ```{r}
 config <- drake_config(plan)
-vis_drake_graph(config,  from = file_store("../data/customer_churn.csv"))
+vis_drake_graph(config, from = file_store("../data/customer_churn.csv"))
 ```
 
-`file_out()` works similarly, but for output files. Output files from one target can serve as input files for other targets.
+`file_out()` works similarly, but for output files. Output files from upstream targets can serve as input files to downstream targets.
 
 ```{r}
 example_plan <- drake_plan(
@@ -102,12 +59,11 @@ config <- drake_config(example_plan)
 vis_drake_graph(config)
 ```
 
-
 # Exercise: back to customer churn
 
-Let's save our model to a custom file. We will use [`save_model_hdf5()`](https://keras.rstudio.com/reference/save_model_hdf5.html) and `load_model_hdf5()` from [`keras`](https://keras.rstudio.com).
+Instead of letting `drake` save our model automatically, let's manually save it to a custom file. That way, the return value of the target can be something else: say, the progression of the model fit over each epoch (<https://keras.rstudio.com/reference/fit.html#value>). To manually save the model, we use the [`save_model_hdf5()`](https://keras.rstudio.com/reference/save_model_hdf5.html) and `load_model_hdf5()` from `keras`. (This is what `drake` uses when you insert `format = "keras"` in the plan.)
 
-Follow the directions in the comments of `R/plan.R` and `R/functions.R`. If you get stuck and need to reset your files, start over with a fresh copy of the notebooks and supporting files ([`learndrake::save_notebooks()`](https://github.com/wlandau/learndrake)). You can peek at [this chapter of the manual](https://ropenscilabs.github.io/drake-manual/churn.html#increasing-efficiency) for hints.
+Your turn: follow the directions in the comments of `R/plan.R` and `R/functions.R` to save the model to a reproducibly-tracked HDF5 file. If you get stuck and need to reset your files, start over with a fresh copy of the notebooks and supporting files ([`learndrake::save_notebooks()`](https://github.com/wlandau/learndrake)). You can peek at [this chapter of the manual](https://ropenscilabs.github.io/drake-manual/churn.html#increasing-efficiency) for hints.
 
 When you are done, check your dependency graph.
 
@@ -119,19 +75,19 @@ config <- drake_config(plan)
 vis_drake_graph(config)
 ```
 
-Our graph should look something like this.
+Your graph should look something like this.
 
 ```{r}
 readRDS("img/graph.rds")
 ```
 
-Now let's fit our model and run the downstream analyses.
+Now let's fit the model and run the downstream analyses.
 
 ```{r}
 make(plan)
 ```
 
-Sanity check: are all our targets up to date now?
+Sanity check: are all the targets up to date now?
 
 ```{r}
 outdated(config)
@@ -141,15 +97,14 @@ outdated(config)
 make(plan)
 ```
 
-Our file-based approach frees us up to see the progression of the model run.
+As promised, file-based approach frees us up to see the progression of the model run.
 
 ```{r}
 loadd(progression)
 plot(progression)
 ```
 
-
-Our model is in a file.
+The model is in the file.
 
 ```{r}
 load_model_hdf5("model.h5")
@@ -167,7 +122,7 @@ Which targets are outdated now?
 outdated(config)
 ```
 
-Which targets get rebuilt when we call `make(plan)`?
+Which targets get rebuilt when you call `make(plan)`?
 
 ```{r}
 make(plan)
