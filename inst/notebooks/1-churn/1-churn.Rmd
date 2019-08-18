@@ -15,7 +15,7 @@ source("../config/options.R")
 
 # About
 
-This notebook introduces the workshop's underlying data analysis case study. The exercises establish the necesary packages, data, *user-defined functions*, and motivating context.
+This notebook introduces the workshop's underlying data analysis case study. As you work through the setup and motivating context, pay patricular attention to how the work is organized into custom user-defined functions such as `prepare_recipe()`, `define_model()`, and `train_model()`.
 
 # Customer churn case study
 
@@ -48,6 +48,15 @@ library(tidyverse)
 # observed and predicted classes.
 # https://tidymodels.github.io/yardstick
 library(yardstick)
+```
+
+Check if TensorFlow is installed. If you see "Hellow, Tensorflow!", you are all set. Do not worry about other console messages.
+
+```{r}
+library(tensorflow)
+sess <- tf$Session()
+hello <- tf$constant("Hello, TensorFlow!")
+sess$run(hello)
 ```
 
 # Data
@@ -193,7 +202,7 @@ define_model <- function(rec, units1, units2, act1, act2, act3) {
 }
 ```
 
-We write another function to compile, train, and serialize the deep neural net. 
+We write another function to compile and train the deep neural net. The function returns the fitted model.
 
 ```{r}
 train_model <- function(
@@ -235,7 +244,7 @@ train_model <- function(
     validation_split = 0.3,
     verbose = 0
   )
-  serialize_model(model)
+  model
 }
 ```
 
@@ -246,15 +255,7 @@ model_16 <- train_model(data, rec, units1 = 16, units2 = 16)
 ```
 
 ```{r}
-str(model_16)
-```
-
-`train_model()` returns a [*serialized*](https://keras.rstudio.com/reference/serialize_model.html) model. The model is a string of raw bytes that we can save and then load into a different R session (important for [`drake`](https://github.com/ropensci/drake)).
-We have to call [`unserialize_model()`](https://keras.rstudio.com/reference/serialize_model.html) to convert it back into a usable format.
-
-```{r}
-unserialized_model_16 <- unserialize_model(model_16)
-print(unserialized_model_16)
+model_16
 ```
 
 # Performance
@@ -262,8 +263,7 @@ print(unserialized_model_16)
 A [confusion matrix](https://www.dataschool.io/simple-guide-to-confusion-matrix-terminology) summarizes the performance of a binary classifier. Let's write a custom function to create one for a given model.
 
 ```{r}
-confusion_matrix <- function(data, rec, serialized_model) {
-  model <- unserialize_model(serialized_model)
+confusion_matrix <- function(data, rec, model) {
   testing_data <- bake(rec, testing(data))
   x_test_tbl <- testing_data %>%
     select(-Churn) %>%
