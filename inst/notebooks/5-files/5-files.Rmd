@@ -28,7 +28,7 @@ For now, let's focus on `file_in()` and` file_out()`. We have already seen `file
 ```{r}
 source("R/packages.R")
 source("R/functions.R")
-source("R/plans.R")
+source("R/plan.R")
 plan %>%
   filter(target == "data") %>%
   pull(command) %>%
