@@ -1,4 +1,5 @@
-#' learndrake: materials to learn machine learning workflow management with drake
+#' learndrake: materials to learn
+#' machine learning workflow management with drake
 #' @docType package
 #' @description Machine learning workflows can be difficult to manage.
 #'   A single round of computation can take several hours to complete,

@@ -5,9 +5,12 @@ plan <- drake_plan(
   ) %>%
     initial_split(prop = 0.3),
   rec = prepare_recipe(data),
-  model = target( # Name this target `progression` instead of `model`.
-  	train_model(data, rec), # Set `model_file = file_out("model.h5")` in the call to train_model().
-  	format = "keras" # The target value is no longer a model, so remove this line with the format.
+  # Name this target `progression` instead of `model`:
+  model = target(
+    # Set `model_file = file_out("model.h5")` in the call to train_model().
+    train_model(data, rec),
+    # The target value is no longer a model, so remove `format = "keras"`.
+    format = "keras"
   ),
   # Replace `model` with `file_in("model.h5")`:
   conf = confusion_matrix(data, rec, model),
