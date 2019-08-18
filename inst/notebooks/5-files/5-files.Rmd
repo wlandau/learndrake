@@ -25,7 +25,7 @@ Function | Purpose | Works with directories? | Works inside custom functions?
 
 For now, let's focus on `file_in()` and` file_out()`. We have already seen `file_in()` in our previous plans.
 
-```{r}
+```{r, message = FALSE}
 source("R/packages.R")
 source("R/functions.R")
 source("R/plan.R")
