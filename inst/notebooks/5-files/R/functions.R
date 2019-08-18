@@ -76,9 +76,9 @@ train_model <- function(
   # Return `progression`.
 }
 
-# Rename the `model` argument to `model_file`.
+# Rename the `model` argument. Call it `model_file`.
 confusion_matrix <- function(data, rec, model) {
-  # Write `model <- load_model_hdf5(model_file)`:
+  # Write `model <- load_model_hdf5(model_file)`
   testing_data <- bake(rec, testing(data))
   x_test_tbl <- testing_data %>%
     select(-Churn) %>%

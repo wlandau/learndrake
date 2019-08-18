@@ -72,7 +72,7 @@ source("R/packages.R")
 source("R/functions.R")
 source("R/plan.R")
 config <- drake_config(plan)
-vis_drake_graph(config)
+vis_drake_graph(config, hover = TRUE)
 ```
 
 Your graph should look something like this.
@@ -81,7 +81,7 @@ Your graph should look something like this.
 readRDS("img/graph.rds")
 ```
 
-Now let's fit the model and run the downstream analyses.
+Now let's run the workflow.
 
 ```{r}
 make(plan)
