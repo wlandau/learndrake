@@ -12,7 +12,7 @@ Description: Machine learning workflows can be difficult to manage.
   The slides, notebooks, and Shiny apps in this package
   teach how to create and maintain machine
   learning projects with drake-powered automation.
-Version: 0.0.1
+Version: 0.0.2
 License: GPL-3
 URL: https://github.com/wlandau/learndrake
 BugReports: https://github.com/wlandau/learndrake/issues
