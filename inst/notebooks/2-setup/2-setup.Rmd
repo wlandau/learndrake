@@ -6,7 +6,6 @@ output: html_notebook
 ```{r, include = FALSE}
 # Set your working directory to 2-setup/.
 # You may have to copy and paste this line into your console:
-setwd(file.path(rprojroot::find_rstudio_root_file(), "2-setup"))
 source("../config/options.R")
 ```
 
