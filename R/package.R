@@ -25,6 +25,7 @@
 #' launch_app("drakeplanner")
 #' }
 #' @references <https://github.com/wlandau/learndrake>
+#' @importFrom clustermq Q
 #' @importFrom drake drake_plan vis_drake_graph make
 #' @importFrom drakeplanner drakeplanner
 #' @importFrom future plan future
