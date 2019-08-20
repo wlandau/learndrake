@@ -47,7 +47,6 @@ Imports:
   lubridate,
   recipes,
   rmarkdown,
-  rprojroot,
   rsample,
   shiny,
   styler,
