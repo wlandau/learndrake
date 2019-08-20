@@ -7,10 +7,15 @@ output: html_notebook
 
 1. Navigate to the `4-plans/` folder.
 2. Open `4-plans.Rproj` as an RStudio project in a new R session. (Click on `4-plans.Rproj` in RStudio's file manager.)
-3. Run the setup chunk below.
+3. Check that your working directory is correct. It should be `4-plans/`.
+
+```{r}
+basename(getwd()) # Should be "4-plans"
+```
+
+4. Run the setup chunk below.
 
 ```{r, include = FALSE}
-setwd(file.path(rprojroot::find_rstudio_root_file(), "4-plans"))
 source("../config/options.R")
 ```
 

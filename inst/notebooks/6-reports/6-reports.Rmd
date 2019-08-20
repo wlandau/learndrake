@@ -7,10 +7,15 @@ output: html_notebook
 
 1. Navigate to the `6-reports/` folder.
 2. Open `6-reports.Rproj` as an RStudio project in a new R session. (Click on `6-reports.Rproj` in RStudio's file manager.)
-3. Run the setup chunk below.
+3. Check that your working directory is correct. It should be `6-reports/`.
+
+```{r}
+basename(getwd()) # Should be "6-reports"
+```
+
+4. Run the setup chunk below.
 
 ```{r, include = FALSE}
-setwd(file.path(rprojroot::find_rstudio_root_file(), "6-reports"))
 source("../config/options.R")
 ```
 
