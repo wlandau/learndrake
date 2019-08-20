@@ -7,7 +7,13 @@ output: html_notebook
 
 1. Navigate to the `3-flow/` folder.
 2. Open `3-flow.Rproj` as an RStudio project in a new R session. (Click on `3-flow.Rproj` in RStudio's file manager.)
-3. Run the setup chunk below.
+3. Check that your working directory is correct. It should be `3-flow/`.
+
+```{r}
+basename(getwd()) # Should be "3-flow"
+```
+
+4. Run the setup chunk below.
 
 ```{r, include = FALSE}
 source("../config/options.R")
