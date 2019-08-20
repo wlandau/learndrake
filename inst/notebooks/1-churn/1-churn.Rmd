@@ -52,7 +52,7 @@ library(yardstick)
 
 Check if TensorFlow is installed. If you see "Hellow, Tensorflow!", you are all set. Do not worry about other console messages.
 
-```{r}
+```{r, message = FALSE}
 library(tensorflow)
 sess <- tf$Session()
 hello <- tf$constant("Hello, TensorFlow!")
