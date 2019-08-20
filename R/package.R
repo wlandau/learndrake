@@ -36,7 +36,6 @@
 #' @importFrom lubridate duration dseconds
 #' @importFrom recipes bake juice
 #' @importFrom rmarkdown render run
-#' @importFrom rprojroot find_rstudio_root_file
 #' @importFrom rsample initial_split testing training
 #' @importFrom shiny shinyApp
 #' @importFrom styler style_text
