@@ -44,13 +44,8 @@ source("R/plan.R")
 ```{r}
 make(plan) # Sometimes multicore parallelism and keras don't work together.
 # Only attempt if you have clustermq and ZeroMQ installed:
-# make(plan, parallelism = "clustermq", jobs = 2, caching = "worker")
+# make(plan, parallelism = "clustermq", jobs = 2)
 ```
-
-Above, `caching = "worker"` tells `drake` to save the models in the workers instead of the master process. (Another option in `drake` >= 7.6.1.9000: use `target(format = "keras", caching = "worker")` in the plan.) Worker caching is important for Keras because a model is no longer valid if you simply send it to another R process. Other workarounds:
-
-1.. Use `target(train_model(...), format = "keras", hpc = FALSE)` to fit models locally and run everything else as before.
-2. Alternatively, avoid `target(train_model(...), format = "keras")` and instead return a [serialized model](https://tensorflow.rstudio.com/keras/reference/serialize_model.html) from the `train_model()` function. If you do that, `confusion_matrix()` needs to accept a serialize model and call `unserialize_model()` on it before further processing.
 
 If you were to start the pipeline over from scratch, how much time would it take with one worker?
 
