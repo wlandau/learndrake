@@ -119,7 +119,7 @@ Let's get our data ready for the machine learning models.
 
 1. Partition the `tenure` variable into 6 bins.
 2. Take the log of `TotalCharges` (strengthens the association with `Churn`).
-3. One-hot encode all categorical variables.
+3. Represent each categorical variable as a collection of 0-1 indicator variables.
 4. Center and scale all covariates.
 
 We translate this preprocessing workflow into a recipe ([`recipes`](https://tidymodels.github.io/recipes) package).
@@ -141,7 +141,7 @@ prepare_recipe <- function(data) {
 }
 ```
 
-Our custom `prepare_recipe()` function creates a new recipe and applies it to a dataset. The return values is a prepped recipe.
+Our custom `prepare_recipe()` function creates a new recipe and applies it to a dataset. The return value is a prepped recipe.
 
 ```{r}
 rec <- prepare_recipe(data)
