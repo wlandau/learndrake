@@ -3,11 +3,24 @@ title: "Set up a drake workflow"
 output: html_notebook
 ---
 
+# Do first
+
+1. Navigate to the `2-setup/` folder.
+2. Open `2-setup.Rproj` as an RStudio project in a new R session. (Click on `2-setup.Rproj` in RStudio's file manager.)
+3. Check that your working directory is correct. It should be `2-setup/`.
+
+```{r}
+basename(getwd()) # Should be "2-setup"
+```
+
+4. Run the setup chunk below.
+
 ```{r, include = FALSE}
-# Set your working directory to 2-setup/.
-# You may have to copy and paste this line into your console:
 source("../config/options.R")
 ```
+
+
+# About
 
 After working through `1-churn.Rmd`, we have the building blocks of our data analysis project. Now, let's put the pieces together in a `drake`-powered reproducible workflow.
 

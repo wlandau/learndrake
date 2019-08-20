@@ -7,10 +7,15 @@ output: html_notebook
 
 1. Navigate to the `5-files/` folder.
 2. Open `5-files.Rproj` as an RStudio project in a new R session. (Click on `5-files.Rproj` in RStudio's file manager.)
-3. Run the setup chunk below.
+3. Check that your working directory is correct. It should be `5-files/`.
+
+```{r}
+basename(getwd()) # Should be "5-files"
+```
+
+4. Run the setup chunk below.
 
 ```{r, include = FALSE}
-setwd(file.path(rprojroot::find_rstudio_root_file(), "5-files"))
 source("../config/options.R")
 ```
 
