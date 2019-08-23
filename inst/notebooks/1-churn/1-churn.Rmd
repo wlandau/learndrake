@@ -7,7 +7,13 @@ output: html_notebook
 
 1. Navigate to the `1-churn/` folder.
 2. Open `1-churn.Rproj` as an RStudio project in a new R session. (Click on `1-churn.Rproj` in RStudio's file manager.)
-3. Run the setup chunk below.
+3. Check that your working directory is correct. It should be `1-churn/`.
+
+```{r}
+basename(getwd()) # Should be "1-churn"
+```
+
+4. Run the setup chunk below.
 
 ```{r, include = FALSE}
 source("../config/options.R")

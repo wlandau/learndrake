@@ -3,9 +3,9 @@
 #'   (see [save_notebooks()]) come with supporting Shiny apps
 #'   to conduct the exercises. Use `launch_app()` to run one of these
 #'   apps on your local machine.
-#' @details For `3-flow.Rmd`, `launch_app("flow")` opens
+#' @details For `3-flow.Rmd`, `launch_app("learndrakeflow")` opens
 #'   a collection of exercises for iterating on a `drake` workflow.
-#'   For `4-plans.Rmd`, `launch_app("plans")` opens guided exercises
+#'   For `4-plans.Rmd`, `launch_app("learndrakeplans")` opens guided exercises
 #'   on constructing `drake` plans,
 #'   and `launch_app("drakeplanner")` spins up an app
 #'   for visualizing and understanding plans.
@@ -15,18 +15,26 @@
 #'   `"flow"`, `"plans"`, or `"drakeplanner"`.
 #' @examples
 #' \dontrun{
-#' launch_app("flow")
-#' launch_app("plans")
+#' launch_app("learndrakeflow")
+#' launch_app("learndrakeplans")
 #' launch_app("drakeplanner")
 #' }
-launch_app <- function(app = c("flow", "plans", "drakeplanner")) {
+launch_app <- function(
+  app = c("learndrakeflow", "learndrakeplans", "drakeplanner")
+) {
   app <- match.arg(app)
   switch(
     app,
-    flow = learnr::run_tutorial("flow", package = "learndrake"),
-    plans = learnr::run_tutorial("plans", package = "learndrake"),
+    learndrakeflow = learnr::run_tutorial(
+      "learndrakeflow",
+      package = "learndrake"
+    ),
+    learndrakeplans = learnr::run_tutorial(
+      "learndrakeplans",
+      package = "learndrake"
+    ),
     drakeplanner = drakeplanner::drakeplanner(),
-    NULL
+    stop("not an app in learndrake.", call. = FALSE)
   )
 }
 
@@ -35,9 +43,9 @@ launch_app <- function(app = c("flow", "plans", "drakeplanner")) {
 #'   (see [save_notebooks()]) come with supporting Shiny apps
 #'   to conduct the exercises. Use `save_app()` to save the files
 #'   for an so you can deploy it to Shiny Server.
-#' @details For `3-flow.Rmd`, `save_app("flow")` saves
+#' @details For `3-flow.Rmd`, `save_app("learndrakeflow")` saves
 #'   a collection of exercises for iterating on a `drake` workflow.
-#'   For `4-plans.Rmd`, `save_app("plans")` saves guided exercises
+#'   For `4-plans.Rmd`, `save_app("learndrakeplans")` saves guided exercises
 #'   on constructing `drake` plans,
 #'   and `save_app("drakeplanner")` saves an app
 #'   for visualizing and understanding plans.
@@ -48,12 +56,12 @@ launch_app <- function(app = c("flow", "plans", "drakeplanner")) {
 #' @inheritParams save_notebooks
 #' @examples
 #' \dontrun{
-#' save_app("flow")
-#' save_app("plans")
+#' save_app("learndrakeflow")
+#' save_app("learndrakeplans")
 #' save_app("drakeplanner")
 #' }
 save_app <- function(
-  app = c("flow", "plans", "drakeplanner"),
+  app = c("learndrakeflow", "learndrakeplans", "drakeplanner"),
   path = app,
   overwrite = FALSE
 ) {

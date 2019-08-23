@@ -27,11 +27,11 @@ test_that("notebooks", {
 })
 
 test_that("apps", {
-  for (app in c("flow", "plans")) {
+  for (app in c("learndrakeflow", "learndrakeplans")) {
     path <- tempfile()
-    save_app("flow", path)
+    save_app(app, path)
     out <- list.files(path)
-    exp <- c("index.html", "index.Rmd", "R")
+    exp <- c("index.html", "index.Rmd")
     expect_true(all(exp %in% out))
   }
   path <- tempfile()
