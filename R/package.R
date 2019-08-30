@@ -1,4 +1,5 @@
-#' learndrake: materials to learn machine learning workflow management with drake
+#' learndrake: materials to learn
+#' machine learning workflow management with drake
 #' @docType package
 #' @description Machine learning workflows can be difficult to manage.
 #'   A single round of computation can take several hours to complete,
@@ -24,6 +25,7 @@
 #' launch_app("drakeplanner")
 #' }
 #' @references <https://github.com/wlandau/learndrake>
+#' @importFrom clustermq Q
 #' @importFrom drake drake_plan vis_drake_graph make
 #' @importFrom drakeplanner drakeplanner
 #' @importFrom future plan future
@@ -34,7 +36,6 @@
 #' @importFrom lubridate duration dseconds
 #' @importFrom recipes bake juice
 #' @importFrom rmarkdown render run
-#' @importFrom rprojroot find_rstudio_root_file
 #' @importFrom rsample initial_split testing training
 #' @importFrom shiny shinyApp
 #' @importFrom styler style_text

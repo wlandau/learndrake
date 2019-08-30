@@ -12,7 +12,7 @@ Description: Machine learning workflows can be difficult to manage.
   The slides, notebooks, and Shiny apps in this package
   teach how to create and maintain machine
   learning projects with drake-powered automation.
-Version: 0.0.2
+Version: 0.0.2.9000
 License: GPL-3
 URL: https://github.com/wlandau/learndrake
 BugReports: https://github.com/wlandau/learndrake/issues
@@ -36,7 +36,8 @@ SystemRequirements:
 Depends:
   R (>= 3.5.0)
 Imports:
-  drake (>= 7.4.0.9000),
+  clustermq (>= 0.8.8),
+  drake (>= 7.6.1),
   drakeplanner,
   future,
   future.callr, 
@@ -46,7 +47,6 @@ Imports:
   lubridate,
   recipes,
   rmarkdown,
-  rprojroot,
   rsample,
   shiny,
   styler,
@@ -55,7 +55,6 @@ Imports:
   visNetwork,
   yardstick
 Suggests:
-  clustermq,
   prettycode,
   shinytest,
   tidyselect (>= 0.2.4),

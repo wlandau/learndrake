@@ -4,7 +4,8 @@
 \name{learndrake-package}
 \alias{learndrake-package}
 \alias{learndrake}
-\title{learndrake: materials to learn machine learning workflow management with drake}
+\title{learndrake: materials to learn
+machine learning workflow management with drake}
 \description{
 Machine learning workflows can be difficult to manage.
 A single round of computation can take several hours to complete,

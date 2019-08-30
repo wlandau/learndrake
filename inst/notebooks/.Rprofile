@@ -1,5 +1,4 @@
 options(
-	drake_make_menu = FALSE,
 	drake_clean_menu = FALSE,
 	warnPartialMatchArgs = FALSE,
 	crayon.enabled = FALSE,

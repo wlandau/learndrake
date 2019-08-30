@@ -72,14 +72,13 @@ train_model <- function(
     validation_split = 0.3,
     verbose = 0
   )
-  serialize_model(model) # Replace with save_model_hdf5(model, model_file).
+  model # Replace with save_model_hdf5(model, model_file).
   # Return `progression`.
 }
 
-# Rename the `serialized_model` argument to `model_file`.
-confusion_matrix <- function(data, rec, serialized_model) {
-  # Replace with `model <- load_model_hdf5(model_file)`:
-  model <- unserialize_model(serialized_model)
+# Rename the `model` argument. Call it `model_file`.
+confusion_matrix <- function(data, rec, model) {
+  # Write `model <- load_model_hdf5(model_file)`
   testing_data <- bake(rec, testing(data))
   x_test_tbl <- testing_data %>%
     select(-Churn) %>%

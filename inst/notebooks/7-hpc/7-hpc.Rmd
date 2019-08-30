@@ -48,7 +48,7 @@ source("R/plan.R")
 ```
 
 ```{r}
-make(plan)
+make(plan) # Sometimes multicore parallelism and keras don't work together.
 # Only attempt if you have clustermq and ZeroMQ installed:
 # make(plan, parallelism = "clustermq", jobs = 2)
 ```
@@ -93,7 +93,7 @@ To run the pipeline with transient workers, use `parallelism = "future"` and set
 
 ```{r}
 clean() # Invalidate all the targets so we can run from scratch.
-make(plan, parallelism = "future", jobs = 2)
+make(plan, parallelism = "future", jobs = 2, caching = "worker")
 ```
 
 # Tips
