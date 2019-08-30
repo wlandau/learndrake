@@ -334,4 +334,4 @@ compare_models(conf_16, conf_32)
 
 # Now with `drake`...
 
-Let's put these pieces together in an end-to-end reproducible [`drake`](https://ropensci.github.io/drake) pipeline.
+Let's put these pieces together in an end-to-end reproducible [`drake`](https://docs.ropensci.org/drake) pipeline.
