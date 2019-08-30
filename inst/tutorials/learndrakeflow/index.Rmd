@@ -54,7 +54,7 @@ In your working directory (should be `3-flow`) there should be an `R/` folder wi
 list.files("R")
 ```
 
-Run them to get your R session ready for [`drake`](https://ropensci.github.io/drake).
+Run them to get your R session ready for [`drake`](https://docs.ropensci.org/drake).
 
 ```{r, message = FALSE, echo = TRUE}
 source("R/packages.R")
@@ -84,7 +84,7 @@ You now have a [plan](https://ropenscilabs.github.io/drake-manual/plans.html).
 print(plan)
 ```
 
-Did creating the [plan](https://ropenscilabs.github.io/drake-manual/plans.html) actually run the workflow? Hint: [`cached()`](https://ropensci.github.io/drake/reference/cached.html).
+Did creating the [plan](https://ropenscilabs.github.io/drake-manual/plans.html) actually run the workflow? Hint: [`cached()`](https://docs.ropensci.org/drake/reference/cached.html).
 
 ```r
 cached()
@@ -113,7 +113,7 @@ Let's look at the row order of the [plan](https://ropenscilabs.github.io/drake-m
 print(plan)
 ```
 
-When you call [`make(plan)`](https://ropensci.github.io/drake/reference/make.html) in your R console, which target runs *first*? Why?
+When you call [`make(plan)`](https://docs.ropensci.org/drake/reference/make.html) in your R console, which target runs *first*? Why?
 
 ```r
 make(plan)
@@ -134,7 +134,7 @@ question(
 
 ## Exercise 4
 
-When you called [`make(plan)`](https://ropensci.github.io/drake/reference/make.html) in the previous exercise, which target ran *last*? Why?
+When you called [`make(plan)`](https://docs.ropensci.org/drake/reference/make.html) in the previous exercise, which target ran *last*? Why?
 
 ```{r q4}
 question(
@@ -174,7 +174,7 @@ question(
 
 ## Exercise 6
 
-Run [`make(plan)`](https://ropensci.github.io/drake/reference/make.html) again. What happens?
+Run [`make(plan)`](https://docs.ropensci.org/drake/reference/make.html) again. What happens?
 
 ```r
 make(plan)
@@ -256,7 +256,7 @@ question(
 
 ## Exercise 9
 
-Now, run `R/functions.R` and then run [`make(plan)`](https://ropensci.github.io/drake/reference/make.html) again.
+Now, run `R/functions.R` and then run [`make(plan)`](https://docs.ropensci.org/drake/reference/make.html) again.
 
 ```r
 # Edit and save R/functions.R.
@@ -296,7 +296,7 @@ plan <- drake_plan(
 )
 ```
 
-Save `R/plan.R`, source it, and run [`make(plan)`](https://ropensci.github.io/drake/reference/make.html) again. Which targets rebuild, if any?
+Save `R/plan.R`, source it, and run [`make(plan)`](https://docs.ropensci.org/drake/reference/make.html) again. Which targets rebuild, if any?
 
 ```r
 # Edit and save R/plan.R.
@@ -329,7 +329,7 @@ confusion_matrix <- function(data, rec, model) {
 }
 ```
 
-Save and run `R/functions.R` and then run [`make(plan)`](https://ropensci.github.io/drake/reference/make.html).
+Save and run `R/functions.R` and then run [`make(plan)`](https://docs.ropensci.org/drake/reference/make.html).
 
 ```r
 # Edit and save R/functions.R
@@ -355,7 +355,7 @@ question(
 
 ## Exercise 12
 
-Which targets are downstream of `conf`? Find out with  [`vis_drake_graph()`](https://ropensci.github.io/drake/reference/vis_drake_graph.html).
+Which targets are downstream of `conf`? Find out with  [`vis_drake_graph()`](https://docs.ropensci.org/drake/reference/vis_drake_graph.html).
 
 ```r
 config <- drake_config(plan)
@@ -390,7 +390,7 @@ confusion_matrix <- function(data, rec, model) {
 }
 ```
 
-Save and run `R/functions.R` and then run [`make(plan)`](https://ropensci.github.io/drake/reference/make.html).
+Save and run `R/functions.R` and then run [`make(plan)`](https://docs.ropensci.org/drake/reference/make.html).
 
 ```r
 # Edit and save R/functions.R.
@@ -416,7 +416,7 @@ question(
 
 ## Exercise 14
 
-Delete the last record of `../data/customer_churn.csv` and run [`make(plan)`](https://ropensci.github.io/drake/reference/make.html) again. Which targets  rebuild? Why?
+Delete the last record of `../data/customer_churn.csv` and run [`make(plan)`](https://docs.ropensci.org/drake/reference/make.html) again. Which targets  rebuild? Why?
 
 ```r
 # Open ../data/customer_churn.csv in the RStudio IDE ("View File").

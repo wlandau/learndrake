@@ -68,7 +68,7 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <p>In your working directory (should be <code>3-flow</code>) there should be an <code>R/</code> folder with 3 scripts.</p>
 <pre class="r"><code>list.files(&quot;R&quot;)
 #&gt; [1] &quot;functions.R&quot; &quot;packages.R&quot;  &quot;plan.R&quot;</code></pre>
-<p>Run them to get your R session ready for <a href="https://ropensci.github.io/drake"><code>drake</code></a>.</p>
+<p>Run them to get your R session ready for <a href="https://docs.ropensci.org/drake"><code>drake</code></a>.</p>
 <pre class="r"><code>source(&quot;R/packages.R&quot;)
 source(&quot;R/functions.R&quot;)
 source(&quot;R/plan.R&quot;)</code></pre>
@@ -94,7 +94,7 @@ source(&quot;R/plan.R&quot;)</code></pre>
 #&gt; 3 model   train_model(data, rec)                                   … keras 
 #&gt; 4 conf    confusion_matrix(data, rec, model)                       … &lt;NA&gt;  
 #&gt; 5 data    read_csv(file_in(&quot;../data/customer_churn.csv&quot;), col_types… &lt;NA&gt;</code></pre>
-<p>Did creating the <a href="https://ropenscilabs.github.io/drake-manual/plans.html">plan</a> actually run the workflow? Hint: <a href="https://ropensci.github.io/drake/reference/cached.html"><code>cached()</code></a>.</p>
+<p>Did creating the <a href="https://ropenscilabs.github.io/drake-manual/plans.html">plan</a> actually run the workflow? Hint: <a href="https://docs.ropensci.org/drake/reference/cached.html"><code>cached()</code></a>.</p>
 <pre class="r"><code>cached()</code></pre>
 
 <div id="htmlwidget-03b8a9120b9c47506155" style="width:100%;height:auto;", class = "quiz html-widget">
@@ -118,7 +118,7 @@ source(&quot;R/plan.R&quot;)</code></pre>
 #&gt; 3 model   train_model(data, rec)                                   … keras 
 #&gt; 4 conf    confusion_matrix(data, rec, model)                       … &lt;NA&gt;  
 #&gt; 5 data    read_csv(file_in(&quot;../data/customer_churn.csv&quot;), col_types… &lt;NA&gt;</code></pre>
-<p>When you call <a href="https://ropensci.github.io/drake/reference/make.html"><code>make(plan)</code></a> in your R console, which target runs <em>first</em>? Why?</p>
+<p>When you call <a href="https://docs.ropensci.org/drake/reference/make.html"><code>make(plan)</code></a> in your R console, which target runs <em>first</em>? Why?</p>
 <pre class="r"><code>make(plan)</code></pre>
 
 <div id="htmlwidget-c3ccbefe825a985eb335" style="width:100%;height:auto;", class = "quiz html-widget">
@@ -132,7 +132,7 @@ source(&quot;R/plan.R&quot;)</code></pre>
 </div>
 <div id="section-exercise-4" class="section level2">
 <h2>Exercise 4</h2>
-<p>When you called <a href="https://ropensci.github.io/drake/reference/make.html"><code>make(plan)</code></a> in the previous exercise, which target ran <em>last</em>? Why?</p>
+<p>When you called <a href="https://docs.ropensci.org/drake/reference/make.html"><code>make(plan)</code></a> in the previous exercise, which target ran <em>last</em>? Why?</p>
 
 <div id="htmlwidget-6a3355542d1e261505a5" style="width:100%;height:auto;", class = "quiz html-widget">
 <div class="panel panel-default">
@@ -160,7 +160,7 @@ print(metrics)</code></pre>
 </div>
 <div id="section-exercise-6" class="section level2">
 <h2>Exercise 6</h2>
-<p>Run <a href="https://ropensci.github.io/drake/reference/make.html"><code>make(plan)</code></a> again. What happens?</p>
+<p>Run <a href="https://docs.ropensci.org/drake/reference/make.html"><code>make(plan)</code></a> again. What happens?</p>
 <pre class="r"><code>make(plan)</code></pre>
 
 <div id="htmlwidget-44e5543bd2bf971e6574" style="width:100%;height:auto;", class = "quiz html-widget">
@@ -213,7 +213,7 @@ make(plan)</code></pre>
 </div>
 <div id="section-exercise-9" class="section level2">
 <h2>Exercise 9</h2>
-<p>Now, run <code>R/functions.R</code> and then run <a href="https://ropensci.github.io/drake/reference/make.html"><code>make(plan)</code></a> again.</p>
+<p>Now, run <code>R/functions.R</code> and then run <a href="https://docs.ropensci.org/drake/reference/make.html"><code>make(plan)</code></a> again.</p>
 <pre class="r"><code># Edit and save R/functions.R.
 source(&quot;R/functions.R&quot;)
 make(plan)</code></pre>
@@ -241,7 +241,7 @@ plan &lt;- drake_plan(
   ),
   # ...
 )</code></pre>
-<p>Save <code>R/plan.R</code>, source it, and run <a href="https://ropensci.github.io/drake/reference/make.html"><code>make(plan)</code></a> again. Which targets rebuild, if any?</p>
+<p>Save <code>R/plan.R</code>, source it, and run <a href="https://docs.ropensci.org/drake/reference/make.html"><code>make(plan)</code></a> again. Which targets rebuild, if any?</p>
 <pre class="r"><code># Edit and save R/plan.R.
 source(&quot;R/plan.R&quot;)
 make(plan)</code></pre>
@@ -263,7 +263,7 @@ make(plan)</code></pre>
   testing_data &lt;- bake(rec, testing(data))
   # ...
 }</code></pre>
-<p>Save and run <code>R/functions.R</code> and then run <a href="https://ropensci.github.io/drake/reference/make.html"><code>make(plan)</code></a>.</p>
+<p>Save and run <code>R/functions.R</code> and then run <a href="https://docs.ropensci.org/drake/reference/make.html"><code>make(plan)</code></a>.</p>
 <pre class="r"><code># Edit and save R/functions.R
 source(&quot;R/functions.R&quot;)
 make(plan)</code></pre>
@@ -280,7 +280,7 @@ make(plan)</code></pre>
 </div>
 <div id="section-exercise-12" class="section level2">
 <h2>Exercise 12</h2>
-<p>Which targets are downstream of <code>conf</code>? Find out with <a href="https://ropensci.github.io/drake/reference/vis_drake_graph.html"><code>vis_drake_graph()</code></a>.</p>
+<p>Which targets are downstream of <code>conf</code>? Find out with <a href="https://docs.ropensci.org/drake/reference/vis_drake_graph.html"><code>vis_drake_graph()</code></a>.</p>
 <pre class="r"><code>config &lt;- drake_config(plan)
 vis_drake_graph(config, hover = TRUE)</code></pre>
 
@@ -302,7 +302,7 @@ vis_drake_graph(config, hover = TRUE)</code></pre>
   testing_data &lt;- bake(rec, testing(data))
   # ...
 }</code></pre>
-<p>Save and run <code>R/functions.R</code> and then run <a href="https://ropensci.github.io/drake/reference/make.html"><code>make(plan)</code></a>.</p>
+<p>Save and run <code>R/functions.R</code> and then run <a href="https://docs.ropensci.org/drake/reference/make.html"><code>make(plan)</code></a>.</p>
 <pre class="r"><code># Edit and save R/functions.R.
 source(&quot;R/functions.R&quot;)
 make(plan)</code></pre>
@@ -319,7 +319,7 @@ make(plan)</code></pre>
 </div>
 <div id="section-exercise-14" class="section level2">
 <h2>Exercise 14</h2>
-<p>Delete the last record of <code>../data/customer_churn.csv</code> and run <a href="https://ropensci.github.io/drake/reference/make.html"><code>make(plan)</code></a> again. Which targets rebuild? Why?</p>
+<p>Delete the last record of <code>../data/customer_churn.csv</code> and run <a href="https://docs.ropensci.org/drake/reference/make.html"><code>make(plan)</code></a> again. Which targets rebuild? Why?</p>
 <pre class="r"><code># Open ../data/customer_churn.csv in the RStudio IDE (&quot;View File&quot;).
 # Delete the last record.
 # Save the file.

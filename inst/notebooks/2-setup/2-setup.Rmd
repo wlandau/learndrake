@@ -26,7 +26,7 @@ After working through `1-churn.Rmd`, we have the building blocks (i.e. functions
 You may find these references on `drake` helpful (but hopefully not necessary for this notebook).
 
 - GitHub page: <https://github.com/ropensci/drake>
-- Reference website: <https://ropensci.github.io/drake/>
+- Reference website: <https://docs.ropensci.org/drake/>
 - User manual: <https://ropenscilabs.github.io/drake-manual/>
 - Example code: <https://github.com/wlandau/drake-examples>
 - `drakeplanner` app: <https://github.com/wlandau/drakeplanner>
@@ -123,7 +123,7 @@ readRDS("img/graph.rds")
 
 # Do the work.
 
-Call [`make()`](https://ropensci.github.io/drake/reference/make.html) to actually run the workflow. `make()` builds the targets from left to right in the dependency graph. The output is stored in a hidden `.drake/` cache.
+Call [`make()`](https://docs.ropensci.org/drake/reference/make.html) to actually run the workflow. `make()` builds the targets from left to right in the dependency graph. The output is stored in a hidden `.drake/` cache.
 
 ```{r}
 make(plan)
