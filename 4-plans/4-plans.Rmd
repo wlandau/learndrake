@@ -44,6 +44,7 @@ plan <- drake_plan(
   rec = prepare_recipe(data),
   model = target(
     train_model(data, rec, act1 = activation),
+    format = "keras",
     transform = map(activation = c("relu", "sigmoid", "softmax"))
   ),
   conf = target(
@@ -107,6 +108,7 @@ drake_plan(
   rec = prepare_recipe(data),
   model = target(
     train_model(data, rec, units1 = units),
+    format = "keras",
     transform = map(units = units)
   ),
   conf = target(
@@ -120,7 +122,7 @@ drake_plan(
 )
 ```
 
-We want the **values** stored in `units`, not the name of the symbol. To get the correct plan, we use `!!` from [tidy evaluation](https://tidyeval.tidyverse.org/).
+We want the **values** stored in `units`, not the name of the symbol "units". To get the correct plan, we use `!!` from [tidy evaluation](https://tidyeval.tidyverse.org/).
 
 ```{r, paged.print = FALSE}
 plan <- drake_plan(
@@ -132,6 +134,7 @@ plan <- drake_plan(
   rec = prepare_recipe(data),
   model = target(
     train_model(data, rec, units1 = units),
+    format = "keras",
     transform = map(units = !!units) # Use tidy evaluation here.
   ),
   conf = target(
@@ -166,6 +169,7 @@ plan <- drake_plan(
   rec = prepare_recipe(data),
   model = target(
     train_model(data, rec, units1 = units),
+    format = "keras",
     transform = map(units = !!units) # Use tidy evaluation here.
   ),
   conf = target(
@@ -200,6 +204,7 @@ drake_plan(
   rec = prepare_recipe(data),
   model = target(
     train_model(data, rec, units1 = units),
+    format = "keras",
     transform = map(units = !!units)
   ),
   conf = target(
