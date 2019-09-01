@@ -43,7 +43,7 @@ plan <- drake_plan(
     initial_split(prop = 0.3),
   rec = prepare_recipe(data),
   model = target(
-    train_model(data, rec, act1 = activation),
+    train_model(rec, act1 = activation),
     format = "keras",
     transform = map(activation = c("relu", "sigmoid", "softmax"))
   ),
@@ -107,7 +107,7 @@ drake_plan(
     initial_split(prop = 0.3),
   rec = prepare_recipe(data),
   model = target(
-    train_model(data, rec, units1 = units),
+    train_model(rec, units1 = units),
     format = "keras",
     transform = map(units = units)
   ),
@@ -133,7 +133,7 @@ plan <- drake_plan(
     initial_split(prop = 0.3),
   rec = prepare_recipe(data),
   model = target(
-    train_model(data, rec, units1 = units),
+    train_model(rec, units1 = units),
     format = "keras",
     transform = map(units = !!units) # Use tidy evaluation here.
   ),
@@ -168,7 +168,7 @@ plan <- drake_plan(
     initial_split(prop = 0.3),
   rec = prepare_recipe(data),
   model = target(
-    train_model(data, rec, units1 = units),
+    train_model(rec, units1 = units),
     format = "keras",
     transform = map(units = !!units) # Use tidy evaluation here.
   ),
@@ -203,7 +203,7 @@ drake_plan(
     initial_split(prop = 0.3),
   rec = prepare_recipe(data),
   model = target(
-    train_model(data, rec, units1 = units),
+    train_model(rec, units1 = units),
     format = "keras",
     transform = map(units = !!units)
   ),

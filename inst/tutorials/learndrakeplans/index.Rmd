@@ -108,7 +108,7 @@ plan <- drake_plan(
     initial_split(prop = 0.3),
   rec = prepare_recipe(data),
   model = target(
-    train_model(data, rec, units1 = u1, units2 = u2),
+    train_model(rec, units1 = u1, units2 = u2),
     format = "keras",
     transform = map(
       u1 = c(16, 32, 64),
@@ -137,7 +137,7 @@ expected1 <- drake_plan(
     initial_split(prop = 0.3),
   rec = prepare_recipe(data),
   model = target(
-    train_model(data, rec, units1 = u1, units2 = u2),
+    train_model(rec, units1 = u1, units2 = u2),
     format = "keras",
     transform = map(
       u1 = c(16, 32, 64),
@@ -172,7 +172,7 @@ drake_plan(
     initial_split(prop = 0.3),
   rec = prepare_recipe(data),
   model = target(
-    train_model(data, rec, units1 = u1, units2 = u2),
+    train_model(rec, units1 = u1, units2 = u2),
     format = "keras",
     transform = map(
       u1 = c(16, 32, 64),
@@ -203,7 +203,7 @@ plan <- drake_plan(
     initial_split(prop = 0.3),
   rec = prepare_recipe(data),
   model = target(
-    train_model(data, rec, units1 = u1, units2 = u2),
+    train_model(rec, units1 = u1, units2 = u2),
     format = "keras",
     transform = map( # Your turn: change map() to cross().
       u1 = c(16, 32, 64),
@@ -232,7 +232,7 @@ expected2 <- drake_plan(
     initial_split(prop = 0.3),
   rec = prepare_recipe(data),
   model = target(
-    train_model(data, rec, units1 = u1, units2 = u2),
+    train_model(rec, units1 = u1, units2 = u2),
     format = "keras",
     transform = cross(
       u1 = c(16, 32, 64),
@@ -267,7 +267,7 @@ drake_plan(
     initial_split(prop = 0.3),
   rec = prepare_recipe(data),
   model = target(
-    train_model(data, rec, units1 = u1, units2 = u2),
+    train_model(rec, units1 = u1, units2 = u2),
     format = "keras",
     transform = cross(
       u1 = c(16, 32, 64),
@@ -312,7 +312,7 @@ plan <- drake_plan(
     initial_split(prop = 0.3),
   rec = prepare_recipe(data),
   model = target(
-    train_model(data, rec, units1 = u1),
+    train_model(rec, units1 = u1),
     format = "keras",
     transform = map(
       # Your turn: use !! to insert the values of my_units1 in for u1.
@@ -342,7 +342,7 @@ expected3 <- drake_plan(
     initial_split(prop = 0.3),
   rec = prepare_recipe(data),
   model = target(
-    train_model(data, rec, units1 = u1),
+    train_model(rec, units1 = u1),
     format = "keras",
     transform = map(
       u1 = !!my_units1
@@ -378,7 +378,7 @@ drake_plan(
     initial_split(prop = 0.3),
   rec = prepare_recipe(data),
   model = target(
-    train_model(data, rec, units1 = u1),
+    train_model(rec, units1 = u1),
     format = "keras",
     transform = map(
       u1 = !!my_units1
@@ -421,7 +421,7 @@ plan <- drake_plan(
     initial_split(prop = 0.3),
   rec = prepare_recipe(data),
   model = target(
-    train_model(data, rec, units1 = u1),
+    train_model(rec, units1 = u1),
     format = "keras",
     transform = map(
       # Your turn: use !! to insert the values of my_units1 in for u1.
@@ -452,7 +452,7 @@ expected4 <- drake_plan(
     initial_split(prop = 0.3),
   rec = prepare_recipe(data),
   model = target(
-    train_model(data, rec, units1 = u1),
+    train_model(rec, units1 = u1),
     format = "keras",
     transform = map(
       u1 = !!my_units1
@@ -489,7 +489,7 @@ drake_plan(
     initial_split(prop = 0.3),
   rec = prepare_recipe(data),
   model = target(
-    train_model(data, rec, units1 = u1),
+    train_model(rec, units1 = u1),
     format = "keras",
     transform = map(
       u1 = !!my_units1
@@ -534,7 +534,7 @@ plan <- drake_plan(
     initial_split(prop = 0.3),
   rec = prepare_recipe(data),
   model = target(
-    train_model(data, rec, units1 = my_units1, act1 = my_act1),
+    train_model(rec, units1 = my_units1, act1 = my_act1),
     format = "keras",
     transform = map(
       ... = # Use !! to apply the grid of settings.
@@ -567,7 +567,7 @@ expected5 <- drake_plan(
     initial_split(prop = 0.3),
   rec = prepare_recipe(data),
   model = target(
-    train_model(data, rec, units1 = my_units1, act1 = my_act1),
+    train_model(rec, units1 = my_units1, act1 = my_act1),
     format = "keras",
     transform = map(
       .data = !!my_grid
@@ -606,7 +606,7 @@ drake_plan(
     initial_split(prop = 0.3),
   rec = prepare_recipe(data),
   model = target(
-    train_model(data, rec, units1 = my_units1, act1 = my_act1),
+    train_model(rec, units1 = my_units1, act1 = my_act1),
     format = "keras",
     transform = map(
       .data = !!my_grid
@@ -642,7 +642,7 @@ plan <- drake_plan(
     initial_split(prop = 0.3),
   rec = prepare_recipe(data),
   model = target(
-    train_model(data, rec, units1 = my_units1, act1 = my_act1),
+    train_model(rec, units1 = my_units1, act1 = my_act1),
     format = "keras",
     transform = map( # Use cross() instead of map()
       ... = # Use !! to apply the grid of settings.
@@ -673,7 +673,7 @@ expected6 <- drake_plan(
     initial_split(prop = 0.3),
   rec = prepare_recipe(data),
   model = target(
-    train_model(data, rec, units1 = my_units1, act1 = my_act1),
+    train_model(rec, units1 = my_units1, act1 = my_act1),
     format = "keras",
     transform = cross(
       .data = !!my_grid
@@ -704,7 +704,7 @@ drake_plan(
     initial_split(prop = 0.3),
   rec = prepare_recipe(data),
   model = target(
-    train_model(data, rec, units1 = my_units1, act1 = my_act1),
+    train_model(rec, units1 = my_units1, act1 = my_act1),
     format = "keras",
     transform = cross(
       .data = !!my_grid
@@ -769,7 +769,7 @@ plan <- drake_plan(
     initial_split(prop = 0.3),
   rec = prepare_recipe(data),
   model = target(
-    train_model(data, rec, units1 = my_units1, act1 = my_act1),
+    train_model(rec, units1 = my_units1, act1 = my_act1),
     format = "keras",
     transform = map( # Use cross() instead of map().
       ... = # Use !! to apply the grid of settings.
@@ -805,7 +805,7 @@ expected7 <- drake_plan(
     initial_split(prop = 0.3),
   rec = prepare_recipe(data),
   model = target(
-    train_model(data, rec, units1 = my_units1, act1 = my_act1),
+    train_model(rec, units1 = my_units1, act1 = my_act1),
     format = "keras",
     transform = cross(
       .data = !!my_grid
@@ -844,7 +844,7 @@ drake_plan(
     initial_split(prop = 0.3),
   rec = prepare_recipe(data),
   model = target(
-    train_model(data, rec, units1 = my_units1, act1 = my_act1),
+    train_model(rec, units1 = my_units1, act1 = my_act1),
     format = "keras",
     transform = cross(
       .data = !!my_grid
@@ -882,7 +882,6 @@ plan <- drake_plan(
   rec = prepare_recipe(data),
   model = target(
     train_model(
-      data,
       rec,
       units1 = my_units1,
       units2 = my_units2,
@@ -922,7 +921,6 @@ expected8 <- drake_plan(
   rec = prepare_recipe(data),
   model = target(
     train_model(
-      data,
       rec,
       units1 = my_units1,
       units2 = my_units2,
@@ -968,7 +966,6 @@ drake_plan(
   rec = prepare_recipe(data),
   model = target(
     train_model(
-      data,
       rec,
       units1 = my_units1,
       units2 = my_units2,
