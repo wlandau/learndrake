@@ -289,7 +289,7 @@ In `R/plan.R` (in the `3-flow/` folder) choose `"sigmoid"` for the activation fu
 plan <- drake_plan(
   # ...
   model = target(
-    train_model(data, rec, act1 = "sigmoid"), # edit here
+    train_model(rec, act1 = "sigmoid"), # edit here
     format = "keras"
   ),
   # ...
