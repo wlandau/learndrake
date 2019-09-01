@@ -39,7 +39,6 @@ define_model <- function(rec, units1, units2, act1, act2, act3) {
 }
 
 train_model <- function(
-  data,
   rec,
   units1 = 16,
   units2 = 16,
