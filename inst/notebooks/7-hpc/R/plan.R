@@ -6,9 +6,9 @@ plan <- drake_plan(
     initial_split(prop = 0.3),
   rec = prepare_recipe(data),
   model = target(
-    train_model(data, rec, batch_size = batch_size_, epochs = 32),
+    train_model(rec, units1 = u1),
     format = "keras",
-    transform = map(batch_size_ = c(16, 32))
+    transform = map(u1 = c(16, 32, 64))
   ),
   conf = target(
     confusion_matrix(data, rec, model),
@@ -17,13 +17,5 @@ plan <- drake_plan(
   metrics = target(
     compare_models(conf),
     transform = combine(conf)
-  ),
-  report_step = target(
-    rmarkdown::render(
-      input = knitr_in("churn-results.Rmd"),
-      output_file = file_out("churn-results.html"),
-      quiet = TRUE
-    ),
-    hpc = FALSE # Run the report locally instead of on a parallel worker.
   )
 )
