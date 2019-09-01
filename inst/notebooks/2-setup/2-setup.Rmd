@@ -50,7 +50,7 @@ Now, it is time to plan the actual data analysis. If you were to write an R scri
 
 ```{r, eval = FALSE}
 # Get the data.
-data = read_csv(
+data <- read_csv(
   file_in("../data/customer_churn.csv"),
   col_types = cols()
 ) %>%
@@ -60,7 +60,7 @@ data = read_csv(
 rec <- prepare_recipe(data)
 
 # Train the model.
-model <- train_model(data, rec)
+model <- train_model(rec)
 
 # Compare to testing data.
 conf <- confusion_matrix(data, rec, model)
