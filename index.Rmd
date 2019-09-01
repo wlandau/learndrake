@@ -86,20 +86,21 @@ knitr::opts_chunk$set(
 
 ## Large data science projects
 
-1. Long runtimes.
-2. Many steps.
-3. Steps are interconnected.
+- Struggles
+    1. Long runtimes.
+    2. Many steps.
+    3. Steps are interconnected.
 
-- Deep learning
-- Classical machine learning.
-- Bayesian computation, e.g. Markov chain Monte Carlo.
-- Spatial data analysis.
-- Clinical trial modeling and simulation.
-- Subgroup identification.
-- Graph-based multiple comparison procedures.
-- Genomics pipelines.
-- PK/PD modeling (e.g. [`mrgsolve`](https://github.com/metrumresearchgroup/mrgsolve))
-- ...
+- Examples
+    - Deep learning
+    - Classical machine learning.
+    - Bayesian computation via Markov chain Monte Carlo ([`rjags`](https://CRAN.R-project.org/package=rjags), [`rstan`](https://github.com/stan-dev/rstan), etc.)
+    - Spatial data analysis.
+    - Clinical trial modeling and simulation.
+    - Subgroup identification.
+    - Graph-based multiple comparison procedures.
+    - Genomics pipelines.
+    - PK/PD modeling ([`mrgsolve`](https://github.com/metrumresearchgroup/mrgsolve), [`nlmixr`](https://github.com/nlmixrdevelopment/nlmixr), etc.)
 
 ---
 
@@ -232,7 +233,7 @@ define_model <- function(rec, units1, units2, act1, act2, act3) {
   # ...
 }
 
-train_model <- function(data, rec, units1, units2, act1, act2, act3) {
+train_model <- function(rec, units1, units2, act1, act2, act3) {
   # ...
 }
 
@@ -257,7 +258,7 @@ plan <- drake_plan(
     initial_split(prop = 0.3),
   rec = prepare_recipe(data),
   model = target(
-    train_model(data, rec, act1 = act),
+    train_model(rec, act1 = act),
     format = "keras",
     transform = map(act = !!activations)
   ),
@@ -321,7 +322,7 @@ plan <- drake_plan(
     initial_split(prop = 0.3),
   rec = prepare_recipe(data),
   model = target(
-    train_model(data, rec, act1 = act),
+    train_model(rec, act1 = act),
     format = "keras",
     transform = map(act = !!activations) #<<
   ),
