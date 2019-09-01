@@ -212,7 +212,6 @@ We write another function to compile and train the deep neural net. The function
 
 ```{r}
 train_model <- function(
-  data,
   rec,
   units1 = 16,
   units2 = 16,
@@ -257,7 +256,7 @@ train_model <- function(
 Let's try out `train_model()`. Notice how long it takes. Larger, more serious models can take much longer.
 
 ```{r, output = FALSE}
-model_16 <- train_model(data, rec, units1 = 16, units2 = 16)
+model_16 <- train_model(rec, units1 = 16, units2 = 16)
 ```
 
 ```{r}
@@ -326,7 +325,7 @@ compare_models <- function(...) {
 `compare_models()` compares the accuracy, sensitivity, and specificity of multiple models. Let's use it to compare two models with different numbers of neurons.
 
 ```{r}
-model_32 <- train_model(data, rec, units1 = 32, units2 = 32) # Previously we used 16.
+model_32 <- train_model(rec, units1 = 32, units2 = 32) # Previously we used 16.
 conf_32 <- confusion_matrix(data, rec, model_32)
 
 compare_models(conf_16, conf_32)
