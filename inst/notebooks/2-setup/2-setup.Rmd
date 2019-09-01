@@ -71,7 +71,7 @@ metrics <- compare_models(conf)
 
 But for `drake`-powered automation and reproducibility, we use a special data frame called a "`drake` plan" (<https://ropenscilabs.github.io/drake-manual/plans.html>).
 
-Now it is your turn: fill out the `drake` plan below using the code from the previous chunk. The "targets" (`data`, `rec`, etc.) can be in any order.
+Now it is your turn: fill out the `drake` plan below using the code from the previous chunk. The *targets* (`data`, `rec`, etc.) can be in any order.
 
 ```{r}
 plan <- drake_plan(
