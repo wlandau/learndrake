@@ -169,7 +169,7 @@ class: center, middle, inverse, title-slide
 
 ---
 
-## Large projects outgrow numbered scripts!
+## This project is too big for numbered scripts!
 
 
 ```r
@@ -191,9 +191,9 @@ output/
 
 ---
 
-## Disadvantages of imperative scripts
+## Disadvantages
 
-- They plan and execute at the same time.
+- The planing and the execution happen at the same time.
 - Cumbersome, ad hoc, jumbled, muddled.
 
 
@@ -272,7 +272,7 @@ prepare_recipe &lt;- function(data) {
 
 ---
 
-## Use the functions in a drake **plan**.
+## Bring the functions together in a drake **plan**.
 
 
 ```r
@@ -300,7 +300,7 @@ plan &lt;- drake_plan(
 
 ---
 
-## The plan is a data frame of tasks.
+## The plan is a data frame of skippable tasks.
 
 
 ```r
@@ -476,15 +476,15 @@ drake_history()
 ## # A tibble: 9 x 10
 ##   target  current built   exists hash  command     seed runtime  prop act1 
 ##   &lt;chr&gt;   &lt;lgl&gt;   &lt;chr&gt;   &lt;lgl&gt;  &lt;chr&gt; &lt;chr&gt;      &lt;int&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;
-## 1 conf_r… TRUE    2019-0… TRUE   02c7… confusio… 4.05e8   0.236  NA   &lt;NA&gt; 
-## 2 conf_s… TRUE    2019-0… TRUE   f7bc… confusio… 1.93e9   0.226  NA   &lt;NA&gt; 
-## 3 conf_s… TRUE    2019-0… TRUE   fd53… confusio… 1.80e9   0.235  NA   &lt;NA&gt; 
-## 4 data    TRUE    2019-0… TRUE   ca84… "read_cs… 1.29e9   0.037   0.3 &lt;NA&gt; 
-## 5 metrics TRUE    2019-0… TRUE   15a3… compare_… 1.21e9   0.028  NA   &lt;NA&gt; 
-## 6 model_… TRUE    2019-0… TRUE   f02f… "train_m… 1.47e9   4.86   NA   relu 
-## 7 model_… TRUE    2019-0… TRUE   b4e2… "train_m… 1.26e9   3.14   NA   sigm…
-## 8 model_… TRUE    2019-0… TRUE   6429… "train_m… 8.05e8   3.27   NA   soft…
-## 9 rec     TRUE    2019-0… TRUE   40e5… prepare_… 6.29e8   0.155  NA   &lt;NA&gt;
+## 1 conf_r… TRUE    2019-0… TRUE   f305… confusio… 4.05e8  0.233   NA   &lt;NA&gt; 
+## 2 conf_s… TRUE    2019-0… TRUE   87d6… confusio… 1.93e9  0.248   NA   &lt;NA&gt; 
+## 3 conf_s… TRUE    2019-0… TRUE   31e3… confusio… 1.80e9  0.228   NA   &lt;NA&gt; 
+## 4 data    TRUE    2019-0… TRUE   ca84… "read_cs… 1.29e9  0.0380   0.3 &lt;NA&gt; 
+## 5 metrics TRUE    2019-0… TRUE   6928… compare_… 1.21e9  0.0270  NA   &lt;NA&gt; 
+## 6 model_… TRUE    2019-0… TRUE   e073… "train_m… 1.47e9  4.75    NA   relu 
+## 7 model_… TRUE    2019-0… TRUE   6f35… "train_m… 1.26e9  3.10    NA   sigm…
+## 8 model_… TRUE    2019-0… TRUE   8c7b… "train_m… 8.05e8  3.23    NA   soft…
+## 9 rec     TRUE    2019-0… TRUE   40e5… prepare_… 6.29e8  0.16    NA   &lt;NA&gt;
 ```
 
 ---
@@ -509,7 +509,7 @@ make(plan, recover = TRUE)
 
 proc.time() - start
 ##    user  system elapsed 
-##   0.105   0.039   0.287
+##   0.103   0.040   0.286
 ```
 
 - Details + how to rename a target: &lt;https://ropenscilabs.github.io/drake-manual/walkthrough.html#automated-recovery-and-renaming&gt;

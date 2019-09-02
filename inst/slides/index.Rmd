@@ -192,7 +192,7 @@ knitr::opts_chunk$set(
 
 ---
 
-## Large projects outgrow numbered scripts!
+## This project is too big for numbered scripts!
 
 ```{r files_bad, eval = FALSE}
 run_everything.R
@@ -213,9 +213,9 @@ output/
 
 ---
 
-## Disadvantages of imperative scripts
+## Disadvantages
 
-- They plan and execute at the same time.
+- The planing and the execution happen at the same time.
 - Cumbersome, ad hoc, jumbled, muddled.
 
 ```{r c2, eval = FALSE}
@@ -290,7 +290,7 @@ prepare_recipe <- function(data) {
 
 ---
 
-## Use the functions in a drake **plan**.
+## Bring the functions together in a drake **plan**.
 
 ```{r c4}
 activations <- c("relu", "sigmoid")
@@ -317,7 +317,7 @@ plan <- drake_plan(
 
 ---
 
-## The plan is a data frame of tasks.
+## The plan is a data frame of skippable tasks.
 
 ```{r c5}
 plan
