@@ -1,4 +1,4 @@
-activations <- c("relu", "sigmoid")
+activations <- c("relu", "sigmoid", "softmax")
 
 plan <- drake_plan(
   data = read_csv(file_in("data/customer_churn.csv"), col_types = cols()) %>%
