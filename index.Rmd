@@ -84,12 +84,12 @@ knitr::opts_chunk$set(
 )
 ```
 
-## Large data science projects
+## Large data science workflows
 
 - Struggles
     1. Long runtimes.
-    2. Many steps.
-    3. Steps are interconnected.
+    2. Many tasks.
+    3. Interconnected tasks.
 
 - Examples
     - Deep learning
@@ -104,7 +104,7 @@ knitr::opts_chunk$set(
 
 ---
 
-## Workflows have interconnected steps.
+## Interconnected tasks
 <center>
 <img src = "./images/workflow.png" align="middle" style="border: none; box-shadow: none; text-align: center;">
 </center>
@@ -118,7 +118,7 @@ knitr::opts_chunk$set(
 
 ---
 
-## ...the downstream steps are **no longer valid**.
+## ...the downstream output is **no longer valid**.
 
 <center>
 <img src = "./images/downstream.png" align="middle" style="border: none; box-shadow: none; text-align: center;">
@@ -161,7 +161,7 @@ knitr::opts_chunk$set(
 
 ---
 
-## What makes `drake` different?
+## What distinguishes `drake`?
 
 <center>
 <img src = "./images/R.png" align="middle" style="border: none; box-shadow: none; text-align: center; height: 200px">
@@ -192,63 +192,105 @@ knitr::opts_chunk$set(
 
 ---
 
-## File structure
+## This project is too big for numbered scripts!
 
-<br>
-<br>
+```{r files_bad, eval = FALSE}
+run_everything.R
+R/
+├── 01-data.R
+├── 02-munge.R
+├── 03-model.R
+├── 04-results.R
+└── 05-plot.R
+data/
+└── customer_churn.csv
+output/
+├── model_relu.h5
+├── model_sigmoid.h5
+├── confusion_matrix.rds
+└── metrics_plot.png
+```
 
-```{r files, eval = FALSE}
+---
+
+## Disadvantages
+
+- The planing and the execution happen at the same time.
+- Cumbersome, ad hoc, jumbled, muddled.
+
+```{r c2, eval = FALSE}
+# 02-munge.R
+library(recipes) # package dependencies scattered across scripts #<<
+
+# single-use code, difficult to test #<<
+rec <- data %>%
+  training() %>%
+  recipe(Churn ~ .) %>%
+  step_rm(customerID) %>%
+  step_naomit(all_outcomes(), all_predictors()) %>%
+  step_discretize(tenure, options = list(cuts = 6)) %>%
+  step_log(TotalCharges) %>%
+  step_mutate(Churn = ifelse(Churn == "Yes", 1, 0)) %>%
+  step_dummy(all_nominal(), -all_outcomes()) %>%
+  step_center(all_predictors(), -all_outcomes()) %>%
+  step_scale(all_predictors(), -all_outcomes()) %>%
+  prep()
+
+saveRDS(rec, "recipe.rds") # final output scattered across code #<<
+```
+
+---
+
+## Instead, embrace **functions**!
+
+- Separate the planning from the execution.
+- Clarity: functions are like paragraphs.
+- Reuse: define once, run whenever.
+
+```{r files_good, eval = FALSE}
 make.R
 R/
 ├── packages.R
-├── functions.R
+├── functions.R #<<
 └── plan.R
 data/
 └── customer_churn.csv
+.drake/ # drake's cache
+└──     # output magically appears here
 ```
 
 ---
 
-## packages.R
+## Write function-oriented R scripts.
 
-```{r c2, eval = FALSE}
-library(drake)
-library(keras)
+```{r c3.0, eval = FALSE}
+# packages.R: all package dependencies #<<
 library(recipes)
-library(rsample)
-library(tidyverse)
-library(yardstick)
-```
-
----
-
-## functions.R
+# other packages...
+````
 
 ```{r c3, eval = FALSE}
+# functions.R: pure reusable code #<<
 prepare_recipe <- function(data) {
-  # ... 
+  data %>%
+    training() %>%
+    recipe(Churn ~ .) %>%
+    step_rm(customerID) %>%
+    step_naomit(all_outcomes(), all_predictors()) %>%
+    step_discretize(tenure, options = list(cuts = 6)) %>%
+    step_log(TotalCharges) %>%
+    step_mutate(Churn = ifelse(Churn == "Yes", 1, 0)) %>%
+    step_dummy(all_nominal(), -all_outcomes()) %>%
+    step_center(all_predictors(), -all_outcomes()) %>%
+    step_scale(all_predictors(), -all_outcomes()) %>%
+    prep()
 }
-
-define_model <- function(rec, units1, units2, act1, act2, act3) {
-  # ...
-}
-
-train_model <- function(rec, units1, units2, act1, act2, act3) {
-  # ...
-}
-
-confusion_matrix <- function(data, rec, model) {
-  # ...
-}
-
-compare_models <- function(...) {
-  # ...
-}
+# other functions...
 ```
 
 ---
 
-## plan.R
+## Bring the functions together in a drake **plan**.
 
 ```{r c4}
 activations <- c("relu", "sigmoid")
@@ -256,7 +298,7 @@ activations <- c("relu", "sigmoid")
 plan <- drake_plan(
   data = read_csv(file_in("data/customer_churn.csv"), col_types = cols()) %>%
     initial_split(prop = 0.3),
-  rec = prepare_recipe(data),
+  rec = prepare_recipe(data), #<<
   model = target(
     train_model(rec, act1 = act),
     format = "keras",
@@ -275,7 +317,7 @@ plan <- drake_plan(
 
 ---
 
-## Data frame of workflow steps
+## The plan is a data frame of skippable tasks.
 
 ```{r c5}
 plan
@@ -312,7 +354,7 @@ readd(metrics) # See also loadd()
 
 ---
 
-## Try another activation function.
+## Add a new model.
 
 ```{r c8}
 activations <- c("relu", "sigmoid", "softmax") #<<

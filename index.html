@@ -61,12 +61,12 @@ class: center, middle, inverse, title-slide
 
 
 
-## Large data science projects
+## Large data science workflows
 
 - Struggles
     1. Long runtimes.
-    2. Many steps.
-    3. Steps are interconnected.
+    2. Many tasks.
+    3. Interconnected tasks.
 
 - Examples
     - Deep learning
@@ -81,7 +81,7 @@ class: center, middle, inverse, title-slide
 
 ---
 
-## Workflows have interconnected steps.
+## Interconnected tasks
 &lt;center&gt;
 &lt;img src = "./images/workflow.png" align="middle" style="border: none; box-shadow: none; text-align: center;"&gt;
 &lt;/center&gt;
@@ -95,7 +95,7 @@ class: center, middle, inverse, title-slide
 
 ---
 
-## ...the downstream steps are **no longer valid**.
+## ...the downstream output is **no longer valid**.
 
 &lt;center&gt;
 &lt;img src = "./images/downstream.png" align="middle" style="border: none; box-shadow: none; text-align: center;"&gt;
@@ -138,7 +138,7 @@ class: center, middle, inverse, title-slide
 
 ---
 
-## What makes `drake` different?
+## What distinguishes `drake`?
 
 &lt;center&gt;
 &lt;img src = "./images/R.png" align="middle" style="border: none; box-shadow: none; text-align: center; height: 200px"&gt;
@@ -169,66 +169,110 @@ class: center, middle, inverse, title-slide
 
 ---
 
-## File structure
+## This project is too big for numbered scripts!
 
-&lt;br&gt;
-&lt;br&gt;
+
+```r
+run_everything.R
+R/
+├── 01-data.R
+├── 02-munge.R
+├── 03-model.R
+├── 04-results.R
+└── 05-plot.R
+data/
+└── customer_churn.csv
+output/
+├── model_relu.h5
+├── model_sigmoid.h5
+├── confusion_matrix.rds
+└── metrics_plot.png
+```
+
+---
+
+## Disadvantages
+
+- The planing and the execution happen at the same time.
+- Cumbersome, ad hoc, jumbled, muddled.
+
+
+```r
+# 02-munge.R
+*library(recipes) # package dependencies scattered across scripts
+
+*# single-use code, difficult to test
+rec &lt;- data %&gt;%
+  training() %&gt;%
+  recipe(Churn ~ .) %&gt;%
+  step_rm(customerID) %&gt;%
+  step_naomit(all_outcomes(), all_predictors()) %&gt;%
+  step_discretize(tenure, options = list(cuts = 6)) %&gt;%
+  step_log(TotalCharges) %&gt;%
+  step_mutate(Churn = ifelse(Churn == "Yes", 1, 0)) %&gt;%
+  step_dummy(all_nominal(), -all_outcomes()) %&gt;%
+  step_center(all_predictors(), -all_outcomes()) %&gt;%
+  step_scale(all_predictors(), -all_outcomes()) %&gt;%
+  prep()
+
+*saveRDS(rec, "recipe.rds") # final output scattered across code
+```
+
+---
+
+## Instead, embrace **functions**!
+
+- Separate the planning from the execution.
+- Clarity: functions are like paragraphs.
+- Reuse: define once, run whenever.
 
 
 ```r
 make.R
 R/
 ├── packages.R
-├── functions.R
+*├── functions.R
 └── plan.R
 data/
 └── customer_churn.csv
+.drake/ # drake's cache
+└──     # output magically appears here
 ```
 
 ---
 
-## packages.R
+## Write function-oriented R scripts.
 
 
 ```r
-library(drake)
-library(keras)
+*# packages.R: all package dependencies
 library(recipes)
-library(rsample)
-library(tidyverse)
-library(yardstick)
+# other packages...
 ```
-
----
-
-## functions.R
 
 
 ```r
+*# functions.R: pure reusable code
 prepare_recipe &lt;- function(data) {
-  # ... 
+  data %&gt;%
+    training() %&gt;%
+    recipe(Churn ~ .) %&gt;%
+    step_rm(customerID) %&gt;%
+    step_naomit(all_outcomes(), all_predictors()) %&gt;%
+    step_discretize(tenure, options = list(cuts = 6)) %&gt;%
+    step_log(TotalCharges) %&gt;%
+    step_mutate(Churn = ifelse(Churn == "Yes", 1, 0)) %&gt;%
+    step_dummy(all_nominal(), -all_outcomes()) %&gt;%
+    step_center(all_predictors(), -all_outcomes()) %&gt;%
+    step_scale(all_predictors(), -all_outcomes()) %&gt;%
+    prep()
 }
-
-define_model &lt;- function(rec, units1, units2, act1, act2, act3) {
-  # ...
-}
-
-train_model &lt;- function(rec, units1, units2, act1, act2, act3) {
-  # ...
-}
-
-confusion_matrix &lt;- function(data, rec, model) {
-  # ...
-}
-
-compare_models &lt;- function(...) {
-  # ...
-}
+# other functions...
 ```
 
 ---
 
-## plan.R
+## Bring the functions together in a drake **plan**.
 
 
 ```r
@@ -237,7 +281,7 @@ activations &lt;- c("relu", "sigmoid")
 plan &lt;- drake_plan(
   data = read_csv(file_in("data/customer_churn.csv"), col_types = cols()) %&gt;%
     initial_split(prop = 0.3),
-  rec = prepare_recipe(data),
+* rec = prepare_recipe(data),
   model = target(
     train_model(rec, act1 = act),
     format = "keras",
@@ -256,7 +300,7 @@ plan &lt;- drake_plan(
 
 ---
 
-## Data frame of workflow steps
+## The plan is a data frame of skippable tasks.
 
 
 ```r
@@ -297,8 +341,10 @@ make(plan)
 ## target rec
 ## target model_relu
 ## target model_sigmoid
+## target model_softmax
 ## target conf_relu
 ## target conf_sigmoid
+## target conf_softmax
 ## target metrics
 ```
 
@@ -315,7 +361,7 @@ readd(metrics) # See also loadd()
 
 ---
 
-## Try another activation function.
+## Add a new model.
 
 
 ```r
@@ -362,9 +408,7 @@ source("R/functions.R")
 *source("R/plan.R") # modified
 
 make(plan)
-## target model_softmax
-## target conf_softmax
-## target metrics
+## All targets are already up to date.
 ```
 
 ---
@@ -429,19 +473,18 @@ build_times(type = "build")
 
 ```r
 drake_history()
-## # A tibble: 10 x 10
-##    target  current built  exists hash  command     seed runtime  prop act1 
-##    &lt;chr&gt;   &lt;lgl&gt;   &lt;chr&gt;  &lt;lgl&gt;  &lt;chr&gt; &lt;chr&gt;      &lt;int&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;
-##  1 conf_r… TRUE    2019-… TRUE   d5fc… confusio… 4.05e8  0.222   NA   &lt;NA&gt; 
-##  2 conf_s… TRUE    2019-… TRUE   e2b5… confusio… 1.93e9  0.221   NA   &lt;NA&gt; 
-##  3 conf_s… TRUE    2019-… TRUE   24c3… confusio… 1.80e9  0.218   NA   &lt;NA&gt; 
-##  4 data    TRUE    2019-… TRUE   ca84… "read_cs… 1.29e9  0.0370   0.3 &lt;NA&gt; 
-##  5 metrics FALSE   2019-… TRUE   4767… compare_… 1.21e9  0.0230  NA   &lt;NA&gt; 
-##  6 metrics TRUE    2019-… TRUE   e8bf… compare_… 1.21e9  0.0210  NA   &lt;NA&gt; 
-##  7 model_… TRUE    2019-… TRUE   8b34… "train_m… 1.47e9  5.09    NA   relu 
-##  8 model_… TRUE    2019-… TRUE   1cb0… "train_m… 1.26e9  3.19    NA   sigm…
-##  9 model_… TRUE    2019-… TRUE   7317… "train_m… 8.05e8  3.55    NA   soft…
-## 10 rec     TRUE    2019-… TRUE   40e5… prepare_… 6.29e8  0.153   NA   &lt;NA&gt;
+## # A tibble: 9 x 10
+##   target  current built   exists hash  command     seed runtime  prop act1 
+##   &lt;chr&gt;   &lt;lgl&gt;   &lt;chr&gt;   &lt;lgl&gt;  &lt;chr&gt; &lt;chr&gt;      &lt;int&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;
+## 1 conf_r… TRUE    2019-0… TRUE   f305… confusio… 4.05e8  0.233   NA   &lt;NA&gt; 
+## 2 conf_s… TRUE    2019-0… TRUE   87d6… confusio… 1.93e9  0.248   NA   &lt;NA&gt; 
+## 3 conf_s… TRUE    2019-0… TRUE   31e3… confusio… 1.80e9  0.228   NA   &lt;NA&gt; 
+## 4 data    TRUE    2019-0… TRUE   ca84… "read_cs… 1.29e9  0.0380   0.3 &lt;NA&gt; 
+## 5 metrics TRUE    2019-0… TRUE   6928… compare_… 1.21e9  0.0270  NA   &lt;NA&gt; 
+## 6 model_… TRUE    2019-0… TRUE   e073… "train_m… 1.47e9  4.75    NA   relu 
+## 7 model_… TRUE    2019-0… TRUE   6f35… "train_m… 1.26e9  3.10    NA   sigm…
+## 8 model_… TRUE    2019-0… TRUE   8c7b… "train_m… 8.05e8  3.23    NA   soft…
+## 9 rec     TRUE    2019-0… TRUE   40e5… prepare_… 6.29e8  0.16    NA   &lt;NA&gt;
 ```
 
 ---
@@ -466,7 +509,7 @@ make(plan, recover = TRUE)
 
 proc.time() - start
 ##    user  system elapsed 
-##   0.091   0.037   0.271
+##   0.103   0.040   0.286
 ```
 
 - Details + how to rename a target: &lt;https://ropenscilabs.github.io/drake-manual/walkthrough.html#automated-recovery-and-renaming&gt;
