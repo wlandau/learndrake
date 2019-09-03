@@ -199,9 +199,9 @@ output/
 
 ```r
 # 02-munge.R
-*library(recipes) # package dependencies scattered across scripts
+*library(recipes) # Package dependencies scattered across scripts.
 
-*# single-use code, difficult to test
+*# Single-use code, difficult to test.
 rec &lt;- data %&gt;%
   training() %&gt;%
   recipe(Churn ~ .) %&gt;%
@@ -215,7 +215,7 @@ rec &lt;- data %&gt;%
   step_scale(all_predictors(), -all_outcomes()) %&gt;%
   prep()
 
-*saveRDS(rec, "recipe.rds") # final output scattered across code
+*saveRDS(rec, "recipe.rds") # Final output scattered across code.
 ```
 
 ---
@@ -235,8 +235,8 @@ R/
 └── plan.R
 data/
 └── customer_churn.csv
-.drake/ # drake's cache
-└──     # output magically appears here
+.drake/ # drake's cache.
+└──     # Output magically appears here.
 ```
 
 ---
