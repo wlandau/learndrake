@@ -244,7 +244,7 @@ saveRDS(rec, "recipe.rds") # final output scattered across code #<<
 ## Instead, embrace **functions**!
 
 - Separate the planning from the execution.
-- Clarity: functions are like paragraphs.
+- Clarity: break down complicated ideas into manageable pieces.
 - Reuse: define once, run whenever.
 
 ```{r files_good, eval = FALSE}
