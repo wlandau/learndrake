@@ -255,7 +255,7 @@ R/
 └── plan.R
 data/
 └── customer_churn.csv
-.drake/ # drake's cache.
+.drake/ # drake's cache
 └──     # Output magically appears here.
 ```
 
