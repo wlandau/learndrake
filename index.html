@@ -166,7 +166,9 @@ class: center, middle, inverse, title-slide
 
 ---
 
-## Projects like this get too big for numbered scripts!
+background-image: ./images/not.png
+
+## &lt;img src="./images/no.png" width="40" height="40"&gt; Too big for numbered scripts!
 
 
 ```r
@@ -188,7 +190,7 @@ output/
 
 ---
 
-## Why not numbered scripts?
+## &lt;img src="./images/no.png" width="40" height="40"&gt; Why not numbered scripts?
 
 - The planning and the execution happen at the same time.
 - Cumbersome, ad hoc, jumbled, muddled.
@@ -216,7 +218,7 @@ output/
 
 ---
 
-## Instead, embrace **functions**!
+## &lt;img src="./images/yes.png" width="60" height="40"&gt; Instead, embrace **functions**!
 
 - Separate the planning from the execution.
 - Clarity: break down complicated ideas into manageable pieces.
@@ -237,7 +239,7 @@ data/
 
 ---
 
-## Write function-oriented R scripts.
+## &lt;img src="./images/yes.png" width="60" height="40"&gt; Write function-oriented R scripts.
 
 
 ```r
@@ -512,16 +514,16 @@ drake_history()
 ## # A tibble: 10 x 10
 ##    target  current built  exists hash  command     seed runtime  prop act1 
 ##    &lt;chr&gt;   &lt;lgl&gt;   &lt;chr&gt;  &lt;lgl&gt;  &lt;chr&gt; &lt;chr&gt;      &lt;int&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;
-##  1 conf_r… TRUE    2019-… TRUE   8b54… confusio… 4.05e8  0.213   NA   &lt;NA&gt; 
-##  2 conf_s… TRUE    2019-… TRUE   8e03… confusio… 1.93e9  0.203   NA   &lt;NA&gt; 
-##  3 conf_s… TRUE    2019-… TRUE   c1ad… confusio… 1.80e9  0.408   NA   &lt;NA&gt; 
-##  4 data    TRUE    2019-… TRUE   ca84… "read_cs… 1.29e9  0.038    0.3 &lt;NA&gt; 
-##  5 metrics FALSE   2019-… TRUE   6907… compare_… 1.21e9  0.0230  NA   &lt;NA&gt; 
-##  6 metrics TRUE    2019-… TRUE   0c22… compare_… 1.21e9  0.021   NA   &lt;NA&gt; 
-##  7 model_… TRUE    2019-… TRUE   35f6… "train_m… 1.47e9  4.76    NA   relu 
-##  8 model_… TRUE    2019-… TRUE   4f8b… "train_m… 1.26e9  3.12    NA   sigm…
-##  9 model_… TRUE    2019-… TRUE   d19a… "train_m… 8.05e8  3.26    NA   soft…
-## 10 rec     TRUE    2019-… TRUE   40e5… prepare_… 6.29e8  0.160   NA   &lt;NA&gt;
+##  1 conf_r… TRUE    2019-… TRUE   2734… confusio… 4.05e8  0.232   NA   &lt;NA&gt; 
+##  2 conf_s… TRUE    2019-… TRUE   0393… confusio… 1.93e9  0.203   NA   &lt;NA&gt; 
+##  3 conf_s… TRUE    2019-… TRUE   c5e6… confusio… 1.80e9  0.428   NA   &lt;NA&gt; 
+##  4 data    TRUE    2019-… TRUE   ca84… "read_cs… 1.29e9  0.039    0.3 &lt;NA&gt; 
+##  5 metrics FALSE   2019-… TRUE   5c09… compare_… 1.21e9  0.0230  NA   &lt;NA&gt; 
+##  6 metrics TRUE    2019-… TRUE   4c59… compare_… 1.21e9  0.021   NA   &lt;NA&gt; 
+##  7 model_… TRUE    2019-… TRUE   23be… "train_m… 1.47e9  4.92    NA   relu 
+##  8 model_… TRUE    2019-… TRUE   0eaa… "train_m… 1.26e9  3.26    NA   sigm…
+##  9 model_… TRUE    2019-… TRUE   52d6… "train_m… 8.05e8  3.61    NA   soft…
+## 10 rec     TRUE    2019-… TRUE   40e5… prepare_… 6.29e8  0.168   NA   &lt;NA&gt;
 ```
 
 ---
@@ -546,7 +548,7 @@ make(plan, recover = TRUE)
 
 proc.time() - start
 ##    user  system elapsed 
-##   0.099   0.041   0.294
+##   0.095   0.038   0.272
 ```
 
 - Details + how to rename a target: &lt;https://ropenscilabs.github.io/drake-manual/walkthrough.html#reproducible-data-recovery-and-renaming&gt;

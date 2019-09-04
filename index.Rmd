@@ -189,7 +189,9 @@ knitr::opts_chunk$set(
 
 ---
 
-## Projects like this get too big for numbered scripts!
+background-image: ./images/not.png
+
+## <img src="./images/no.png" width="40" height="40"> Too big for numbered scripts!
 
 ```{r files_bad, eval = FALSE}
 run_everything.R
@@ -210,7 +212,7 @@ output/
 
 ---
 
-## Why not numbered scripts?
+## <img src="./images/no.png" width="40" height="40"> Why not numbered scripts?
 
 - The planning and the execution happen at the same time.
 - Cumbersome, ad hoc, jumbled, muddled.
@@ -237,7 +239,7 @@ saveRDS(rec, "recipe.rds") # Final output scattered across code. #<<
 
 ---
 
-## Instead, embrace **functions**!
+## <img src="./images/yes.png" width="60" height="40"> Instead, embrace **functions**!
 
 - Separate the planning from the execution.
 - Clarity: break down complicated ideas into manageable pieces.
@@ -257,7 +259,7 @@ data/
 
 ---
 
-## Write function-oriented R scripts.
+## <img src="./images/yes.png" width="60" height="40"> Write function-oriented R scripts.
 
 ```{r c3.0, eval = FALSE}
 # packages.R: all package dependencies #<<
