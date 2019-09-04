@@ -509,7 +509,7 @@ make(plan, recover = TRUE)
 proc.time() - start
 ```
 
-- Details + how to rename a target: <https://ropenscilabs.github.io/drake-manual/walkthrough.html#automated-recovery-and-renaming>
+- Details + how to rename a target: <https://ropenscilabs.github.io/drake-manual/walkthrough.html#reproducible-data-recovery-and-renaming>
 
 ---
 
