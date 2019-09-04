@@ -168,15 +168,12 @@ knitr::opts_chunk$set(
 </center>
 
 - Aggressively designed for R.
-    - Think **functions**, not script files.
-    - Think **variables**, not output files.
-    - Think **data frames**, not `Makefile`s.
-- Major improvements in late 2018 and early 2019:
-    - A [domain-specific language](https://ropenscilabs.github.io/drake-manual/plans.html#large-plans) for workflows.
-    - Increased speed and reduced memory usage.
-    - [More reproducibility safeguards](https://ropensci.org/technotes/2019/03/18/drake-700/#reproducibility).
-    - [History and provenance](https://ropenscilabs.github.io/drake-manual/walkthrough.html#history-and-provenance).
-    - [Reproducible data recovery and renaming (experimental)](https://ropenscilabs.github.io/drake-manual/walkthrough.html#reproducible-recovery-and-renaming).
+    1. Think **functions**, not script files.
+    2. Think **variables**, not output files.
+    3. Think **data frames**, not `Makefile`s.
+- [`drake`](https://github.com/ropensci/drake) borrows (1) and (2) from the [`remake`](https://github.com/richfitz/remake) package by [Rich FitzJohn](https://github.com/richfitz).
+    - [`remake`](https://github.com/richfitz/remake) is no longer under development.
+    - [`drake`](https://github.com/ropensci/drake) tries to extend [`remake`](https://github.com/richfitz/remake)'s ideas further and handle larger projects.
 
 ---
 
