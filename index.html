@@ -276,10 +276,9 @@ prepare_recipe &lt;- function(data) {
 
 ```r
 # run_everything.R
-data &lt;- read_csv(
-  file_in("data/customer_churn.csv"),
-  col_types = cols()
-) %&gt;%
+source("R/packages.R")
+source("R/functions.R")
+data &lt;- read_csv(file_in("data/customer_churn.csv"), col_types = cols()) %&gt;%
   initial_split(prop = 0.3)
 saveRDS(data, "output/data.rds")
 *rec &lt;- prepare_recipe(data) # Use your functions.
@@ -516,16 +515,16 @@ drake_history()
 ## # A tibble: 10 x 10
 ##    target  current built  exists hash  command     seed runtime  prop act1 
 ##    &lt;chr&gt;   &lt;lgl&gt;   &lt;chr&gt;  &lt;lgl&gt;  &lt;chr&gt; &lt;chr&gt;      &lt;int&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;
-##  1 conf_r… TRUE    2019-… TRUE   81cd… confusio… 4.05e8   0.21   NA   &lt;NA&gt; 
-##  2 conf_s… TRUE    2019-… TRUE   83f5… confusio… 1.93e9   0.202  NA   &lt;NA&gt; 
-##  3 conf_s… TRUE    2019-… TRUE   d6b5… confusio… 1.80e9   0.407  NA   &lt;NA&gt; 
-##  4 data    TRUE    2019-… TRUE   ca84… "read_cs… 1.29e9   0.038   0.3 &lt;NA&gt; 
-##  5 metrics FALSE   2019-… TRUE   26ec… compare_… 1.21e9   0.023  NA   &lt;NA&gt; 
-##  6 metrics TRUE    2019-… TRUE   c406… compare_… 1.21e9   0.021  NA   &lt;NA&gt; 
-##  7 model_… TRUE    2019-… TRUE   b95b… "train_m… 1.47e9   4.92   NA   relu 
-##  8 model_… TRUE    2019-… TRUE   3ac5… "train_m… 1.26e9   3.26   NA   sigm…
-##  9 model_… TRUE    2019-… TRUE   0c3e… "train_m… 8.05e8   3.33   NA   soft…
-## 10 rec     TRUE    2019-… TRUE   40e5… prepare_… 6.29e8   0.164  NA   &lt;NA&gt;
+##  1 conf_r… TRUE    2019-… TRUE   4122… confusio… 4.05e8  0.207   NA   &lt;NA&gt; 
+##  2 conf_s… TRUE    2019-… TRUE   c697… confusio… 1.93e9  0.197   NA   &lt;NA&gt; 
+##  3 conf_s… TRUE    2019-… TRUE   ad93… confusio… 1.80e9  0.388   NA   &lt;NA&gt; 
+##  4 data    TRUE    2019-… TRUE   ca84… "read_cs… 1.29e9  0.0860   0.3 &lt;NA&gt; 
+##  5 metrics FALSE   2019-… TRUE   8e59… compare_… 1.21e9  0.0230  NA   &lt;NA&gt; 
+##  6 metrics TRUE    2019-… TRUE   0f27… compare_… 1.21e9  0.019   NA   &lt;NA&gt; 
+##  7 model_… TRUE    2019-… TRUE   bafb… "train_m… 1.47e9  6.96    NA   relu 
+##  8 model_… TRUE    2019-… TRUE   fb65… "train_m… 1.26e9  3.07    NA   sigm…
+##  9 model_… TRUE    2019-… TRUE   9ff3… "train_m… 8.05e8  3.25    NA   soft…
+## 10 rec     TRUE    2019-… TRUE   40e5… prepare_… 6.29e8  0.167   NA   &lt;NA&gt;
 ```
 
 ---
@@ -550,7 +549,7 @@ make(plan, recover = TRUE)
 
 proc.time() - start
 ##    user  system elapsed 
-##   0.099   0.041   0.285
+##   0.084   0.032   0.215
 ```
 
 - Details + how to rename a target: &lt;https://ropenscilabs.github.io/drake-manual/walkthrough.html#automated-recovery-and-renaming&gt;
