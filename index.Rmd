@@ -569,6 +569,7 @@ drake::drake_example("customer-churn")
 - Development repository: <https://github.com/ropensci/drake>
 - Full user manual <https://ropenscilabs.github.io/drake-manual>
 - Reference website: <https://docs.ropensci.org/drake>
+- Hands-on workshop: <https://github.com/wlandau/learndrake>
 - Code examples: <https://github.com/wlandau/drake-examples>
 - Discuss at rOpenSci.org: <https://discuss.ropensci.org>
 
