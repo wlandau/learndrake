@@ -213,17 +213,16 @@ output/
 
 ---
 
-## Disadvantages
+## Why not numbered scripts?
 
-- The planing and the execution happen at the same time.
+- The planning and the execution happen at the same time.
 - Cumbersome, ad hoc, jumbled, muddled.
 
 ```{r c2, eval = FALSE}
 # 02-munge.R
 library(recipes) # Package dependencies scattered across scripts. #<<
 
-# Single-use code, difficult to test. #<<
-rec <- data %>%
+rec <- data %>% # Single-use code, difficult to test. #<<
   training() %>%
   recipe(Churn ~ .) %>%
   step_rm(customerID) %>%
@@ -245,7 +244,7 @@ saveRDS(rec, "recipe.rds") # Final output scattered across code. #<<
 
 - Separate the planning from the execution.
 - Clarity: break down complicated ideas into manageable pieces.
-- Reuse: define once, run whenever.
+- Reuse: define once, run whenever: testing, development, etc.
 
 ```{r files_good, eval = FALSE}
 make.R
@@ -290,19 +289,53 @@ prepare_recipe <- function(data) {
 
 ---
 
-## Bring the functions together in a drake **plan**.
+## Conduct your analysis with your **functions**.
+
+```{r c3.5, eval = FALSE}
+# run_everything.R
+data <- read_csv(
+  file_in("data/customer_churn.csv"),
+  col_types = cols()
+) %>%
+  initial_split(prop = 0.3)
+saveRDS(data, "output/data.rds")
+rec <- prepare_recipe(data) # Use your functions. #<<
+saveRDS(rec, "output/rec.rds")
+model_relu <- train_model(rec, act1 = "relu")
+save_model_hdf5(model_relu, "output/model_relu.h5")
+model_sigmoid <- train_model(rec, act1 = "sigmoid")
+save_model_hdf5(model_sigmoid, "output/model_sigmoid.h5")
+conf_relu <- confusion_matrix(data, rec, model_relu)
+saveRDS(conf_relu, "output/conf_relu.rds")
+conf_sigmoid <- confusion_matrix(data, rec, model_sigmoid)
+saveRDS(conf_sigmoid, "output/conf_sigmoid.rds")
+metrics <- compare_models(conf_relu, conf_sigmoid)
+saveRDS(metrics, "output/metrics.rds")
+```
+
+---
+
+## But we can still do better...
+
+- Avoid rerunning everything every time.
+- Avoid micromanaging files. No more `saveRDS()`, `save_model_hdf5()`, etc.
+
+<center>
+<img src = "./images/genie.png" align="middle" style="border: none; box-shadow: none; height: 375px; text-align: center;">
+<div style="font-size: 0.5em; text-align: center"><a href="https://publicdomainvectors.org/en/free-clipart/Golden-magic-lamp/61683.html">https://publicdomainvectors.org/en/free-clipart/Golden-magic-lamp/61683.html</a></div>
+</center>
+
+---
+
+## Enter drake! Define a **plan**.
 
 ```{r c4}
-activations <- c("relu", "sigmoid")
-
 plan <- drake_plan(
-  data = read_csv(file_in("data/customer_churn.csv"), col_types = cols()) %>%
-    initial_split(prop = 0.3),
-  rec = prepare_recipe(data), #<<
+  rec = prepare_recipe(data), # Use your functions. #<<
   model = target(
     train_model(rec, act1 = act),
     format = "keras",
-    transform = map(act = !!activations)
+    transform = map(act = c("relu", "sigmoid"))
   ),
   conf = target(
     confusion_matrix(data, rec, model),
@@ -311,7 +344,12 @@ plan <- drake_plan(
   metrics = target(
     compare_models(conf),
     transform = combine(conf)
-  )
+  ),
+  data = read_csv(                      # flexible target order, #<<
+    file_in("data/customer_churn.csv"), # flexible commands #<<
+    col_types = cols()
+  ) %>%
+    initial_split(prop = 0.3)
 )
 ```
 
@@ -357,16 +395,12 @@ readd(metrics) # See also loadd()
 ## Add a new model.
 
 ```{r c8}
-activations <- c("relu", "sigmoid", "softmax") #<<
-
 plan <- drake_plan(
-  data = read_csv(file_in("data/customer_churn.csv"), col_types = cols()) %>%
-    initial_split(prop = 0.3),
   rec = prepare_recipe(data),
   model = target(
     train_model(rec, act1 = act),
     format = "keras",
-    transform = map(act = !!activations) #<<
+    transform = map(act = c("relu", "sigmoid", "softmax")) #<<
   ),
   conf = target(
     confusion_matrix(data, rec, model),
@@ -375,7 +409,12 @@ plan <- drake_plan(
   metrics = target(
     compare_models(conf),
     transform = combine(conf)
-  )
+  ),
+  data = read_csv(
+    file_in("data/customer_churn.csv"),
+    col_types = cols()
+  ) %>%
+    initial_split(prop = 0.3)
 )
 ```
 
@@ -428,7 +467,7 @@ make(plan)
 
 ---
 
-## Specialized data formats
+## Fast big data formats
 
 - Increased speed and reduced memory consumption.
 
@@ -478,7 +517,9 @@ proc.time() - start
 
 ---
 
-## High-performance computing
+## Dependency-aware high-performance computing
+
+- Just a little configuration...
 
 ```{r c11, eval = FALSE}
 # template file with configuration
@@ -496,7 +537,7 @@ make(plan, jobs = 2, parallelism = "clustermq")
 
 ---
 
-## High-performance computing
+## Dependency-aware high-performance computing
 
 <iframe width="800" height="450" src="https://www.powtoon.com/embed/bUfSIaXjrw5/" frameborder="0"></iframe>
 

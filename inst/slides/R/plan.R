@@ -1,13 +1,9 @@
-activations <- c("relu", "sigmoid", "softmax")
-
 plan <- drake_plan(
-  data = read_csv(file_in("data/customer_churn.csv"), col_types = cols()) %>%
-    initial_split(prop = 0.3),
   rec = prepare_recipe(data),
   model = target(
     train_model(rec, act1 = act),
     format = "keras",
-    transform = map(act = !!activations)
+    transform = map(act = c("relu", "sigmoid"))
   ),
   conf = target(
     confusion_matrix(data, rec, model),
@@ -16,5 +12,10 @@ plan <- drake_plan(
   metrics = target(
     compare_models(conf),
     transform = combine(conf)
-  )
+  ),
+  data = read_csv(
+    file_in("data/customer_churn.csv"),
+    col_types = cols()
+  ) %>%
+    initial_split(prop = 0.3)
 )
