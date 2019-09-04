@@ -189,7 +189,7 @@ knitr::opts_chunk$set(
 
 ---
 
-## This project is too big for numbered scripts!
+## Projects like this get too big for numbered scripts!
 
 ```{r files_bad, eval = FALSE}
 run_everything.R
