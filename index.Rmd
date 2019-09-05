@@ -191,7 +191,7 @@ knitr::opts_chunk$set(
 
 background-image: ./images/not.png
 
-## <img src="./images/no.png" width="40" height="40"> Too big for numbered scripts!
+## <img src="./images/no.png" width="40" height="40"> Let's move beyond numbered scripts.
 
 ```{r files_bad, eval = FALSE}
 run_everything.R
