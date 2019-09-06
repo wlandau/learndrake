@@ -465,7 +465,7 @@ make(plan)
 
 ---
 
-## Fast big data formats
+## Efficient data formats
 
 - Increased speed and reduced memory consumption.
 
