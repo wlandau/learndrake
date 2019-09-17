@@ -63,7 +63,12 @@ same_plan <- function (out, exp) {
   all(out$target == exp$target & out$command == exp$command)
 }
 dp_graph <- function(plan) {
-  config <- drake_config(plan, cache = storr::storr_environment(), session_info = FALSE)
+  config <- drake_config(
+    plan,
+    cache = storr::storr_environment(),
+    session_info = FALSE,
+    history = FALSE
+  )
   vis_drake_graph(
     config,
     main = "",
