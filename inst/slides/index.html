@@ -19,43 +19,43 @@ class: center, middle, inverse, title-slide
 
 &lt;style&gt;
 .inverse {
-  background-color: transparent;
-  text-shadow: 0 0 0px transparent;
+background-color: transparent;
+text-shadow: 0 0 0px transparent;
 }
 .title-slide {
-  vertical-align: bottom !important; 
-  text-align: center !important;
+vertical-align: bottom !important; 
+text-align: center !important;
 }
 .title-slide h1 {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  width: 100%;
-  line-height: 4em;
-  color: #666666;
+position: absolute;
+top: 0;
+left: 0;
+right: 0;
+width: 100%;
+line-height: 4em;
+color: #666666;
 }
 .title-slide h3 {
-  line-height: 6em;
-  color: #666666;
+line-height: 6em;
+color: #666666;
 }
 .title-slide {
-  background-color: white;
-  background-image: url('images/logo.png');
-  background-repeat: no-repeat;
-  background-size: 25%;
+background-color: white;
+background-image: url('images/logo.png');
+background-repeat: no-repeat;
+background-size: 25%;
 }
 .remark-slide-content:after {
-  content: "Copyright Eli Lilly and Company";
-  position: absolute;
-  bottom: -5px;
-  left: 20px;
-  height: 40px;
-  width: 100%;
-  font-family: Helvetica, Arial, sans-serif;
-  color: gray;
-  background-repeat: no-repeat;
-  background-size: contain;
+content: "Copyright Eli Lilly and Company";
+position: absolute;
+bottom: -5px;
+left: 20px;
+height: 40px;
+width: 100%;
+font-family: Helvetica, Arial, sans-serif;
+color: gray;
+background-repeat: no-repeat;
+background-size: contain;
 }
 &lt;/style&gt;
 
@@ -64,20 +64,21 @@ class: center, middle, inverse, title-slide
 ## Large data science workflows
 
 - Struggles
-    1. Long runtimes.
-    2. Many tasks.
-    3. Interconnected tasks.
+
+  1. Long runtimes.
+  2. Many tasks.
+  3. Interconnected tasks.
 
 - Examples
-    - Deep learning
-    - Classical machine learning.
-    - Bayesian computation via Markov chain Monte Carlo ([`rjags`](https://CRAN.R-project.org/package=rjags), [`rstan`](https://github.com/stan-dev/rstan), etc.)
-    - Spatial data analysis.
-    - Clinical trial modeling and simulation.
-    - Subgroup identification.
-    - Graph-based multiple comparison procedures.
-    - Genomics pipelines.
-    - PK/PD modeling ([`mrgsolve`](https://github.com/metrumresearchgroup/mrgsolve), [`nlmixr`](https://github.com/nlmixrdevelopment/nlmixr), etc.)
+  - Deep learning.
+  - Classical machine learning.
+  - Bayesian data analysis via Markov chain Monte Carlo.
+  - Spatial data analysis.
+  - Clinical trial modeling and simulation.
+  - Subgroup identification.
+  - Graph-based multiple comparison procedures.
+  - Genomics pipelines.
+  - PK/PD modeling.
 
 ---
 
@@ -145,12 +146,12 @@ class: center, middle, inverse, title-slide
 &lt;/center&gt;
 
 - Aggressively designed for R.
-    1. Think **functions**, not script files.
-    2. Think **variables**, not output files.
-    3. Think **data frames**, not `Makefile`s.
+1. Think **functions**, not script files.
+2. Think **variables**, not output files.
+3. Think **data frames**, not `Makefile`s.
 - [`drake`](https://github.com/ropensci/drake) borrows (1) and (2) from the [`remake`](https://github.com/richfitz/remake) package by [Rich FitzJohn](https://github.com/richfitz).
-    - [`remake`](https://github.com/richfitz/remake) is no longer under development.
-    - [`drake`](https://github.com/ropensci/drake) tries to extend [`remake`](https://github.com/richfitz/remake)'s ideas further and handle larger projects.
+- [`remake`](https://github.com/richfitz/remake) is no longer under development.
+- [`drake`](https://github.com/ropensci/drake) tries to extend [`remake`](https://github.com/richfitz/remake)'s ideas further and handle larger projects.
 
 ---
 
@@ -220,9 +221,28 @@ output/
 
 ## &lt;img src="./images/yes.png" width="60" height="40"&gt; Instead, embrace **functions**!
 
-- Separate the planning from the execution.
-- Clarity: break down complicated ideas into manageable pieces.
-- Reuse: define once, run whenever: testing, development, etc.
+- A function is a reusable command that accepts one or more inputs and returns a single output.
+
+
+```r
+my_function &lt;- function(argument1, argument2) {
+  argument1 + argument2
+}
+
+my_function(1, 2)
+## [1] 3
+
+my_function(3, 4)
+## [1] 7
+```
+
+- Why use functions?
+  1. **Clarity**: break down complicated ideas into manageable pieces.
+  2. Reuse: define once, run wherever.
+
+---
+
+## &lt;img src="./images/yes.png" width="60" height="40"&gt; Functions in a workflow
 
 
 ```r
@@ -234,12 +254,12 @@ R/
 data/
 └── customer_churn.csv
 .drake/ # drake's cache
-└──     # Output magically appears here.
+└──     # Output automatically appears here.
 ```
 
 ---
 
-## &lt;img src="./images/yes.png" width="60" height="40"&gt; Write function-oriented R scripts.
+## &lt;img src="./images/yes.png" width="60" height="40"&gt; Functions in a workflow
 
 
 ```r
@@ -270,6 +290,33 @@ prepare_recipe &lt;- function(data) {
 
 ---
 
+
+```r
+# later in functions.R...
+
+run_everything &lt;- function() {
+  data &lt;- read_csv(file_in("data/customer_churn.csv"), col_types = cols()) %&gt;%
+    initial_split(prop = 0.3)
+  saveRDS(data, "output/data.rds")
+
+* rec &lt;- prepare_recipe(data) # Call your other functions.
+  saveRDS(rec, "output/rec.rds")
+
+  model_relu &lt;- train_model(rec, act1 = "relu")
+  save_model_hdf5(model_relu, "output/model_relu.h5")
+  # more models...
+
+  conf_sigmoid &lt;- confusion_matrix(data, rec, model_sigmoid)
+  saveRDS(conf_sigmoid, "output/conf_sigmoid.rds")
+  # more confusion matrices...
+
+  metrics &lt;- compare_models(conf_relu, conf_sigmoid)
+  saveRDS(metrics, "output/metrics.rds")
+}
+```
+
+---
+
 ## Conduct your analysis with your **functions**.
 
 
@@ -277,29 +324,15 @@ prepare_recipe &lt;- function(data) {
 # run_everything.R
 source("R/packages.R")
 source("R/functions.R")
-data &lt;- read_csv(file_in("data/customer_churn.csv"), col_types = cols()) %&gt;%
-  initial_split(prop = 0.3)
-saveRDS(data, "output/data.rds")
-*rec &lt;- prepare_recipe(data) # Use your functions.
-saveRDS(rec, "output/rec.rds")
-model_relu &lt;- train_model(rec, act1 = "relu")
-save_model_hdf5(model_relu, "output/model_relu.h5")
-model_sigmoid &lt;- train_model(rec, act1 = "sigmoid")
-save_model_hdf5(model_sigmoid, "output/model_sigmoid.h5")
-conf_relu &lt;- confusion_matrix(data, rec, model_relu)
-saveRDS(conf_relu, "output/conf_relu.rds")
-conf_sigmoid &lt;- confusion_matrix(data, rec, model_sigmoid)
-saveRDS(conf_sigmoid, "output/conf_sigmoid.rds")
-metrics &lt;- compare_models(conf_relu, conf_sigmoid)
-saveRDS(metrics, "output/metrics.rds")
+run_everything()
 ```
 
 ---
 
 ## But we can still do better...
 
-- Avoid rerunning everything every time.
-- Avoid micromanaging files. No more `saveRDS()`, `save_model_hdf5()`, etc.
+- Avoid rerunning every function on every runthrough.
+- Avoid micromanaging output files.
 
 &lt;center&gt;
 &lt;img src = "./images/genie.png" align="middle" style="border: none; box-shadow: none; height: 375px; text-align: center;"&gt;
@@ -369,6 +402,7 @@ plan
 
 
 ```r
+# like run_everything.R...
 source("R/packages.R")
 source("R/functions.R")
 source("R/plan.R")
@@ -514,16 +548,16 @@ drake_history()
 ## # A tibble: 10 x 10
 ##    target  current built  exists hash  command     seed runtime  prop act1 
 ##    &lt;chr&gt;   &lt;lgl&gt;   &lt;chr&gt;  &lt;lgl&gt;  &lt;chr&gt; &lt;chr&gt;      &lt;int&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;
-##  1 conf_r… TRUE    2019-… TRUE   2734… confusio… 4.05e8  0.232   NA   &lt;NA&gt; 
-##  2 conf_s… TRUE    2019-… TRUE   0393… confusio… 1.93e9  0.203   NA   &lt;NA&gt; 
-##  3 conf_s… TRUE    2019-… TRUE   c5e6… confusio… 1.80e9  0.428   NA   &lt;NA&gt; 
-##  4 data    TRUE    2019-… TRUE   ca84… "read_cs… 1.29e9  0.039    0.3 &lt;NA&gt; 
-##  5 metrics FALSE   2019-… TRUE   5c09… compare_… 1.21e9  0.0230  NA   &lt;NA&gt; 
-##  6 metrics TRUE    2019-… TRUE   4c59… compare_… 1.21e9  0.021   NA   &lt;NA&gt; 
-##  7 model_… TRUE    2019-… TRUE   23be… "train_m… 1.47e9  4.92    NA   relu 
-##  8 model_… TRUE    2019-… TRUE   0eaa… "train_m… 1.26e9  3.26    NA   sigm…
-##  9 model_… TRUE    2019-… TRUE   52d6… "train_m… 8.05e8  3.61    NA   soft…
-## 10 rec     TRUE    2019-… TRUE   40e5… prepare_… 6.29e8  0.168   NA   &lt;NA&gt;
+##  1 conf_r… TRUE    2019-… TRUE   feb5… confusio… 4.05e8  0.230   NA   &lt;NA&gt; 
+##  2 conf_s… TRUE    2019-… TRUE   4a7b… confusio… 1.93e9  0.186   NA   &lt;NA&gt; 
+##  3 conf_s… TRUE    2019-… TRUE   0e43… confusio… 1.80e9  0.225   NA   &lt;NA&gt; 
+##  4 data    TRUE    2019-… TRUE   ca84… "read_cs… 1.29e9  0.0350   0.3 &lt;NA&gt; 
+##  5 metrics FALSE   2019-… TRUE   a89e… compare_… 1.21e9  0.019   NA   &lt;NA&gt; 
+##  6 metrics TRUE    2019-… TRUE   ddd2… compare_… 1.21e9  0.018   NA   &lt;NA&gt; 
+##  7 model_… TRUE    2019-… TRUE   6807… "train_m… 1.47e9  6       NA   relu 
+##  8 model_… TRUE    2019-… TRUE   7b20… "train_m… 1.26e9  3.78    NA   sigm…
+##  9 model_… TRUE    2019-… TRUE   60bb… "train_m… 8.05e8  4.20    NA   soft…
+## 10 rec     TRUE    2019-… TRUE   7605… prepare_… 6.29e8  0.122   NA   &lt;NA&gt;
 ```
 
 ---
@@ -548,7 +582,7 @@ make(plan, recover = TRUE)
 
 proc.time() - start
 ##    user  system elapsed 
-##   0.095   0.038   0.272
+##   0.081   0.008   0.090
 ```
 
 - Details + how to rename a target: &lt;https://ropenscilabs.github.io/drake-manual/walkthrough.html#reproducible-data-recovery-and-renaming&gt;
@@ -694,6 +728,18 @@ drake::drake_example("customer-churn")
 &lt;/td&gt;
 &lt;/tr&gt;
 &lt;/table&gt;
+
+---
+
+## For fun!
+
+- **Think of a nontrivial example of a function.**
+- From a math PhD oral exam, but requires no math.
+
+&lt;center&gt;
+&lt;img src = "./images/pythagoras.png" align="middle" style="border: none; box-shadow: none; height: 375px; text-align: center;"&gt;
+&lt;div style="font-size: 0.5em; text-align: center"&gt;&lt;a href="https://publicdomainvectors.org/en/free-clipart/Pythagoras-tree/58775.html"&gt;https://publicdomainvectors.org/en/free-clipart/Pythagoras-tree/58775.html&lt;/a&gt;&lt;/div&gt;
+&lt;/center&gt;
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>

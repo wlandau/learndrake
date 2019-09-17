@@ -9,43 +9,43 @@ output:
 
 <style>
 .inverse {
-  background-color: transparent;
-  text-shadow: 0 0 0px transparent;
+background-color: transparent;
+text-shadow: 0 0 0px transparent;
 }
 .title-slide {
-  vertical-align: bottom !important; 
-  text-align: center !important;
+vertical-align: bottom !important; 
+text-align: center !important;
 }
 .title-slide h1 {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  width: 100%;
-  line-height: 4em;
-  color: #666666;
+position: absolute;
+top: 0;
+left: 0;
+right: 0;
+width: 100%;
+line-height: 4em;
+color: #666666;
 }
 .title-slide h3 {
-  line-height: 6em;
-  color: #666666;
+line-height: 6em;
+color: #666666;
 }
 .title-slide {
-  background-color: white;
-  background-image: url('images/logo.png');
-  background-repeat: no-repeat;
-  background-size: 25%;
+background-color: white;
+background-image: url('images/logo.png');
+background-repeat: no-repeat;
+background-size: 25%;
 }
 .remark-slide-content:after {
-  content: "Copyright Eli Lilly and Company";
-  position: absolute;
-  bottom: -5px;
-  left: 20px;
-  height: 40px;
-  width: 100%;
-  font-family: Helvetica, Arial, sans-serif;
-  color: gray;
-  background-repeat: no-repeat;
-  background-size: contain;
+content: "Copyright Eli Lilly and Company";
+position: absolute;
+bottom: -5px;
+left: 20px;
+height: 40px;
+width: 100%;
+font-family: Helvetica, Arial, sans-serif;
+color: gray;
+background-repeat: no-repeat;
+background-size: contain;
 }
 </style>
 
@@ -87,20 +87,21 @@ knitr::opts_chunk$set(
 ## Large data science workflows
 
 - Struggles
-    1. Long runtimes.
-    2. Many tasks.
-    3. Interconnected tasks.
+
+  1. Long runtimes.
+  2. Many tasks.
+  3. Interconnected tasks.
 
 - Examples
-    - Deep learning
-    - Classical machine learning.
-    - Bayesian computation via Markov chain Monte Carlo ([`rjags`](https://CRAN.R-project.org/package=rjags), [`rstan`](https://github.com/stan-dev/rstan), etc.)
-    - Spatial data analysis.
-    - Clinical trial modeling and simulation.
-    - Subgroup identification.
-    - Graph-based multiple comparison procedures.
-    - Genomics pipelines.
-    - PK/PD modeling ([`mrgsolve`](https://github.com/metrumresearchgroup/mrgsolve), [`nlmixr`](https://github.com/nlmixrdevelopment/nlmixr), etc.)
+  - Deep learning.
+  - Classical machine learning.
+  - Bayesian data analysis via Markov chain Monte Carlo.
+  - Spatial data analysis.
+  - Clinical trial modeling and simulation.
+  - Subgroup identification.
+  - Graph-based multiple comparison procedures.
+  - Genomics pipelines.
+  - PK/PD modeling.
 
 ---
 
@@ -168,12 +169,12 @@ knitr::opts_chunk$set(
 </center>
 
 - Aggressively designed for R.
-    1. Think **functions**, not script files.
-    2. Think **variables**, not output files.
-    3. Think **data frames**, not `Makefile`s.
+1. Think **functions**, not script files.
+2. Think **variables**, not output files.
+3. Think **data frames**, not `Makefile`s.
 - [`drake`](https://github.com/ropensci/drake) borrows (1) and (2) from the [`remake`](https://github.com/richfitz/remake) package by [Rich FitzJohn](https://github.com/richfitz).
-    - [`remake`](https://github.com/richfitz/remake) is no longer under development.
-    - [`drake`](https://github.com/ropensci/drake) tries to extend [`remake`](https://github.com/richfitz/remake)'s ideas further and handle larger projects.
+- [`remake`](https://github.com/richfitz/remake) is no longer under development.
+- [`drake`](https://github.com/ropensci/drake) tries to extend [`remake`](https://github.com/richfitz/remake)'s ideas further and handle larger projects.
 
 ---
 
@@ -241,9 +242,25 @@ saveRDS(rec, "recipe.rds") # Final output scattered across code. #<<
 
 ## <img src="./images/yes.png" width="60" height="40"> Instead, embrace **functions**!
 
-- Separate the planning from the execution.
-- Clarity: break down complicated ideas into manageable pieces.
-- Reuse: define once, run whenever: testing, development, etc.
+- A function is a reusable command that accepts one or more inputs and returns a single output.
+
+```{r def}
+my_function <- function(argument1, argument2) {
+  argument1 + argument2
+}
+
+my_function(1, 2)
+
+my_function(3, 4)
+```
+
+- Why use functions?
+  1. **Clarity**: break down complicated ideas into manageable pieces.
+  2. Reuse: define once, run wherever.
+
+---
+
+## <img src="./images/yes.png" width="60" height="40"> Functions in a workflow
 
 ```{r files_good, eval = FALSE}
 make.R
@@ -254,12 +271,12 @@ R/
 data/
 └── customer_churn.csv
 .drake/ # drake's cache
-└──     # Output magically appears here.
+└──     # Output automatically appears here.
 ```
 
 ---
 
-## <img src="./images/yes.png" width="60" height="40"> Write function-oriented R scripts.
+## <img src="./images/yes.png" width="60" height="40"> Functions in a workflow
 
 ```{r c3.0, eval = FALSE}
 # packages.R: all package dependencies #<<
@@ -288,35 +305,47 @@ prepare_recipe <- function(data) {
 
 ---
 
+```{r run_everything}
+# later in functions.R...
+
+run_everything <- function() {
+  data <- read_csv(file_in("data/customer_churn.csv"), col_types = cols()) %>%
+    initial_split(prop = 0.3)
+  saveRDS(data, "output/data.rds")
+
+  rec <- prepare_recipe(data) # Call your other functions. #<<
+  saveRDS(rec, "output/rec.rds")
+
+  model_relu <- train_model(rec, act1 = "relu")
+  save_model_hdf5(model_relu, "output/model_relu.h5")
+  # more models...
+
+  conf_sigmoid <- confusion_matrix(data, rec, model_sigmoid)
+  saveRDS(conf_sigmoid, "output/conf_sigmoid.rds")
+  # more confusion matrices...
+
+  metrics <- compare_models(conf_relu, conf_sigmoid)
+  saveRDS(metrics, "output/metrics.rds")
+}
+```
+
+---
+
 ## Conduct your analysis with your **functions**.
 
 ```{r c3.5, eval = FALSE}
 # run_everything.R
 source("R/packages.R")
 source("R/functions.R")
-data <- read_csv(file_in("data/customer_churn.csv"), col_types = cols()) %>%
-  initial_split(prop = 0.3)
-saveRDS(data, "output/data.rds")
-rec <- prepare_recipe(data) # Use your functions. #<<
-saveRDS(rec, "output/rec.rds")
-model_relu <- train_model(rec, act1 = "relu")
-save_model_hdf5(model_relu, "output/model_relu.h5")
-model_sigmoid <- train_model(rec, act1 = "sigmoid")
-save_model_hdf5(model_sigmoid, "output/model_sigmoid.h5")
-conf_relu <- confusion_matrix(data, rec, model_relu)
-saveRDS(conf_relu, "output/conf_relu.rds")
-conf_sigmoid <- confusion_matrix(data, rec, model_sigmoid)
-saveRDS(conf_sigmoid, "output/conf_sigmoid.rds")
-metrics <- compare_models(conf_relu, conf_sigmoid)
-saveRDS(metrics, "output/metrics.rds")
+run_everything()
 ```
 
 ---
 
 ## But we can still do better...
 
-- Avoid rerunning everything every time.
-- Avoid micromanaging files. No more `saveRDS()`, `save_model_hdf5()`, etc.
+- Avoid rerunning every function on every runthrough.
+- Avoid micromanaging output files.
 
 <center>
 <img src = "./images/genie.png" align="middle" style="border: none; box-shadow: none; height: 375px; text-align: center;">
@@ -373,6 +402,7 @@ plan
 ## Run the project in make.R.
 
 ```{r c6}
+# like run_everything.R...
 source("R/packages.R")
 source("R/functions.R")
 source("R/plan.R")
@@ -650,6 +680,18 @@ drake::drake_example("customer-churn")
 </td>
 </tr>
 </table>
+
+---
+
+## For fun!
+
+- **Think of a nontrivial example of a function.**
+- From a math PhD oral exam, but requires no math.
+
+<center>
+<img src = "./images/pythagoras.png" align="middle" style="border: none; box-shadow: none; height: 375px; text-align: center;">
+<div style="font-size: 0.5em; text-align: center"><a href="https://publicdomainvectors.org/en/free-clipart/Pythagoras-tree/58775.html">https://publicdomainvectors.org/en/free-clipart/Pythagoras-tree/58775.html</a></div>
+</center>
 
 ```{r c15, include = FALSE}
 tmp <- file.copy("R/plan.R", "R/plan2.R", overwrite = TRUE)
