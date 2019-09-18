@@ -236,13 +236,24 @@ my_function(3, 4)
 ## [1] 7
 ```
 
-- Why use functions?
-  1. **Clarity**: break down complicated ideas into manageable pieces.
-  2. Reuse: define once, run wherever.
+---
+
+## Why use functions?
+
+1. Clarity: break down complicated ideas into manageable pieces.
+2. Use R as intended.
+
+    &gt;    - Everything that exists is an object.
+    &gt;    - Everything that happens is a function call.
+    &gt;
+    &gt; John Chambers
+
+3. Reuse: define once, run wherever.
+
 
 ---
 
-## &lt;img src="./images/yes.png" width="60" height="40"&gt; Functions in a workflow
+## Functions in a workflow
 
 
 ```r
@@ -259,7 +270,7 @@ data/
 
 ---
 
-## &lt;img src="./images/yes.png" width="60" height="40"&gt; Functions in a workflow
+## Functions in a workflow
 
 
 ```r
@@ -548,16 +559,16 @@ drake_history()
 ## # A tibble: 10 x 10
 ##    target  current built  exists hash  command     seed runtime  prop act1 
 ##    &lt;chr&gt;   &lt;lgl&gt;   &lt;chr&gt;  &lt;lgl&gt;  &lt;chr&gt; &lt;chr&gt;      &lt;int&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;
-##  1 conf_r… TRUE    2019-… TRUE   feb5… confusio… 4.05e8  0.230   NA   &lt;NA&gt; 
-##  2 conf_s… TRUE    2019-… TRUE   4a7b… confusio… 1.93e9  0.186   NA   &lt;NA&gt; 
-##  3 conf_s… TRUE    2019-… TRUE   0e43… confusio… 1.80e9  0.225   NA   &lt;NA&gt; 
-##  4 data    TRUE    2019-… TRUE   ca84… "read_cs… 1.29e9  0.0350   0.3 &lt;NA&gt; 
-##  5 metrics FALSE   2019-… TRUE   a89e… compare_… 1.21e9  0.019   NA   &lt;NA&gt; 
-##  6 metrics TRUE    2019-… TRUE   ddd2… compare_… 1.21e9  0.018   NA   &lt;NA&gt; 
-##  7 model_… TRUE    2019-… TRUE   6807… "train_m… 1.47e9  6       NA   relu 
-##  8 model_… TRUE    2019-… TRUE   7b20… "train_m… 1.26e9  3.78    NA   sigm…
-##  9 model_… TRUE    2019-… TRUE   60bb… "train_m… 8.05e8  4.20    NA   soft…
-## 10 rec     TRUE    2019-… TRUE   7605… prepare_… 6.29e8  0.122   NA   &lt;NA&gt;
+##  1 conf_r… TRUE    2019-… TRUE   7bec… confusio… 4.05e8  0.241   NA   &lt;NA&gt; 
+##  2 conf_s… TRUE    2019-… TRUE   33da… confusio… 1.93e9  0.187   NA   &lt;NA&gt; 
+##  3 conf_s… TRUE    2019-… TRUE   8e74… confusio… 1.80e9  0.24    NA   &lt;NA&gt; 
+##  4 data    TRUE    2019-… TRUE   ca84… "read_cs… 1.29e9  0.037    0.3 &lt;NA&gt; 
+##  5 metrics FALSE   2019-… TRUE   20b4… compare_… 1.21e9  0.0200  NA   &lt;NA&gt; 
+##  6 metrics TRUE    2019-… TRUE   1add… compare_… 1.21e9  0.018   NA   &lt;NA&gt; 
+##  7 model_… TRUE    2019-… TRUE   330b… "train_m… 1.47e9  6.41    NA   relu 
+##  8 model_… TRUE    2019-… TRUE   c257… "train_m… 1.26e9  3.96    NA   sigm…
+##  9 model_… TRUE    2019-… TRUE   5c9b… "train_m… 8.05e8  4.45    NA   soft…
+## 10 rec     TRUE    2019-… TRUE   7605… prepare_… 6.29e8  0.146   NA   &lt;NA&gt;
 ```
 
 ---
@@ -582,7 +593,7 @@ make(plan, recover = TRUE)
 
 proc.time() - start
 ##    user  system elapsed 
-##   0.081   0.008   0.090
+##   0.083   0.000   0.083
 ```
 
 - Details + how to rename a target: &lt;https://ropenscilabs.github.io/drake-manual/walkthrough.html#reproducible-data-recovery-and-renaming&gt;
@@ -625,18 +636,18 @@ make(plan, jobs = 2, parallelism = "clustermq")
 install.packages("drake")
 ```
 
-- Workshop materials:
-
-
-```r
-remotes::install_github("wlandau/learndrake")
-```
-
 - Example code from these slides:
 
 
 ```r
 drake::drake_example("customer-churn")
+```
+
+- Workshop materials:
+
+
+```r
+remotes::install_github("wlandau/learndrake")
 ```
 
 ---
@@ -731,10 +742,13 @@ drake::drake_example("customer-churn")
 
 ---
 
-## For fun!
+## A riddle!
 
-- **Think of an example of a nontrivial function.**
-- From a math PhD oral exam, but requires no math.
+- From a math PhD oral exam:
+
+&gt; Give an example of a nontrivial function.
+
+- Hint: the best answers do not even come from math or computing!
 
 &lt;center&gt;
 &lt;img src = "./images/pythagoras.png" align="middle" style="border: none; box-shadow: none; height: 375px; text-align: center;"&gt;

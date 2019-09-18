@@ -254,13 +254,24 @@ my_function(1, 2)
 my_function(3, 4)
 ```
 
-- Why use functions?
-  1. **Clarity**: break down complicated ideas into manageable pieces.
-  2. Reuse: define once, run wherever.
+---
+
+## Why use functions?
+
+1. Clarity: break down complicated ideas into manageable pieces.
+2. Use R as intended.
+
+    >    - Everything that exists is an object.
+    >    - Everything that happens is a function call.
+    >
+    > John Chambers
+
+3. Reuse: define once, run wherever.
+
 
 ---
 
-## <img src="./images/yes.png" width="60" height="40"> Functions in a workflow
+## Functions in a workflow
 
 ```{r files_good, eval = FALSE}
 make.R
@@ -276,7 +287,7 @@ data/
 
 ---
 
-## <img src="./images/yes.png" width="60" height="40"> Functions in a workflow
+## Functions in a workflow
 
 ```{r c3.0, eval = FALSE}
 # packages.R: all package dependencies #<<
@@ -579,16 +590,16 @@ make(plan, jobs = 2, parallelism = "clustermq")
 install.packages("drake")
 ```
 
-- Workshop materials:
-
-```{r c13, eval = FALSE}
-remotes::install_github("wlandau/learndrake")
-```
-
 - Example code from these slides:
 
 ```{r c14, eval = FALSE}
 drake::drake_example("customer-churn")
+```
+
+- Workshop materials:
+
+```{r c13, eval = FALSE}
+remotes::install_github("wlandau/learndrake")
 ```
 
 ---
@@ -683,10 +694,13 @@ drake::drake_example("customer-churn")
 
 ---
 
-## For fun!
+## A riddle!
 
-- **Think of an example of a nontrivial function.**
-- From a math PhD oral exam, but requires no math.
+- From a math PhD oral exam:
+
+> Give an example of a nontrivial function.
+
+- Hint: the best answers do not even come from math or computing!
 
 <center>
 <img src = "./images/pythagoras.png" align="middle" style="border: none; box-shadow: none; height: 375px; text-align: center;">
