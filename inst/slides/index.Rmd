@@ -316,6 +316,8 @@ prepare_recipe <- function(data) {
 
 ---
 
+## Functions in a workflow
+
 ```{r run_everything}
 # later in functions.R...
 
