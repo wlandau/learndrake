@@ -43,6 +43,7 @@ left: 20px;
 height: 40px;
 width: 100%;
 font-family: Helvetica, Arial, sans-serif;
+font-size: 0.7em;
 color: gray;
 background-repeat: no-repeat;
 background-size: contain;

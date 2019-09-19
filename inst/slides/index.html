@@ -53,6 +53,7 @@ left: 20px;
 height: 40px;
 width: 100%;
 font-family: Helvetica, Arial, sans-serif;
+font-size: 0.7em;
 color: gray;
 background-repeat: no-repeat;
 background-size: contain;
@@ -544,7 +545,6 @@ source("R/functions.R")
 source("R/plan.R")
 
 make(plan)
-## In drake, consider r_make() instead of make(). r_make() runs make() in a fresh R session for enhanced robustness and reproducibility.
 ## target data
 ## target rec
 ## target model_relu
@@ -737,16 +737,16 @@ drake_history()
 ## # A tibble: 10 x 10
 ##    target  current built  exists hash  command     seed runtime  prop act1 
 ##    &lt;chr&gt;   &lt;lgl&gt;   &lt;chr&gt;  &lt;lgl&gt;  &lt;chr&gt; &lt;chr&gt;      &lt;int&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;
-##  1 conf_r… TRUE    2019-… TRUE   747e… confusio… 4.05e8  0.251   NA   &lt;NA&gt; 
-##  2 conf_s… TRUE    2019-… TRUE   2e48… confusio… 1.93e9  0.218   NA   &lt;NA&gt; 
-##  3 conf_s… TRUE    2019-… TRUE   5666… confusio… 1.80e9  0.295   NA   &lt;NA&gt; 
-##  4 data    TRUE    2019-… TRUE   ca84… "read_cs… 1.29e9  0.0370   0.3 &lt;NA&gt; 
-##  5 metrics FALSE   2019-… TRUE   3e10… compare_… 1.21e9  0.0220  NA   &lt;NA&gt; 
-##  6 metrics TRUE    2019-… TRUE   23b8… compare_… 1.21e9  0.0200  NA   &lt;NA&gt; 
-##  7 model_… TRUE    2019-… TRUE   db81… "train_m… 1.47e9  6.84    NA   relu 
-##  8 model_… TRUE    2019-… TRUE   fb4b… "train_m… 1.26e9  4.92    NA   sigm…
-##  9 model_… TRUE    2019-… TRUE   ba62… "train_m… 8.05e8  5.20    NA   soft…
-## 10 rec     TRUE    2019-… TRUE   7605… prepare_… 6.29e8  0.124   NA   &lt;NA&gt;
+##  1 conf_r… TRUE    2019-… TRUE   436c… confusio… 4.05e8  0.212   NA   &lt;NA&gt; 
+##  2 conf_s… TRUE    2019-… TRUE   cf78… confusio… 1.93e9  0.199   NA   &lt;NA&gt; 
+##  3 conf_s… TRUE    2019-… TRUE   ab60… confusio… 1.80e9  0.228   NA   &lt;NA&gt; 
+##  4 data    TRUE    2019-… TRUE   ca84… "read_cs… 1.29e9  0.036    0.3 &lt;NA&gt; 
+##  5 metrics FALSE   2019-… TRUE   84e5… compare_… 1.21e9  0.0210  NA   &lt;NA&gt; 
+##  6 metrics TRUE    2019-… TRUE   e806… compare_… 1.21e9  0.0200  NA   &lt;NA&gt; 
+##  7 model_… TRUE    2019-… TRUE   2043… "train_m… 1.47e9  4.83    NA   relu 
+##  8 model_… TRUE    2019-… TRUE   5c21… "train_m… 1.26e9  3.25    NA   sigm…
+##  9 model_… TRUE    2019-… TRUE   0fb6… "train_m… 8.05e8  3.35    NA   soft…
+## 10 rec     TRUE    2019-… TRUE   0a55… prepare_… 6.29e8  0.139   NA   &lt;NA&gt;
 ```
 
 ???
@@ -775,7 +775,7 @@ make(plan, recover = TRUE)
 
 proc.time() - start
 ##    user  system elapsed 
-##   0.088   0.000   0.089
+##   0.094   0.033   0.215
 ```
 
 - Details + how to rename a target: &lt;https://ropenscilabs.github.io/drake-manual/walkthrough.html#reproducible-data-recovery-and-renaming&gt;
@@ -1024,7 +1024,24 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
     }
     deleted = true;
   });
-})();</script>
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
 
 <script>
 (function() {
