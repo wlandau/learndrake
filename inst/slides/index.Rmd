@@ -228,7 +228,7 @@ drake, on the other hand, is designed for R at its very core. It works entirely 
 
 By the way, drake was not the first pipeline tool to truly respect R. Before drake, there was a package called `remake` by Rich FitzJohn. remake was playing nicely with objects and functions long before I created drake.
 
-But remake is no longer maintained. And because it required you to work with YAML configuration files and because of some other restrictions on how you write your code, it kind of had one foot in and one foot out anyway. drake tries to finish what remake started and scale up the intensity of work you can do with it.
+But remake is no longer maintained. And because it required you to work with YAML configuration files and because of some other restrictions on how you write your code, it kind of had one foot in R and one foot out anyway. drake tries to finish what remake started and scale up the intensity of work you can do with it.
 
 ---
 
@@ -304,9 +304,9 @@ saveRDS(rec, "recipe.rds") # Final output scattered across code. #<<
 
 And the reason is that it tries to do too many things at once. The planning and the execution happen at the same time, and the actual content of the analysis is muddled with the bookkeeping.
 
-Look at these scripts. You've got package dependencies scattered everywhere, and file-saving steps scattered everywhere. And look at this preprocessing recipe. It looks like one thing, but it's really two things. You're defining a complicated procedure, and you're running it **as** you're defining it. These things should really be separate. Otherwise, it's hard to take the code out of context and test it.
+Look at these scripts. You've got package dependencies scattered everywhere, and file-saving steps scattered everywhere. And look at this preprocessing recipe. It looks like one thing, but it's really two different things. You're defining a complicated procedure, and you're running it **as** you're defining it. These things should really be separate. Otherwise, it's hard to take the code out of context and test it.
 
-Not only that, we don't have shorthand names for the steps we're doing. We don't have the structure to organize the ideas, so it's hard to take a step back and think about what we're doing.
+Not only that, we don't have shorthand names for the long complicated steps we're doing. We don't have the structure to organize the ideas, so it's hard to take a step back and think about what we're doing.
 
 In the R community, we like to criticize Microsoft Excel. We give it a hard time for putting the formulas and the spreadsheets in the same file, and we claim it's not reproducible. And we have a point. But we are guilty of something very similar! We're knitting and weaving and tangling too many things together!
 
@@ -330,7 +330,7 @@ my_function(3, 4)
 
 We can do better. In computing, the easiest, most ubiquitous, most standard way to solving this problem is to write functions.
 
-A function is just a reusable command that accepts one or more inputs and returns a single output. You define it once, and you call it whenever you need it on whatever data you have.
+A function is just a reusable command that accepts one or more inputs and returns a single output. You define it once, and you call it whenever you need it on whatever data that fits.
 
 ---
 
@@ -348,15 +348,17 @@ A function is just a reusable command that accepts one or more inputs and return
 
 ???
 
-But functions do so much more than that. They're not just for code you want to repeat and reuse. They're for code you want to **understand**. Functions break down complicated ideas into manageable pieces. Instead of a monolithic mess, you have components that are smaller, cleaner, and less intimidating.
+But functions do so much more than that. They're not just for code you want to repeat and reuse. They're for code you want to **understand**.
 
-Functions are like paragraphs of a data analysis. When you write functions, it's the same mental experience. You're crystallizing a stream of consciousness into clear, discrete, explainable points you want to make.
+Functions break down complicated ideas into manageable pieces. Instead of a monolithic mess, you have components that are smaller, cleaner, and less intimidating.
+
+Functions are like paragraphs of a data analysis. It's the same mental experience inside your head. You're crystallizing a stream of consciousness into clear, discrete, explainable points you want to make.
 
 Once you start doing this, you'll also notice that you're being true to the process of data analysis itself. Functions are a universal tool to describe how things change into other things. And that's exactly what we do when we analyze data. We change raw data into clean data, clean data into model output, and so on.
 
-You're also being true to R. You're using the language as it's **designed** to be used. The mindset of "everything that exists is an object, everything that happens is a function call" is one of the truest descriptions of a function-oriented language like R. It's what R **intends** to do, and you're going with the flow.
+You're also being true to the R language. You're using the language as it's **designed** to be used. The mindset of "everything that exists is an object, everything that happens is a function call" is one of the truest descriptions of a function-oriented language like R. It's what R **intends** to do, and you're going with the flow.
 
-And yes, functions are practical too because you can use them repeatedly, maybe take them out of context and test them. But that's tertiary at best. Most of the value is conceptual.
+And yes, functions are practical too because you can use them repeatedly, maybe take them out of context and test them. But even so, most of the value is still conceptual.
 
 ---
 
@@ -376,7 +378,7 @@ data/
 
 ???
 
-So let's use functions in the deep learning example. We can still have scripts, but they are better organized and no longer imperative. We separate out the packages, the functions, and the plan (which I will get to later).
+So let's use functions in the deep learning example. We can still have scripts, but they are better organized. We separate out the packages, the functions, and the plan (which I will get to later).
 
 ---
 
@@ -441,7 +443,7 @@ run_everything <- function() {
 
 ???
 
-Once we define a bunch of other functions, we can group them into higher and higher-level functions until we have a single flagship function at the very top that runs everything. This gives us a lot of control over the flow of the analysis.
+Once we define a bunch of other functions, we group them into higher and higher-level functions until we have a single flagship function at the very top that runs everything. This gives us a lot of control over the flow of the analysis.
 
 ---
 
@@ -472,7 +474,7 @@ With our functions defined, our top-level **script** does as little as possible.
 
 ???
 
-But we can still do better. We can avoid rerunning everything indiscriminately. We can avoid micromanaging output files. And that's why we use drake.
+But we can still do better. We can avoid rerunning everything indiscriminately. We can avoid micromanaging output files. And that's where drake really helps.
 
 ---
 
@@ -504,7 +506,7 @@ plan <- drake_plan(
 
 ???
 
-Instead of a `run_everything()` function, we create a drake plan. This plan defines a bunch of skippable steps. Each step has a command, and each command returns a value called a **target**. We give these targets names on the left, and we list them in any order we want. So we can even define the data at the bottom here.
+Instead of a `run_everything()` function, we create a drake plan. The plan defines a bunch of skippable steps. Each step has a command, and each command returns a value called a **target**. We give these targets names on the left, and we list them in any order we want. So we can even define the data at the bottom here.
 
 ---
 
@@ -669,7 +671,7 @@ Reproducibility can mean a lot of different things.
 - How often your method has been replicated in the literature.
 - How credentialed the authors are themselves.
 
-But as Gabe Becker likes to say, it all comes down to trust. Reproducibility is about trust. And if you're dealing with long runtimes, this trust is difficult to earn. drake can help you earn and validate it.
+But as Gabe Becker likes to say, it all comes down to trust. Reproducibility is about trust. And if you're dealing with long runtimes, this trust is difficult to earn. drake enhances the kind of validation we need.
 
 ---
 
@@ -716,7 +718,7 @@ drake_history()
 
 ???
 
-`drake` also tracks history and provenance. You can see all the versions of old targets you built in the past, when you built them, how long they took, and even which function arguments you used in your commands. Over here on the right, you can see the names of activation functions you used because "act1" was the name of a function argument clearly visible in the plan.
+`drake` also tracks history and provenance. You can see all the versions of old targets you built in the past, when you built them, how long they took, and even which function arguments you used in your commands.
 
 ---
 
@@ -820,7 +822,7 @@ Here's how to learn more about drake. Just as drake itself exists and operates e
 
 ???
 
-And *outside* your session, you'll find a bunch of materials online. I highly recommend the workshop. Just go to the GitHub page and click the "launch binder" badge. That'll take you to an RStudio Server instance on the cloud, and you can get started away. Karthik's holepunch package made it so smooth to set all this up. There are notebooks and apps to guide you through the whole journey of developing this deep learning workflow and diving into the toughest parts of drake.
+Speaking of the workshop, you can take it right now. Just go to the GitHub page and click the "launch binder" badge. That'll take you to an RStudio Server instance on the cloud, and you can get started away. And by the way, Karthik's `holepunch` package made that super easy to set up.
 
 If you use `drake` for a real project, please consider writing about it as an rOpenSci use case. It helps demonstrate the value of rOpenSci packages and grow the community.
 
@@ -928,7 +930,7 @@ The rOpenSci folks also got the word out, and they put me in touch with collabor
 
 Let's end the talk portion with a riddle. For fun, try to think of an example of a nontrivial function.
 
-This was a question from a math PhD oral exam, but you don't have to know any fancy math to think of something cool. Students have tried pathological functions like Dirichlet and Weierstrass, and crazy fractals like this Pythagoras tree, but the math professor who posed this question would have thought these were all too trivial. You have to really believe that everything that happens is a function, and you have to make a function out something you might otherwise not think is possible.
+This was a question from a math PhD oral exam, but you don't have to know any fancy math to think of something cool. Some students have said the Dirichlet function is nontrivial and the Weierstrass function is nontrivial. You can use a function to describe a fractal. But the math professor who posed this question would have thought these were all too trivial. You have to really believe that everything that happens is a function, and you have to make a function out something you might otherwise not think is possible.
 
 ```{r c15, include = FALSE}
 tmp <- file.copy("R/plan.R", "R/plan2.R", overwrite = TRUE)
