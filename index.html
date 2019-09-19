@@ -80,12 +80,20 @@ background-size: contain;
   - Genomics pipelines.
   - PK/PD modeling.
 
+???
+
+Let's talk about what happens in large data science projects. Projects that are ambitious and complicated, that have a lot of moving parts and long runtimes. Projects that are difficult just to wrap your head around, that are difficult to run from start to finish, and that have important consequences in business decisions and academic research.
+
 ---
 
 ## Interconnected tasks
 &lt;center&gt;
 &lt;img src = "./images/workflow.png" align="middle" style="border: none; box-shadow: none; text-align: center;"&gt;
 &lt;/center&gt;
+
+???
+
+The tasks of a data analysis project are interconnected.
 
 ---
 
@@ -94,6 +102,10 @@ background-size: contain;
 &lt;img src = "./images/change.png" align="middle" style="border: none; box-shadow: none; text-align: center;"&gt;
 &lt;/center&gt;
 
+???
+
+When you go back and change something...
+
 ---
 
 ## ...the downstream output is **no longer valid**.
@@ -101,6 +113,10 @@ background-size: contain;
 &lt;center&gt;
 &lt;img src = "./images/downstream.png" align="middle" style="border: none; box-shadow: none; text-align: center;"&gt;
 &lt;/center&gt;
+
+???
+
+...everything that depends on it is no longer valid. And you have a lot of updating to do.
 
 ---
 
@@ -112,6 +128,12 @@ background-size: contain;
 &lt;img src = "./images/sisyphus.svg" align="middle" style="border: none; box-shadow: none; height: 375px; text-align: center;"&gt;
 &lt;div style="font-size: 0.5em; text-align: center"&gt;&lt;a href="https://openclipart.org/detail/275842/sisyphus-overcoming-silhouette"&gt;https://openclipart.org/detail/275842/sisyphus-overcoming-silhouette&lt;/a&gt;&lt;/div&gt;
 &lt;/center&gt;
+
+???
+
+For large projects, this is where the programming and workflow management techniques we are used to start to break down. If it takes several hours just to fit a single model, you're not going to want to rerun your whole analysis every time you make a change. It's just too much frustration.
+
+But I used to do this all the time. In my dissertation work, every model took about 4 hours, and I needed results from about 20 or 30 of them. I spent the last 6 months of grad school mostly waiting for code to finish running. It was hard to get any thesis writing done without fully up-to-date results.
 
 ---
 
@@ -126,6 +148,10 @@ background-size: contain;
 &lt;div style="font-size: 0.5em; text-align: center;"&gt;&lt;a href="https://openclipart.org/detail/216179/messy-desk"&gt;https://openclipart.org/detail/216179/messy-desk&lt;/a&gt;&lt;/div&gt;
 &lt;/center&gt;
 
+???
+
+And it's perilous to try to stop this cycle on your own without any help. If I'm the one deciding which code to skip and which code to rerun, it's a mess. It's too easy to make big mistakes, and the results are not reproducible. I would not trust a human to do this.
+
 ---
 
 ## Solution: pipeline tools
@@ -136,6 +162,19 @@ background-size: contain;
 
 - Tons exist already: [github.com/pditommaso/awesome-pipeline](https://github.com/pditommaso/awesome-pipeline).
 - Most are language-agnostic or designed for Python or the shell.
+
+???
+
+Fortunately, we can *automate* the process of bringing results up to date as fast as possible. The solution is a pipeline tool. You may have heard of examples already. There's
+
+- Make
+- Snakemake
+- Airflow
+- Nextflow
+- Luigi
+- Dask
+
+But they're difficult to use with R. They try to be language-agnostic for the sake of versatility, but this means they add extra friction when you try to work with any one language in particular. My experience with Make specifically is that it obstructs my relationship with R. It pulls me out of the language and into sub-optimal programming practices.
 
 ---
 
@@ -153,6 +192,21 @@ background-size: contain;
 - [`remake`](https://github.com/richfitz/remake) is no longer under development.
 - [`drake`](https://github.com/ropensci/drake) tries to extend [`remake`](https://github.com/richfitz/remake)'s ideas further and handle larger projects.
 
+???
+
+
+drake, on the other hand, is designed for R at its very core. It works entirely *within* the language, and it nudges you to write good code.
+
+1. Instead of imperative script files, you write **functions**.
+
+2. Instead of saving output files manually and dealing with all the headache of trying to organize them yourself, you return **objects** from those functions, and drake saves them for you.
+
+3. And instead of Makefiles in Make or YAML files in remake, you have an R-focused interface to define the skippable steps of your workflow.
+
+By the way, drake was not the first pipeline tool to truly respect R. Before drake, there was a package called `remake` by Rich FitzJohn. remake was playing nicely with objects and functions long before I created drake.
+
+But remake is no longer maintained. And because it required you to work with YAML configuration files and because of some other restrictions on how you write your code, it kind of had one foot in and one foot out anyway. drake tries to finish what remake started and scale up the intensity of work you can do with it.
+
 ---
 
 ## Example: a deep learning workflow
@@ -164,6 +218,10 @@ background-size: contain;
 &lt;img src = "./images/combine.png" style="border: none; box-shadow: none; height: 200px"&gt;
 
 &lt;div style="font-size: 0.5em;"&gt;&lt;a href="https://openclipart.org/detail/90739/newplus"&gt;https://openclipart.org/detail/90739/newplus&lt;/a&gt;, &lt;a href="https://github.com/rstudio/keras"&gt;https://github.com/rstudio/keras&lt;/a&gt;&lt;/div&gt;
+
+???
+
+To dive into drake, we're going to use a machine learning example. We've got a deep neural net, and we're going to use it to predict "customer churn", which is another way of saying attrition, or dropout.
 
 ---
 
@@ -188,6 +246,10 @@ output/
 ├── confusion_matrix.rds
 └── metrics_plot.png
 ```
+
+???
+
+Projects like this tend to get too big for the classic "numbered script" paradigm you may have seen. In my experience, it scales poorly for large projects.
 
 ---
 
@@ -217,6 +279,16 @@ output/
 *saveRDS(rec, "recipe.rds") # Final output scattered across code.
 ```
 
+???
+
+And the reason is that it tries to do too many things at once. The planning and the execution happen at the same time, and the actual content of the analysis is muddled with the bookkeeping.
+
+Look at these scripts. You've got package dependencies scattered everywhere, and file-saving steps scattered everywhere. And look at this preprocessing recipe. It looks like one thing, but it's really two things. You're defining a complicated procedure, and you're running it **as** you're defining it. These things should really be separate. Otherwise, it's hard to take the code out of context and test it.
+
+Not only that, we don't have shorthand names for the steps we're doing. We don't have the structure to organize the ideas, so it's hard to take a step back and think about what we're doing.
+
+In the R community, we like to criticize Microsoft Excel. We give it a hard time for putting the formulas and the spreadsheets in the same file, and we claim it's not reproducible. And we have a point. But we are guilty of something very similar! We're knitting and weaving and tangling too many things together!
+
 ---
 
 ## &lt;img src="./images/yes.png" width="60" height="40"&gt; Instead, embrace **functions**!
@@ -236,6 +308,12 @@ my_function(3, 4)
 ## [1] 7
 ```
 
+???
+
+We can do better. In computing, the easiest, most ubiquitous, most standard way to solving this problem is to write functions.
+
+A function is just a reusable command that accepts one or more inputs and returns a single output. You define it once, and you call it whenever you need it on whatever data you have.
+
 ---
 
 ## Why use functions?
@@ -250,6 +328,17 @@ my_function(3, 4)
 
 3. Reuse: define once, run wherever.
 
+???
+
+But functions do so much more than that. They're not just for code you want to repeat and reuse. They're for code you want to **understand**. Functions break down complicated ideas into manageable pieces. Instead of a monolithic mess, you have components that are smaller, cleaner, and less intimidating.
+
+Functions are like paragraphs of a data analysis. When you write functions, it's the same mental experience. You're crystallizing a stream of consciousness into clear, discrete, explainable points you want to make.
+
+Once you start doing this, you'll also notice that you're being true to the process of data analysis itself. Functions are a universal tool to describe how things change into other things. And that's exactly what we do when we analyze data. We change raw data into clean data, clean data into model output, and so on.
+
+You're also being true to R. You're using the language as it's **designed** to be used. The mindset of "everything that exists is an object, everything that happens is a function call" is one of the truest descriptions of a function-oriented language like R. It's what R **intends** to do, and you're going with the flow.
+
+And yes, functions are practical too because you can use them repeatedly, maybe take them out of context and test them. But that's tertiary at best. Most of the value is conceptual.
 
 ---
 
@@ -267,6 +356,10 @@ data/
 .drake/ # drake's cache
 └──     # Output automatically appears here.
 ```
+
+???
+
+So let's use functions in the deep learning example. We can still have scripts, but they are better organized and no longer imperative. We separate out the packages, the functions, and the plan (which I will get to later).
 
 ---
 
@@ -299,6 +392,10 @@ prepare_recipe &lt;- function(data) {
 # other functions...
 ```
 
+???
+
+Our preprocessing task is a single, clear, distinct idea with well-defined inputs and a single return value. So we put it in a function. That function is builds on top of other functions we borrow from the `recipes` package.
+
 ---
 
 ## Functions in a workflow
@@ -328,6 +425,10 @@ run_everything &lt;- function() {
 }
 ```
 
+???
+
+Once we define a bunch of other functions, we can group them into higher and higher-level functions until we have a single flagship function at the very top that runs everything. This gives us a lot of control over the flow of the analysis.
+
 ---
 
 ## Conduct your analysis with your **functions**.
@@ -340,6 +441,10 @@ source("R/functions.R")
 run_everything()
 ```
 
+???
+
+With our functions defined, our top-level **script** does as little as possible. It just loads the dependencies and calls a function. And that's a huge improvement.
+
 ---
 
 ## But we can still do better...
@@ -351,6 +456,10 @@ run_everything()
 &lt;img src = "./images/genie.png" align="middle" style="border: none; box-shadow: none; height: 375px; text-align: center;"&gt;
 &lt;div style="font-size: 0.5em; text-align: center"&gt;&lt;a href="https://publicdomainvectors.org/en/free-clipart/Golden-magic-lamp/61683.html"&gt;https://publicdomainvectors.org/en/free-clipart/Golden-magic-lamp/61683.html&lt;/a&gt;&lt;/div&gt;
 &lt;/center&gt;
+
+???
+
+But we can still do better. We can avoid rerunning everything indiscriminately. We can avoid micromanaging output files. And that's why we use drake.
 
 ---
 
@@ -381,6 +490,10 @@ plan &lt;- drake_plan(
 )
 ```
 
+???
+
+Instead of a `run_everything()` function, we create a drake plan. This plan defines a bunch of skippable steps. Each step has a command, and each command returns a value called a **target**. We give these targets names on the left, and we list them in any order we want. So we can even define the data at the bottom here.
+
 ---
 
 ## The plan is a data frame of skippable tasks.
@@ -400,6 +513,10 @@ plan
 ## 7 data        read_csv(file_in("data/customer_churn.csv"), col_type… &lt;NA&gt;
 ```
 
+???
+
+This plan is a tidy data frame of commands and targets. This is what you get instead of a Makefile. It exists entirely within R, and it uses a data structure we all like.
+
 ---
 
 ## The workflow
@@ -408,6 +525,10 @@ plan
 &lt;center&gt;
 &lt;img align="middle" src = "./images/vis1.png" style="border: none; box-shadow: none;"&gt;
 &lt;/center&gt;
+
+???
+
+Now `drake` takes this, and it analyzes your plan, and it analyzes your functions, without running any of your code. It detects the symbols that you mention and any optional input files you choose to declare, and it decides which steps go first and which steps go last. Because it analyzes your code, drake can figure this out regardless of the order you wrote the targets in the plan. For example, the "rec" target comes after the data because the command for "rec" mentions the symbol "data".
 
 ---
 
@@ -430,6 +551,10 @@ make(plan)
 ## target metrics
 ```
 
+???
+
+With all that in place, we can actually run the workflow now. We source the scripts to load our packages, functions, and plan, and we call the `make()` function to actually execute the tasks. The `make()` function runs the correct commands in the correct order, and it stores the targets in a hidden cache.
+
 ---
 
 ## Compare models.
@@ -440,6 +565,10 @@ readd(metrics) # See also loadd()
 ```
 
 &lt;img src="index_files/figure-html/c7-1.png" width="80%" height="80%" style="display: block; margin: auto;" /&gt;
+
+???
+
+After that, you can retrieve any target at any time with convenient interface functions `loadd()` and `readd()`.
 
 ---
 
@@ -472,6 +601,10 @@ plan &lt;- drake_plan(
 
 
 
+???
+
+drake is designed for changes. Here, we go back and add another model and another confusion matrix to try to outperform the others. We could have gone back and changed our commands and functions too.
+
 ---
 
 ## vis_drake_graph()
@@ -479,6 +612,12 @@ plan &lt;- drake_plan(
 &lt;center&gt;
 &lt;img align="middle" src = "./images/vis2.png" style="border: none; box-shadow: none;"&gt;
 &lt;/center&gt;
+
+???
+
+But whatever we do, drake looks at all of that and decides which targets are up to date and which are outdated or missing. And there are several interface functions to display this information in different ways.
+
+Here, since we added a new model, that model and everything downstream are out of date. But the green targets are still up to date because we haven't changed any **functions** or files commands or upstream targets or random number generator seeds they depend on.
 
 ---
 
@@ -496,6 +635,12 @@ make(plan)
 ## target metrics
 ```
 
+???
+
+When we run the new plan, we only build the outdated or missing targets. We run only **part** of the work, not all of it. Small changes to code or data no longer always invalidate everything. We save a ton of time this way.
+
+In computing, we like to talk a lot about speed. How do we make our code run faster? How do we make it more efficient? But the fastest code is the code we don't run at all.
+
 ---
 
 ## Compare models.
@@ -506,6 +651,10 @@ readd(metrics)
 ```
 
 &lt;img src="index_files/figure-html/c7updated-1.png" width="80%" height="80%" style="display: block; margin: auto;" /&gt;
+
+???
+
+And with minimal effort, our metrics are now up to date. The plot has all three models now.
 
 ---
 
@@ -522,6 +671,22 @@ make(plan)
 ```
 
 - See also `outdated()`.
+
+???
+
+If we run the `make()` function again without having changed anything, `drake` tells us that everything is up to date and does nothing else.
+
+This is *tangible evidence* that your output matches the code and data it came from. It is *tangible evidence* of reproducibility.
+
+Reproducibility can mean a lot of different things.
+
+- Replicability at the lab bench when the data is generated.
+- The amount of data you disclose to other researchers.
+- How well you explain your methods.
+- How often your method has been replicated in the literature.
+- How credentialed the authors are themselves.
+
+But as Gabe Becker likes to say, it all comes down to trust. Reproducibility is about trust. And if you're dealing with long runtimes, this trust is difficult to earn. drake can help you earn and validate it.
 
 ---
 
@@ -551,6 +716,14 @@ build_times(type = "build")
 *#&gt; 2 data_old 184s (~3.07 minutes) 177s (~2.95 minutes) 4.157s
 ```
 
+???
+
+Now for some new features.
+
+drake now has special formats for more efficient data processing. There are currently two fst-based formats, one for data frames and other for data *table*s. There's also a special format for Keras models.
+
+I'm always on the lookout for ways to improve efficiency, so please chime in if you have ideas.
+
 ---
 
 ## History and provenance
@@ -561,17 +734,21 @@ drake_history()
 ## # A tibble: 10 x 10
 ##    target  current built  exists hash  command     seed runtime  prop act1 
 ##    &lt;chr&gt;   &lt;lgl&gt;   &lt;chr&gt;  &lt;lgl&gt;  &lt;chr&gt; &lt;chr&gt;      &lt;int&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;
-##  1 conf_r… TRUE    2019-… TRUE   c306… confusio… 4.05e8   0.237  NA   &lt;NA&gt; 
-##  2 conf_s… TRUE    2019-… TRUE   66f2… confusio… 1.93e9   0.206  NA   &lt;NA&gt; 
-##  3 conf_s… TRUE    2019-… TRUE   7421… confusio… 1.80e9   0.247  NA   &lt;NA&gt; 
-##  4 data    TRUE    2019-… TRUE   ca84… "read_cs… 1.29e9   0.036   0.3 &lt;NA&gt; 
-##  5 metrics FALSE   2019-… TRUE   4ccb… compare_… 1.21e9   0.02   NA   &lt;NA&gt; 
-##  6 metrics TRUE    2019-… TRUE   8195… compare_… 1.21e9   0.018  NA   &lt;NA&gt; 
-##  7 model_… TRUE    2019-… TRUE   cb29… "train_m… 1.47e9   6.71   NA   relu 
-##  8 model_… TRUE    2019-… TRUE   4b30… "train_m… 1.26e9   3.82   NA   sigm…
-##  9 model_… TRUE    2019-… TRUE   a5e9… "train_m… 8.05e8   4.89   NA   soft…
-## 10 rec     TRUE    2019-… TRUE   7605… prepare_… 6.29e8   0.125  NA   &lt;NA&gt;
+##  1 conf_r… TRUE    2019-… TRUE   26a8… confusio… 4.05e8  0.264   NA   &lt;NA&gt; 
+##  2 conf_s… TRUE    2019-… TRUE   b714… confusio… 1.93e9  0.218   NA   &lt;NA&gt; 
+##  3 conf_s… TRUE    2019-… TRUE   cd5e… confusio… 1.80e9  0.284   NA   &lt;NA&gt; 
+##  4 data    TRUE    2019-… TRUE   ca84… "read_cs… 1.29e9  0.0410   0.3 &lt;NA&gt; 
+##  5 metrics FALSE   2019-… TRUE   1be8… compare_… 1.21e9  0.021   NA   &lt;NA&gt; 
+##  6 metrics TRUE    2019-… TRUE   6317… compare_… 1.21e9  0.0200  NA   &lt;NA&gt; 
+##  7 model_… TRUE    2019-… TRUE   612a… "train_m… 1.47e9  7.16    NA   relu 
+##  8 model_… TRUE    2019-… TRUE   d835… "train_m… 1.26e9  4.75    NA   sigm…
+##  9 model_… TRUE    2019-… TRUE   ecf3… "train_m… 8.05e8  5.17    NA   soft…
+## 10 rec     TRUE    2019-… TRUE   7605… prepare_… 6.29e8  0.136   NA   &lt;NA&gt;
 ```
+
+???
+
+`drake` also tracks history and provenance. You can see all the versions of old targets you built in the past, when you built them, how long they took, and even which function arguments you used in your commands. Over here on the right, you can see the names of activation functions you used because "act1" was the name of a function argument clearly visible in the plan.
 
 ---
 
@@ -595,10 +772,16 @@ make(plan, recover = TRUE)
 
 proc.time() - start
 ##    user  system elapsed 
-##   0.086   0.000   0.086
+##   0.089   0.000   0.089
 ```
 
 - Details + how to rename a target: &lt;https://ropenscilabs.github.io/drake-manual/walkthrough.html#reproducible-data-recovery-and-renaming&gt;
+
+???
+
+And if you don't use garbage collection on the cache, those old targets will still be there even if newer ones exist too. If you are about to build a target, and it has the same versions of the same dependencies as some run-through from the past, you can activate data recovery to avoid running those commands again. This means if you invalidate targets, or you revert your code, or just try some ad hoc experiment and then come back, you can restore old targets and save time.
+
+Unfortunately, this is not the default because it assumes you are always using the same packages and computing environment. This is where tools like `packrat` and `renv` and Docker come into play. They are great complements to what `drake` is doing, and they are fully compatible. drake does not solve every problem in reproducibility, but it tries to play nicely with tools that compensate for its relative weaknesses.
 
 ---
 
@@ -621,11 +804,19 @@ options(
 make(plan, jobs = 2, parallelism = "clustermq")
 ```
 
+???
+
+And here's another feature that's been around for a long time: parallel computing. drake automatically decides which targets can run at the same time and which need to wait for dependencies. Whether you are running locally or on a cluster, it does not require too much configuring. How it works is you declare the number of workers, the parallel backend, and resource requirements if you're on a cluster..
+
 ---
 
 ## Dependency-aware high-performance computing
 
 &lt;iframe width="800" height="450" src="https://www.powtoon.com/embed/bUfSIaXjrw5/" frameborder="0"&gt;&lt;/iframe&gt;
+
+???
+
+And drake takes care of the rest. It launches a bunch of workers and sends those workers to the targets as soon as they're ready to go.
 
 ---
 
@@ -652,6 +843,10 @@ drake::drake_example("customer-churn")
 remotes::install_github("wlandau/learndrake")
 ```
 
+???
+
+Here's how to learn more about drake. Just as drake itself exists and operates entirely within R, so do many of its resources. You can install the package, get example code, and even take an entire 4-hour workshop without leaving R.
+
 ---
 
 ## Links
@@ -670,6 +865,12 @@ remotes::install_github("wlandau/learndrake")
 &lt;center&gt;
 &lt;img src = "./images/ropensci.png" style="border: none; box-shadow: none; height: 150px"&gt;
 &lt;/center&gt;
+
+???
+
+And *outside* your session, you'll find a bunch of materials online. I highly recommend the workshop. Just go to the GitHub page and click the "launch binder" badge. That'll take you to an RStudio Server instance on the cloud, and you can get started away. Karthik's holepunch package made it so smooth to set all this up. There are notebooks and apps to guide you through the whole journey of developing this deep learning workflow and diving into the toughest parts of drake.
+
+If you use `drake` for a real project, please consider writing about it as an rOpenSci use case. It helps demonstrate the value of rOpenSci packages and grow the community.
 
 ---
 
@@ -695,6 +896,10 @@ remotes::install_github("wlandau/learndrake")
 &lt;/td&gt;
 &lt;/tr&gt;
 &lt;/table&gt;
+
+???
+
+Today, I borrowed a deep learning example from Matt Dancho and Edgar Ruiz. Matt wrote a great RStudio blog post on deep learning in R, and Edgar engineered the solution to include `drake`.
 
 ---
 
@@ -742,6 +947,16 @@ remotes::install_github("wlandau/learndrake")
 &lt;/tr&gt;
 &lt;/table&gt;
 
+???
+
+For the development of drake itself, I have a lot of people to thank, many more than are on this list.
+
+rOpenSci in particular is fantastic. It combines expertise and approachability, and it is the one of the friendliest and most welcoming communities in tech.
+
+When they on-boarded `drake` into the suite of packages, it was technically a peer review process, but it felt more of a series of coaching sessions about documenting and explaining the package.
+
+The rOpenSci folks also got the word out, and they put me in touch with collaborators all over the world and developers who I look up to. So thank you for your engagement and guidance and support.
+
 ---
 
 ## A riddle!
@@ -756,6 +971,12 @@ remotes::install_github("wlandau/learndrake")
 &lt;img src = "./images/pythagoras.png" align="middle" style="border: none; box-shadow: none; height: 375px; text-align: center;"&gt;
 &lt;div style="font-size: 0.5em; text-align: center"&gt;&lt;a href="https://publicdomainvectors.org/en/free-clipart/Pythagoras-tree/58775.html"&gt;https://publicdomainvectors.org/en/free-clipart/Pythagoras-tree/58775.html&lt;/a&gt;&lt;/div&gt;
 &lt;/center&gt;
+
+???
+
+Let's end the talk portion with a riddle. For fun, try to think of an example of a nontrivial function.
+
+This was a question from a math PhD oral exam, but you don't have to know any fancy math to think of something cool. Students have tried pathological functions like Dirichlet and Weierstrass, and crazy fractals like this Pythagoras tree, but the math professor who posed this question would have thought these were all too trivial. You have to really believe that everything that happens is a function, and you have to make a function out something you might otherwise not think is possible.
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
