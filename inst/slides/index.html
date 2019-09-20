@@ -337,7 +337,9 @@ Functions break down complicated ideas into manageable pieces. Instead of a mono
 
 Functions are like paragraphs of a data analysis. It's the same mental experience inside your head. You're crystallizing a stream of consciousness into clear, discrete, explainable points you want to make.
 
-Once you start doing this, you'll also notice that you're being true to the process of data analysis itself. Functions are a universal tool to describe how things change into other things. And that's exactly what we do when we analyze data. We change raw data into clean data, clean data into model output, and so on.
+Look, nothing is going to change the fact that writing code is difficult. It will always be difficult. For everyone. Not even the Tidyverse or R Markdown can replace the fact that every single one of us has to concentrate and get our thoughts in order. And if you feel this, you are **not** an imposter, you are self-aware. And the more we lean into it, the better off we'll be in the long run. Functions, and `drake`, force us to think clearly about what we're doing.
+
+Once you do this, you'll notice benefits pretty quickly. One thing you'll notice is that you're being true to the process of data analysis. Functions are a universal tool to describe how things change into other things. And that's exactly what we do when we analyze data. We change raw data into clean data, clean data into model output, and so on.
 
 You're also being true to the R language. You're using the language as it's **designed** to be used. The mindset of "everything that exists is an object, everything that happens is a function call" is one of the truest descriptions of a function-oriented language like R. It's what R **intends** to do, and you're going with the flow.
 
@@ -737,16 +739,16 @@ drake_history()
 ## # A tibble: 10 x 10
 ##    target  current built  exists hash  command     seed runtime  prop act1 
 ##    &lt;chr&gt;   &lt;lgl&gt;   &lt;chr&gt;  &lt;lgl&gt;  &lt;chr&gt; &lt;chr&gt;      &lt;int&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;
-##  1 conf_r… TRUE    2019-… TRUE   436c… confusio… 4.05e8  0.212   NA   &lt;NA&gt; 
-##  2 conf_s… TRUE    2019-… TRUE   cf78… confusio… 1.93e9  0.199   NA   &lt;NA&gt; 
-##  3 conf_s… TRUE    2019-… TRUE   ab60… confusio… 1.80e9  0.228   NA   &lt;NA&gt; 
-##  4 data    TRUE    2019-… TRUE   ca84… "read_cs… 1.29e9  0.036    0.3 &lt;NA&gt; 
-##  5 metrics FALSE   2019-… TRUE   84e5… compare_… 1.21e9  0.0210  NA   &lt;NA&gt; 
-##  6 metrics TRUE    2019-… TRUE   e806… compare_… 1.21e9  0.0200  NA   &lt;NA&gt; 
-##  7 model_… TRUE    2019-… TRUE   2043… "train_m… 1.47e9  4.83    NA   relu 
-##  8 model_… TRUE    2019-… TRUE   5c21… "train_m… 1.26e9  3.25    NA   sigm…
-##  9 model_… TRUE    2019-… TRUE   0fb6… "train_m… 8.05e8  3.35    NA   soft…
-## 10 rec     TRUE    2019-… TRUE   0a55… prepare_… 6.29e8  0.139   NA   &lt;NA&gt;
+##  1 conf_r… TRUE    2019-… TRUE   e0cf… confusio… 4.05e8   0.229  NA   &lt;NA&gt; 
+##  2 conf_s… TRUE    2019-… TRUE   ae67… confusio… 1.93e9   0.180  NA   &lt;NA&gt; 
+##  3 conf_s… TRUE    2019-… TRUE   b5d0… confusio… 1.80e9   0.234  NA   &lt;NA&gt; 
+##  4 data    TRUE    2019-… TRUE   ca84… "read_cs… 1.29e9   0.051   0.3 &lt;NA&gt; 
+##  5 metrics FALSE   2019-… TRUE   c44d… compare_… 1.21e9   0.018  NA   &lt;NA&gt; 
+##  6 metrics TRUE    2019-… TRUE   b809… compare_… 1.21e9   0.018  NA   &lt;NA&gt; 
+##  7 model_… TRUE    2019-… TRUE   8147… "train_m… 1.47e9   6.29   NA   relu 
+##  8 model_… TRUE    2019-… TRUE   d639… "train_m… 1.26e9   3.77   NA   sigm…
+##  9 model_… TRUE    2019-… TRUE   7c99… "train_m… 8.05e8   4.17   NA   soft…
+## 10 rec     TRUE    2019-… TRUE   7605… prepare_… 6.29e8   0.121  NA   &lt;NA&gt;
 ```
 
 ???
@@ -775,7 +777,7 @@ make(plan, recover = TRUE)
 
 proc.time() - start
 ##    user  system elapsed 
-##   0.094   0.033   0.215
+##   0.068   0.013   0.081
 ```
 
 - Details + how to rename a target: &lt;https://ropenscilabs.github.io/drake-manual/walkthrough.html#reproducible-data-recovery-and-renaming&gt;
@@ -1024,24 +1026,7 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
     }
     deleted = true;
   });
-})();
-// adds .remark-code-has-line-highlighted class to <pre> parent elements
-// of code chunks containing highlighted lines with class .remark-code-line-highlighted
-(function(d) {
-  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
-  const preParents = [];
-  const findPreParent = function(line, p = 0) {
-    if (p > 1) return null; // traverse up no further than grandparent
-    const el = line.parentElement;
-    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
-  };
-
-  for (let line of hlines) {
-    let pre = findPreParent(line);
-    if (pre && !preParents.includes(pre)) preParents.push(pre);
-  }
-  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
-})(document);</script>
+})();</script>
 
 <script>
 (function() {

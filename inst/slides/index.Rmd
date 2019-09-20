@@ -355,7 +355,9 @@ Functions break down complicated ideas into manageable pieces. Instead of a mono
 
 Functions are like paragraphs of a data analysis. It's the same mental experience inside your head. You're crystallizing a stream of consciousness into clear, discrete, explainable points you want to make.
 
-Once you start doing this, you'll also notice that you're being true to the process of data analysis itself. Functions are a universal tool to describe how things change into other things. And that's exactly what we do when we analyze data. We change raw data into clean data, clean data into model output, and so on.
+Look, nothing is going to change the fact that writing code is difficult. It will always be difficult. For everyone. Not even the Tidyverse or R Markdown can replace the fact that every single one of us has to concentrate and get our thoughts in order. And if you feel this, you are **not** an imposter, you are self-aware. And the more we lean into it, the better off we'll be in the long run. Functions, and `drake`, force us to think clearly about what we're doing.
+
+Once you do this, you'll notice benefits pretty quickly. One thing you'll notice is that you're being true to the process of data analysis. Functions are a universal tool to describe how things change into other things. And that's exactly what we do when we analyze data. We change raw data into clean data, clean data into model output, and so on.
 
 You're also being true to the R language. You're using the language as it's **designed** to be used. The mindset of "everything that exists is an object, everything that happens is a function call" is one of the truest descriptions of a function-oriented language like R. It's what R **intends** to do, and you're going with the flow.
 
