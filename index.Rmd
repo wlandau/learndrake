@@ -106,7 +106,7 @@ knitr::opts_chunk$set(
 
 ???
 
-Let's talk about what happens in large data science projects. Projects that are ambitious and complicated, that have a lot of moving parts and long runtimes. Projects that are difficult just to wrap your head around, that are difficult to run from start to finish, and that have important consequences in business decisions and academic research.
+Let's talk about what happens in large data science projects. Projects that are ambitious and complicated, that have a lot of moving parts and long runtimes. Projects that are difficult just to wrap your head around, that are difficult just to run from start to finish, but whose results really matter and carry important consequences.
 
 ---
 
@@ -140,7 +140,7 @@ When you go back and change something...
 
 ???
 
-...everything that depends on it is no longer valid. And you have a lot of updating to do.
+...everything that depends on it is no longer valid. And you need to pick up the pieces.
 
 ---
 
@@ -157,7 +157,7 @@ When you go back and change something...
 
 For large projects, this is where the programming and workflow management techniques we are used to start to break down. If it takes several hours just to fit a single model, you're not going to want to rerun your whole analysis every time you make a change. It's just too much frustration.
 
-But I used to do this all the time. In my dissertation work, every model took about 4 hours, and I needed results from about 20 or 30 of them. I spent the last 6 months of grad school mostly waiting for code to finish running. It was hard to get any thesis writing done without fully up-to-date results.
+But I used to do this all the time. In my dissertation work, every model took about 4 hours, and I needed results from about 20 or 30 of them. I spent the last 6 months of grad school mostly restarting code and waiting it to finish. My results were out of sync with the code, and it was hard to write my thesis that way.
 
 ---
 
@@ -189,7 +189,7 @@ And it's perilous to try to stop this cycle on your own without any help. If I'm
 
 ???
 
-Fortunately, we can *automate* the process of bringing results up to date as fast as possible. The solution is a pipeline tool. You may have heard of examples already. There's
+Fortunately, we can *automate* the process of bringing results up to date as fast as possible. The standard solution is a pipeline tool. You may have heard of examples already. There's
 
 - Make
 - Snakemake
@@ -198,7 +198,7 @@ Fortunately, we can *automate* the process of bringing results up to date as fas
 - Luigi
 - Dask
 
-But they're difficult to use with R. They try to be language-agnostic for the sake of versatility, but this means they add extra friction when you try to work with any one language in particular. My experience with Make specifically is that it obstructs my relationship with R. It pulls me out of the language and into sub-optimal programming practices.
+But they're difficult to use with R. Most of them try to be language-agnostic for the sake of versatility, but this means they add extra friction when you try to work with any one language in particular. My experience with Make specifically is that it obstructs my relationship with R. It pulls me out of the language and into sub-optimal programming practices.
 
 ---
 
@@ -219,7 +219,7 @@ But they're difficult to use with R. They try to be language-agnostic for the sa
 ???
 
 
-drake, on the other hand, is designed for R at its very core. It works entirely *within* the language, and it nudges you to write good code.
+drake, on the other hand, is designed for R at its very core. It works entirely *within* the language, and it nudges you to write good code you can trust.
 
 1. Instead of imperative script files, you write **functions**.
 
@@ -227,9 +227,9 @@ drake, on the other hand, is designed for R at its very core. It works entirely 
 
 3. And instead of Makefiles in Make or YAML files in remake, you have an R-focused interface to define the skippable steps of your workflow.
 
-By the way, drake was not the first pipeline tool to truly respect R. Before drake, there was a package called `remake` by Rich FitzJohn. remake was playing nicely with objects and functions long before I created drake.
+By the way, drake was not the first pipeline tool to respect the way R works. Before drake, there was a package called `remake` by Rich FitzJohn. remake was playing nicely with objects and functions long before I created drake.
 
-But remake is no longer maintained. And because it required you to work with YAML configuration files and because of some other restrictions on how you write your code, it kind of had one foot in R and one foot out anyway. drake tries to finish what remake started and scale up the intensity of work you can do with it.
+But remake is no longer maintained. And because it required you to work with YAML configuration files and supply your actual R scripts directly, it kind of had one foot in and one foot out anyway. drake tries to finish what remake started and scale up the intensity of work you can do with it.
 
 ---
 
@@ -272,7 +272,7 @@ output/
 
 ???
 
-Projects like this tend to get too big for the classic "numbered script" paradigm you may have seen. In my experience, it scales poorly for large projects.
+Projects like this tend to get too big for the classic "numbered script" paradigm you may have seen. It breaks down pretty easily.
 
 ---
 
@@ -305,11 +305,11 @@ saveRDS(rec, "recipe.rds") # Final output scattered across code. #<<
 
 And the reason is that it tries to do too many things at once. The planning and the execution happen at the same time, and the actual content of the analysis is muddled with the bookkeeping.
 
-Look at these scripts. You've got package dependencies scattered everywhere, and file-saving steps scattered everywhere. And look at this preprocessing recipe. It looks like one thing, but it's really two different things. You're defining a complicated procedure, and you're running it **as** you're defining it. These things should really be separate. Otherwise, it's hard to take the code out of context and test it.
+Look at these scripts. You've got package dependencies and file-saving steps scattered everywhere. And for this preprocessing recipe, it looks like one thing, but it's really two different things. You're defining a complicated procedure, and you're running it **as** you're defining it. These things should really be separate. Otherwise, it's hard to take the code out of context and test it.
 
-Not only that, we don't have shorthand names for the long complicated steps we're doing. We don't have the structure to organize the ideas, so it's hard to take a step back and think about what we're doing.
+But more importantly, we don't have shorthand names for the long complicated steps we're doing. We don't have the structure to organize the ideas, so it's hard to take a step back and think about what we're doing.
 
-In the R community, we like to criticize Microsoft Excel. We give it a hard time for putting the formulas and the spreadsheets in the same file, and we claim it's not reproducible. And we have a point. But we are guilty of something very similar! We're knitting and weaving and tangling too many things together!
+In the R community, we like to criticize Microsoft Excel. We give it a hard time for putting the formulas and the spreadsheets in the same file, and we claim it's not reproducible. And we have a point. But we are guilty of something very similar! We have a habit of knitting and weaving and tangling too many things together that don't belong together!
 
 ---
 
@@ -329,9 +329,9 @@ my_function(3, 4)
 
 ???
 
-We can do better. In computing, the easiest, most ubiquitous, most standard way to solving this problem is to write functions.
+We can do better. In computing, the easiest, most ubiquitous, most standard way to solve this problem is to write functions.
 
-A function is just a reusable command that accepts one or more inputs and returns a single output. You define it once, and you call it whenever you need it on whatever data that fits.
+A function is just a reusable command that accepts one or more inputs and returns a single output. You define it once, you give it a name, and you call it whenever you need it on whatever data that fits.
 
 ---
 
@@ -351,17 +351,15 @@ A function is just a reusable command that accepts one or more inputs and return
 
 But functions do so much more than that. They're not just for code you want to repeat and reuse. They're for code you want to **understand**.
 
-Functions break down complicated ideas into manageable pieces. Instead of a monolithic mess, you have components that are smaller, cleaner, and less intimidating.
+Functions break down complicated ideas into manageable pieces. Instead of a huge mess, you have components that are smaller, cleaner, less intimidating, and that mean something clear and useful.
 
-Functions are like paragraphs of a data analysis. It's the same mental experience inside your head. You're crystallizing a stream of consciousness into clear, discrete, explainable points you want to make.
+Functions are like paragraphs. It's the same mental experience inside your head. You wouldn't write an endless wall of text as a paper or an email, right? It's the same thing here, and R Markdown chunks don't have the structure to get us there. With functions, you're crystallizing a stream of consciousness into clear, discrete, explainable, composable, chainable points you want to make.
 
-Look, nothing is going to change the fact that writing code is difficult. It will always be difficult. For everyone. Not even the Tidyverse or R Markdown can replace the fact that every single one of us has to concentrate and get our thoughts in order. And if you feel this, you are **not** an imposter, you are self-aware. And the more we lean into it, the better off we'll be in the long run. Functions, and `drake`, force us to think clearly about what we're doing.
+Look, nothing is going to change the fact that writing code is difficult. It will always be difficult. For everyone. Not even the Tidyverse or R Markdown can replace the fact that every single one of us has to concentrate and get our thoughts in order. Feeling the strain does **not** make you an imposter, it just makes you self-aware. And the more we lean into that, the better off we are in the long run. 
 
-Once you do this, you'll notice benefits pretty quickly. One thing you'll notice is that you're being true to the process of data analysis. Functions are a universal tool to describe how things change into other things. And that's exactly what we do when we analyze data. We change raw data into clean data, clean data into model output, and so on.
+Things start to make more sense once you do this. For example, you'll notice that you're being true to the process of data analysis. Functions are **fundamentally designed** to describe change. And in our workflows, we change raw data into clean data, clean data into model output, and so on. Those steps are begging to be functions.
 
-You're also being true to the R language. You're using the language as it's **designed** to be used. The mindset of "everything that exists is an object, everything that happens is a function call" is one of the truest descriptions of a function-oriented language like R. It's what R **intends** to do, and you're going with the flow.
-
-And yes, functions are practical too because you can use them repeatedly, maybe take them out of context and test them. But even so, most of the value is still conceptual.
+You're also being true to the R language. You're using it how it's **designed** to be used, and I think that John Chambers quote says it best.
 
 ---
 
@@ -381,7 +379,7 @@ data/
 
 ???
 
-So let's use functions in the deep learning example. We can still have scripts, but they are better organized. We separate out the packages, the functions, and the plan (which I will get to later).
+So let's use functions in the deep learning example. Most the real estate in our scripts is functions.
 
 ---
 
@@ -414,7 +412,7 @@ prepare_recipe <- function(data) {
 
 ???
 
-Our preprocessing task is a single, clear, distinct idea with well-defined inputs and a single return value. So we put it in a function. That function is builds on top of other functions we borrow from the `recipes` package.
+Our preprocessing task is a single, clear, distinct idea with clearly-defined inputs and a single return value. So we put it in a function.
 
 ---
 
@@ -446,7 +444,7 @@ run_everything <- function() {
 
 ???
 
-Once we define a bunch of other functions, we group them into higher and higher-level functions until we have a single flagship function at the very top that runs everything. This gives us a lot of control over the flow of the analysis.
+And we can take the functions we define and call them from other functions, including a function that runs everything at the top level and controls the flow of the analysis.
 
 ---
 
@@ -461,13 +459,13 @@ run_everything()
 
 ???
 
-With our functions defined, our top-level **script** does as little as possible. It just loads the dependencies and calls a function. And that's a huge improvement.
+Our top-level **script** pretty much just calls our flagship function. And that's a huge improvement.
 
 ---
 
 ## But we can still do better...
 
-- Avoid rerunning every function on every runthrough.
+- Avoid rerunning all the computation every time.
 - Avoid micromanaging output files.
 
 <center>
@@ -477,7 +475,7 @@ With our functions defined, our top-level **script** does as little as possible.
 
 ???
 
-But we can still do better. We can avoid rerunning everything indiscriminately. We can avoid micromanaging output files. And that's where drake really helps.
+But we can still do better. We can avoid rerunning all the computation every time. We can avoid micromanaging output files. And that's where drake helps us.
 
 ---
 
@@ -534,7 +532,7 @@ This plan is a tidy data frame of commands and targets. This is what you get ins
 
 ???
 
-Now `drake` takes this, and it analyzes your plan, and it analyzes your functions, without running any of your code. It detects the symbols that you mention and any optional input files you choose to declare, and it decides which steps go first and which steps go last. Because it analyzes your code, drake can figure this out regardless of the order you wrote the targets in the plan. For example, the "rec" target comes after the data because the command for "rec" mentions the symbol "data".
+Now `drake` takes this, and it analyzes your plan, and it analyzes your functions, without running any of your code just yet. It detects the symbols that you mention and any optional input files you choose to declare, and it decides which steps go first and which steps go last. Because it analyzes your code, drake can figure this out regardless of the order you wrote the targets in the plan. For example, the "rec" target comes after the data because the command for "rec" mentions the symbol "data".
 
 ---
 
@@ -551,7 +549,7 @@ make(plan)
 
 ???
 
-With all that in place, we can actually run the workflow now. We source the scripts to load our packages, functions, and plan, and we call the `make()` function to actually execute the tasks. The `make()` function runs the correct commands in the correct order, and it stores the targets in a hidden cache.
+With all that in place, we can actually run the workflow now. We source the scripts to load our packages, functions, and plan, and we call the `make()` function to actually execute the tasks. The `make()` function runs the correct commands in the correct order using that graph, and it stores the targets in a hidden cache.
 
 ---
 
@@ -742,7 +740,7 @@ proc.time() - start
 
 And if you don't use garbage collection on the cache, those old targets will still be there even if newer ones exist too. If you are about to build a target, and it has the same versions of the same dependencies as some run-through from the past, you can activate data recovery to avoid running those commands again. This means if you invalidate targets, or you revert your code, or just try some ad hoc experiment and then come back, you can restore old targets and save time.
 
-Unfortunately, this is not the default because it assumes you are always using the same packages and computing environment. This is where tools like `packrat` and `renv` and Docker come into play. They are great complements to what `drake` is doing, and they are fully compatible. drake does not solve every problem in reproducibility, but it tries to play nicely with tools that compensate for its relative weaknesses.
+Unfortunately, this is not the default because it assumes you are always using the same packages and computing environment. This is where tools like `packrat` and `renv` and Docker come into play. They are great complements to what `drake` is doing, and they are fully compatible. drake does not solve every problem in reproducibility, but it tries to play nicely with tools that compensate for its relative weaknesses. Even R Markdown reports have a role. Ask me about that one later.
 
 ---
 
@@ -802,7 +800,7 @@ remotes::install_github("wlandau/learndrake")
 
 ???
 
-Here's how to learn more about drake. Just as drake itself exists and operates entirely within R, so do many of its resources. You can install the package, get example code, and even take an entire 4-hour workshop without leaving R.
+Here's how to learn more about drake. Just as drake itself exists and operates entirely within R, so do many of its resources.
 
 ---
 
@@ -825,7 +823,7 @@ Here's how to learn more about drake. Just as drake itself exists and operates e
 
 ???
 
-Speaking of the workshop, you can take it right now. Just go to the GitHub page and click the "launch binder" badge. That'll take you to an RStudio Server instance on the cloud, and you can get started away. And by the way, Karthik's `holepunch` package made that super easy to set up.
+For the online stuff, I highly recommend the "learndrake" workshop. Just go to the GitHub page and click the "launch binder" badge, and suddenly you're in RStudio Server with everything ready to go.
 
 If you use `drake` for a real project, please consider writing about it as an rOpenSci use case. It helps demonstrate the value of rOpenSci packages and grow the community.
 
@@ -856,7 +854,7 @@ If you use `drake` for a real project, please consider writing about it as an rO
 
 ???
 
-Today, I borrowed a deep learning example from Matt Dancho and Edgar Ruiz. Matt wrote a great RStudio blog post on deep learning in R, and Edgar engineered the solution to include `drake`.
+Today, I borrowed a deep learning example from Matt Dancho and Edgar Ruiz.
 
 ---
 
@@ -908,11 +906,7 @@ Today, I borrowed a deep learning example from Matt Dancho and Edgar Ruiz. Matt 
 
 For the development of drake itself, I have a lot of people to thank, many more than are on this list.
 
-rOpenSci in particular is fantastic. It combines expertise and approachability, and it is the one of the friendliest and most welcoming communities in tech.
-
-When they on-boarded `drake` into the suite of packages, it was technically a peer review process, but it felt more of a series of coaching sessions about documenting and explaining the package.
-
-The rOpenSci folks also got the word out, and they put me in touch with collaborators all over the world and developers who I look up to. So thank you for your engagement and guidance and support.
+rOpenSci in particular is the one of the friendliest and most welcoming communities in tech, an amazing combination of expertise and approachability. `drake` is a better package and I am a better developer because they coached me and got the word out, connected me with users with insightful ideas and developers who I look up to.
 
 ---
 
@@ -933,7 +927,7 @@ The rOpenSci folks also got the word out, and they put me in touch with collabor
 
 Let's end the talk portion with a riddle. For fun, try to think of an example of a nontrivial function.
 
-This was a question from a math PhD oral exam, but you don't have to know any fancy math to think of something cool. Some students have said the Dirichlet function is nontrivial and the Weierstrass function is nontrivial. You can use a function to describe a fractal. But the math professor who posed this question would have thought these were all too trivial. You have to really believe that everything that happens is a function, and you have to make a function out something you might otherwise not think is possible.
+This was a question from a math PhD oral exam, but you don't have to know any fancy math to think of something cool. In fact, everything you can write with a formula or code isn't enough to solve the riddle. You have to really believe that **everything** that happens is a function call, and you have to make a function out something you might not otherwise think is possible.
 
 ```{r c15, include = FALSE}
 tmp <- file.copy("R/plan.R", "R/plan2.R", overwrite = TRUE)
