@@ -337,9 +337,9 @@ Functions break down complicated ideas into manageable pieces. Instead of a huge
 
 Functions are like paragraphs. It's the same mental experience inside your head. You wouldn't write an endless wall of text as a paper or an email, right? It's the same thing here, and R Markdown chunks don't have the structure to get us there. With functions, you're crystallizing a stream of consciousness into clear, discrete, explainable, composable, chainable points you want to make.
 
-Look, nothing is going to change the fact that writing code is difficult. It will always be difficult. For everyone. Not even the Tidyverse or R Markdown can replace the fact that every single one of us has to concentrate and get our thoughts in order. Feeling the strain is normal. It does **not** make you an imposter, it just makes you self-aware. And the more we lean into that, the better off we are in the long run. 
+Look, nothing is going to change the fact that writing code is difficult. It will always be difficult. For everyone. Not even the Tidyverse or R Markdown can replace the fact that every single one of us has to concentrate and get our thoughts in order. Feeling the strain is normal. It does **not** make you an imposter, it just makes you self-aware. And the more we lean into that, the better off we are in the long run, and the more things make sense. 
 
-Things start to make more sense once you do this. For example, you'll notice that you're being true to the process of data analysis itself. Functions are **fundamentally designed** to describe change. And in our workflows, we change raw data into clean data, clean data into model output, and so on. Those steps are begging to be functions.
+For example, you'll notice that you're being truer to the process of data analysis itself. Functions are **fundamentally designed** to describe change. And in our workflows, we change raw data into clean data, clean data into model output, and so on. Those steps are begging to be functions.
 
 You're also being true to the R language. You're using it how it's **designed** to be used, and I think that John Chambers quote says it best.
 
@@ -735,16 +735,16 @@ drake_history()
 ## # A tibble: 10 x 10
 ##    target  current built  exists hash  command     seed runtime  prop act1 
 ##    &lt;chr&gt;   &lt;lgl&gt;   &lt;chr&gt;  &lt;lgl&gt;  &lt;chr&gt; &lt;chr&gt;      &lt;int&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;
-##  1 conf_r… TRUE    2019-… TRUE   4720… confusio… 4.05e8  0.232   NA   &lt;NA&gt; 
-##  2 conf_s… TRUE    2019-… TRUE   9137… confusio… 1.93e9  0.187   NA   &lt;NA&gt; 
-##  3 conf_s… TRUE    2019-… TRUE   00c3… confusio… 1.80e9  0.260   NA   &lt;NA&gt; 
-##  4 data    TRUE    2019-… TRUE   ca84… "read_cs… 1.29e9  0.036    0.3 &lt;NA&gt; 
-##  5 metrics FALSE   2019-… TRUE   f043… compare_… 1.21e9  0.0200  NA   &lt;NA&gt; 
-##  6 metrics TRUE    2019-… TRUE   d18f… compare_… 1.21e9  0.0310  NA   &lt;NA&gt; 
-##  7 model_… TRUE    2019-… TRUE   581e… "train_m… 1.47e9  6.37    NA   relu 
-##  8 model_… TRUE    2019-… TRUE   7b46… "train_m… 1.26e9  4.10    NA   sigm…
-##  9 model_… TRUE    2019-… TRUE   945a… "train_m… 8.05e8  4.47    NA   soft…
-## 10 rec     TRUE    2019-… TRUE   7605… prepare_… 6.29e8  0.127   NA   &lt;NA&gt;
+##  1 conf_r… TRUE    2019-… TRUE   6a11… confusio… 4.05e8  0.235   NA   &lt;NA&gt; 
+##  2 conf_s… TRUE    2019-… TRUE   6001… confusio… 1.93e9  0.195   NA   &lt;NA&gt; 
+##  3 conf_s… TRUE    2019-… TRUE   8453… confusio… 1.80e9  0.241   NA   &lt;NA&gt; 
+##  4 data    TRUE    2019-… TRUE   ca84… "read_cs… 1.29e9  0.0350   0.3 &lt;NA&gt; 
+##  5 metrics FALSE   2019-… TRUE   eac0… compare_… 1.21e9  0.019   NA   &lt;NA&gt; 
+##  6 metrics TRUE    2019-… TRUE   2287… compare_… 1.21e9  0.018   NA   &lt;NA&gt; 
+##  7 model_… TRUE    2019-… TRUE   4a68… "train_m… 1.47e9  6.26    NA   relu 
+##  8 model_… TRUE    2019-… TRUE   b755… "train_m… 1.26e9  4.41    NA   sigm…
+##  9 model_… TRUE    2019-… TRUE   b534… "train_m… 8.05e8  5.07    NA   soft…
+## 10 rec     TRUE    2019-… TRUE   7605… prepare_… 6.29e8  0.123   NA   &lt;NA&gt;
 ```
 
 ???
@@ -773,7 +773,7 @@ make(plan, recover = TRUE)
 
 proc.time() - start
 ##    user  system elapsed 
-##   0.083   0.000   0.082
+##   0.074   0.009   0.082
 ```
 
 - Details + how to rename a target: &lt;https://ropenscilabs.github.io/drake-manual/walkthrough.html#reproducible-data-recovery-and-renaming&gt;
