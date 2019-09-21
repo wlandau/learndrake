@@ -355,9 +355,9 @@ Functions break down complicated ideas into manageable pieces. Instead of a huge
 
 Functions are like paragraphs. It's the same mental experience inside your head. You wouldn't write an endless wall of text as a paper or an email, right? It's the same thing here, and R Markdown chunks don't have the structure to get us there. With functions, you're crystallizing a stream of consciousness into clear, discrete, explainable, composable, chainable points you want to make.
 
-Look, nothing is going to change the fact that writing code is difficult. It will always be difficult. For everyone. Not even the Tidyverse or R Markdown can replace the fact that every single one of us has to concentrate and get our thoughts in order. Feeling the strain is normal. It does **not** make you an imposter, it just makes you self-aware. And the more we lean into that, the better off we are in the long run. 
+Look, nothing is going to change the fact that writing code is difficult. It will always be difficult. For everyone. Not even the Tidyverse or R Markdown can replace the fact that every single one of us has to concentrate and get our thoughts in order. Feeling the strain is normal. It does **not** make you an imposter, it just makes you self-aware. And the more we lean into that, the better off we are in the long run, and the more things make sense. 
 
-Things start to make more sense once you do this. For example, you'll notice that you're being true to the process of data analysis itself. Functions are **fundamentally designed** to describe change. And in our workflows, we change raw data into clean data, clean data into model output, and so on. Those steps are begging to be functions.
+For example, you'll notice that you're being truer to the process of data analysis itself. Functions are **fundamentally designed** to describe change. And in our workflows, we change raw data into clean data, clean data into model output, and so on. Those steps are *begging* to be functions.
 
 You're also being true to the R language. You're using it how it's **designed** to be used, and I think that John Chambers quote says it best.
 
