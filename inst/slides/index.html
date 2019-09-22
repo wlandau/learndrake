@@ -288,7 +288,7 @@ In these scripts, you've got package dependencies and file-saving steps scattere
 
 But more importantly, we don't have shorthand names for the long complicated steps we're doing. We don't have the structure to organize the ideas, so it's hard to take a step back and think about what we're doing.
 
-In the R community, we like to criticize Microsoft Excel. We give it a hard time for putting the formulas and the spreadsheets in the same file, and we claim it's not reproducible. And we have a point. But we are guilty of something very similar! We have a habit of knitting and weaving and tangling too many things together that don't belong together!
+In the R community, we like to criticize Microsoft Excel. We give it a hard time for putting the formulas and the spreadsheets in the same file, and we claim it's not reproducible. And we have a point. But we are guilty of something very similar! We have a habit of knitting and weaving and tangling too many things together that don't belong together in a large project!
 
 ---
 
@@ -311,7 +311,7 @@ my_function(3, 4)
 
 ???
 
-Arguably the easiest, most ubiquitous, most standard way to solve this problem is to write functions.
+An accessible, ubiquitous, standard way to address this problem is to write functions.
 
 A function is just a reusable command that accepts one or more inputs and returns a single output. You define it once, you give it a name, and you call it whenever you need it on whatever data that fits.
 
@@ -725,16 +725,16 @@ drake_history()
 ## # A tibble: 10 x 10
 ##    target  current built  exists hash  command     seed runtime  prop act1 
 ##    &lt;chr&gt;   &lt;lgl&gt;   &lt;chr&gt;  &lt;lgl&gt;  &lt;chr&gt; &lt;chr&gt;      &lt;int&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;
-##  1 conf_r… TRUE    2019-… TRUE   a945… confusio… 4.05e8  0.253   NA   &lt;NA&gt; 
-##  2 conf_s… TRUE    2019-… TRUE   a18b… confusio… 1.93e9  0.206   NA   &lt;NA&gt; 
-##  3 conf_s… TRUE    2019-… TRUE   5f47… confusio… 1.80e9  0.238   NA   &lt;NA&gt; 
-##  4 data    TRUE    2019-… TRUE   ca84… "read_cs… 1.29e9  0.036    0.3 &lt;NA&gt; 
-##  5 metrics FALSE   2019-… TRUE   f183… compare_… 1.21e9  0.019   NA   &lt;NA&gt; 
-##  6 metrics TRUE    2019-… TRUE   86cb… compare_… 1.21e9  0.0190  NA   &lt;NA&gt; 
-##  7 model_… TRUE    2019-… TRUE   9f3b… "train_m… 1.47e9  6.62    NA   relu 
-##  8 model_… TRUE    2019-… TRUE   ca44… "train_m… 1.26e9  4.62    NA   sigm…
-##  9 model_… TRUE    2019-… TRUE   6896… "train_m… 8.05e8  4.30    NA   soft…
-## 10 rec     TRUE    2019-… TRUE   7605… prepare_… 6.29e8  0.120   NA   &lt;NA&gt;
+##  1 conf_r… TRUE    2019-… TRUE   6eee… confusio… 4.05e8  0.233   NA   &lt;NA&gt; 
+##  2 conf_s… TRUE    2019-… TRUE   0085… confusio… 1.93e9  0.191   NA   &lt;NA&gt; 
+##  3 conf_s… TRUE    2019-… TRUE   4498… confusio… 1.80e9  0.235   NA   &lt;NA&gt; 
+##  4 data    TRUE    2019-… TRUE   ca84… "read_cs… 1.29e9  0.0370   0.3 &lt;NA&gt; 
+##  5 metrics FALSE   2019-… TRUE   c079… compare_… 1.21e9  0.0190  NA   &lt;NA&gt; 
+##  6 metrics TRUE    2019-… TRUE   9b2a… compare_… 1.21e9  0.0170  NA   &lt;NA&gt; 
+##  7 model_… TRUE    2019-… TRUE   5560… "train_m… 1.47e9  6.01    NA   relu 
+##  8 model_… TRUE    2019-… TRUE   15d5… "train_m… 1.26e9  3.81    NA   sigm…
+##  9 model_… TRUE    2019-… TRUE   ee86… "train_m… 8.05e8  4.23    NA   soft…
+## 10 rec     TRUE    2019-… TRUE   7605… prepare_… 6.29e8  0.121   NA   &lt;NA&gt;
 ```
 
 ???
@@ -763,7 +763,7 @@ make(plan, recover = TRUE)
 
 proc.time() - start
 ##    user  system elapsed 
-##   0.081   0.000   0.081
+##   0.081   0.002   0.083
 ```
 
 - Details + how to rename a target: &lt;https://ropenscilabs.github.io/drake-manual/walkthrough.html#reproducible-data-recovery-and-renaming&gt;

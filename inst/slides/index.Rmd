@@ -309,7 +309,7 @@ In these scripts, you've got package dependencies and file-saving steps scattere
 
 But more importantly, we don't have shorthand names for the long complicated steps we're doing. We don't have the structure to organize the ideas, so it's hard to take a step back and think about what we're doing.
 
-In the R community, we like to criticize Microsoft Excel. We give it a hard time for putting the formulas and the spreadsheets in the same file, and we claim it's not reproducible. And we have a point. But we are guilty of something very similar! We have a habit of knitting and weaving and tangling too many things together that don't belong together!
+In the R community, we like to criticize Microsoft Excel. We give it a hard time for putting the formulas and the spreadsheets in the same file, and we claim it's not reproducible. And we have a point. But we are guilty of something very similar! We have a habit of knitting and weaving and tangling too many things together that don't belong together in a large project!
 
 ---
 
@@ -329,7 +329,7 @@ my_function(3, 4)
 
 ???
 
-Arguably the easiest, most ubiquitous, most standard way to solve this problem is to write functions.
+An accessible, ubiquitous, standard way to address this problem is to write functions.
 
 A function is just a reusable command that accepts one or more inputs and returns a single output. You define it once, you give it a name, and you call it whenever you need it on whatever data that fits.
 
