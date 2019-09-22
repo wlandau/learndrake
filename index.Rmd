@@ -357,7 +357,7 @@ Functions are like paragraphs. It's the same mental experience inside your head.
 
 Now this may seem like a lot of extra work, but writing any kind of code is always a challenge. It always going to take focus and effort. And the more we accept that and lean into it, the better off we are in the long run, and the more things make sense. 
 
-For example, you'll notice that you're being truer to the process of data analysis itself. Functions are **fundamentally designed** to describe change. And in our workflows, we change raw data into clean data, clean data into model output, and so on. Those steps are *begging* to be functions.
+For example, you'll notice that you're being truer to the process of data analysis itself. Functions are **fundamentally designed** to describe change. They are **designed** to transform things into other things. And in our workflows, we change raw data into clean data, clean data into model output, and so on. Those steps are *begging* to be functions.
 
 You're also being true to the R language. Much of R is built on functional programming, so you're using it how it's **designed** to be used.
 
@@ -913,9 +913,9 @@ rOpenSci in particular is the one of the friendliest and most welcoming communit
 
 ???
 
-Let's end the talk portion with a riddle that totally stumped me. For fun, try to think of an example of a highly nontrivial function. I heard this was originally part of a math PhD oral exam, but apparently the best answers are completely unrelated to math or any kind of STEM field. I do have an answer in mind, but I'm going to wait to share it.
+Let's end the talk portion with a riddle that totally stumped me. For fun, try to think of an example of a highly nontrivial function. I heard this was originally part of a math PhD oral exam, but apparently the best answers are unrelated to math or computing or statistics or data science. I do have an answer in mind, but I'm going to wait to share it.
 
-I recommend taking something you already think is nontrivial, no matter what it is, and try turning it into a function. I'm curious what people come up with, and I think it could be a good exercise to help people use functions more often.
+I recommend taking something you already think is nontrivial, no matter what it is, and try turning it into a function. I'm curious what people come up with, and I think it could be a good exercise to get used to writing functions more often.
 
 ```{r c15, include = FALSE}
 tmp <- file.copy("R/plan.R", "R/plan2.R", overwrite = TRUE)
