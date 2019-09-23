@@ -132,9 +132,9 @@ When you go back and change something...
 
 ???
 
-For large projects, this is where the programming and workflow management techniques we are used to start to break down. If it takes several hours just to fit a single model, you're not going to want to rerun your whole analysis every time you make a change. It's just too much frustration.
+For large projects, this is where the programming and workflow management techniques we are used to start to break down. If it takes several hours just to fit a single model, you're not going to want to rerun your whole analysis every time you make a change. It's just too much frustration to get stuck in a loop where you tweak something small and restart the code and tweak something small and restart the code.
 
-But I used to do this all the time. In my dissertation work, every model took about 4 hours, and I needed results from about 20 or 30 of them. I spent the last 6 months of grad school mostly restarting code and waiting it to finish. My results were out of sync, and it was hard to get any writing done.
+But I used to do this all the time. In my dissertation work, every model took about 3 hours, and I needed results from about 20 or 30 of them. I spent the last 6 or so months of grad school mostly restarting code and waiting it to finish. My results were totally out of sync, and it was hard to get any writing done under those conditions.
 
 ---
 
@@ -151,7 +151,7 @@ But I used to do this all the time. In my dissertation work, every model took ab
 
 ???
 
-But it's perilous to try to stop this cycle on your own without any help. If I'm the one deciding which code to skip and which code to rerun, it's a mess. It's too easy to make big mistakes, and the results are not reproducible. I would not trust a human to do this.
+But it's perilous to try to stop this cycle on your own without any help. If I'm the one deciding which code to skip and which code to rerun, it's a mess. It's too easy to make mistakes, and the results are not reproducible. I would not trust a human to do this.
 
 ---
 
@@ -175,7 +175,7 @@ Fortunately, we can *automate* the process of bringing results up to date as fas
 - Luigi
 - Dask
 
-But they're difficult to use with R. Most of them try to be language-agnostic for the sake of versatility, but this means they add extra friction when you try to work with any one language in particular. My experience with Make specifically is that it obstructs my relationship with R. It pulls me out of the language and into sub-optimal programming practices.
+to name a few of the big names. But they're difficult to use with R. These kinds of tools generally try to be language-agnostic for the sake of versatility, but this means they add extra friction when you try to work with any one language in particular. My experience with Make specifically is that it obstructs my relationship with R. It pulls me out of the language and into sub-optimal programming practices.
 
 ---
 
@@ -206,7 +206,7 @@ drake, on the other hand, is designed for R at its very core. It works entirely 
 
 By the way, drake was not the first pipeline tool to respect the way R works. Before drake, there was a package called `remake` by Rich FitzJohn. remake was playing nicely with objects and functions long before I created drake.
 
-But remake is no longer maintained. And because it required you to work with YAML configuration files and supply your actual R scripts directly, it kind of had one foot in and one foot out anyway. drake tries to finish what remake started and scale up the intensity of work you can do with it.
+But remake isn't maintained anymore. And because it required you to work with YAML configuration files and supply your actual R scripts directly, it kind of had one foot in and one foot out anyway. drake tries to finish what remake started and scale up the intensity of work you can do with it.
 
 ---
 
@@ -250,7 +250,7 @@ output/
 
 ???
 
-As soon as we start to set up a project like this, we often find that it's too big for the classic "numbered script" paradigm you may have seen. It falls apart pretty easily.
+But before we even begin to use `drake`, we need to adapt our style of writing code. This project is too big for the classic "numbered script" paradigm that so many of us use. Numbered or not, this style of writing imperative scripts falls apart pretty easily.
 
 ---
 
@@ -288,7 +288,7 @@ In these scripts, you've got package dependencies and file-saving steps scattere
 
 But more importantly, we don't have shorthand names for the long complicated steps we're doing. We don't have the structure to organize the ideas, so it's hard to take a step back and think about what we're doing.
 
-In the R community, we like to criticize Microsoft Excel. We give it a hard time for putting the formulas and the spreadsheets in the same file, and we claim it's not reproducible. And we have a point. But we are guilty of something very similar! We have a habit of knitting and weaving and tangling too many things together that don't belong together in a large project!
+In the R community, we like to criticize Microsoft Excel. We give it a hard time for putting the formulas and the spreadsheets in the same file, and we claim it's not reproducible. And we have a point. But we are guilty of something very similar! We have a habit of knitting and weaving and tangling too many things together that don't necessarily belong together!
 
 ---
 
@@ -311,9 +311,9 @@ my_function(3, 4)
 
 ???
 
-An accessible, ubiquitous, standard way to address this problem is to write functions.
+An ubiquitous, standard way to address this problem is to write functions.
 
-A function is just a reusable command that accepts one or more inputs and returns a single output. You define it once, you give it a name, and you call it whenever you need it on whatever data that fits.
+A function is a reusable command that accepts one or more inputs and returns a single output. You define it once, you give it a name, and you call it whenever you need it on whatever data that fits.
 
 ---
 
@@ -337,11 +337,11 @@ Functions break down complicated ideas into manageable pieces. Instead of a huge
 
 Functions are like paragraphs. It's the same mental experience inside your head. You wouldn't write an endless wall of text as a paper or an email, right? It's the same thing here, and R Markdown chunks don't have the structure to get us there. With functions, you're crystallizing a stream of consciousness into clear, discrete, explainable, composable, chainable points you want to make.
 
-Now this may seem like a lot of extra work, but writing any kind of code is always a challenge. It always going to take focus and effort. And the more we accept that and lean into it, the better off we are in the long run, and the more things make sense. 
+Now this may seem like a lot of extra work, but writing any kind of code is always a challenge. It always going to take focus, and it's always going to take effort. For **all** of us. And the more we accept that and lean into it, the better off we are in the long run, and the more things make sense. 
 
-For example, you'll notice that you're being truer to the process of data analysis itself. Functions are **fundamentally designed** to describe change. They are **designed** to transform things into other things. And in our workflows, we change raw data into clean data, clean data into model output, and so on. Those steps are *begging* to be functions.
+Another reason to use functions is that they are true to the process of data analysis itself. Functions are **fundamentally designed** to describe change. They are **designed** to transform things into other things. And in our workflows, we change raw data into clean data, clean data into model output, and so on. Those steps are *begging* to be functions.
 
-You're also being true to the R language. Much of R is built on functional programming, so you're using it how it's **designed** to be used.
+You're also being true to the R language. R was designed to be function-oriented. The more you express your thoughts as functions, the more you are using the language as it was **designed** to be used.
 
 ---
 
@@ -362,7 +362,7 @@ data/
 
 ???
 
-So let's use functions in the deep learning example. Functions are going to occupy most of the real estate in our scripts.
+So let's use functions in the deep learning example. They're going to occupy most of the real estate in our scripts. This `functions.R` file usually gets pretty big, and I often split it up into multiple files.
 
 ---
 
@@ -446,7 +446,9 @@ run_everything()
 
 ???
 
-Our top-level *script* pretty much just calls our flagship function at the top. And that's a huge improvement.
+Our top-level *script* does as little as possible. It pretty much just calls our "run everything" function.
+
+Now this is a good time to step back. This whole approach that got us here, that increased clarity and maintainability, is always available to you, `drake` or no `drake`.
 
 ---
 
@@ -462,7 +464,7 @@ Our top-level *script* pretty much just calls our flagship function at the top. 
 
 ???
 
-But we can still do better. We can avoid rerunning all the computation every time. We can avoid micromanaging output files. All we need to do is cash in on all that hard work we spent writing functions to use `drake`.
+But we can still do better. We can avoid rerunning all the computation every time. We can avoid micromanaging output files. All we need to do is cash in on all that attention and care we put into writing functions, and start using `drake`.
 
 ---
 
@@ -495,7 +497,7 @@ plan &lt;- drake_plan(
 
 ???
 
-Instead of a `run_everything()` function, we create a drake plan. The plan defines a bunch of skippable steps. Each step has a command, and each command calls the R functions it needs to and returns a value called a **target**. We give these targets names on the left, and we list them in any order we want. So we can even define the data at the bottom here.
+Instead of a `run_everything()` function, we create a drake plan. The plan defines a bunch of skippable steps. Each step has a command, and each command calls the R functions it needs, and returns a value called a **target**. We give these targets names you see on the left, and we list them in any order we want. So we can even define the data at the bottom here.
 
 ---
 
@@ -531,7 +533,7 @@ This plan is a tidy data frame of commands and targets. This is what you get ins
 
 ???
 
-Now as a first step, `drake` takes all this in, and it analyzes your plan, and it analyzes your functions, without running any of your code just yet. It detects the symbols that you mention, and any optional input files you choose to declare, and it decides which steps go first and which steps go last. So it puts "rec" after "data" because the command for "rec" mentions the symbol "data". And similarly, it resolves an entire flowchart of tasks.
+Now as a first step, `drake` takes all this in, and it analyzes your plan, and it analyzes your functions, without running any of your code just yet. It detects the symbols that you mention, and any optional input files you choose to declare, and it decides which steps go first and which steps go last. So it puts "rec" after "data" because the command for "rec" mentions the symbol "data". And similarly, it resolves an entire flowchart of tasks, an entire directed acyclic *graph* of tasks.
 
 ---
 
@@ -556,7 +558,7 @@ make(plan)
 
 ???
 
-So after you source your packages and functions into your session, the `make()` function does all that setup and code analysis I described, and it runs the correct commands in the correct order on that graph, and it stores the targets in a hidden cache.
+So after you source your packages and functions into your session, the `make()` function does all that setup and code analysis I described, it constructs the graph, and it runs the correct commands in the correct order on that graph, and it stores the targets in a hidden cache.
 
 ---
 
@@ -606,7 +608,8 @@ plan &lt;- drake_plan(
 
 ???
 
-After you explore a bit, then it comes time for changes. Here, we go back and add another model and another confusion matrix to try to outperform the other models. We could have gone back and changed our commands and functions too.
+After you explore a bit, then it comes time for changes. 
+For this example, we go back and add another model and another confusion matrix to try to outperform the other models. We could have gone back and changed our commands and functions too.
 
 ---
 
@@ -640,7 +643,7 @@ make(plan)
 
 ???
 
-When we run the new plan, we only build the outdated or missing targets. We run only **part** of the work, not all of it. Small changes to code or data no longer always invalidate everything. We save a ton of time this way.
+When we run the new plan, we only build the outdated or missing targets. We run only **part** of the work, not all of it. Small changes to code or data no longer necessarily invalidate everything. We save a ton of time this way.
 
 In computing, we like to talk a lot about speed. How do we make our code run faster? How do we make it more efficient? But the fastest code is the code we don't run at all.
 
@@ -679,7 +682,9 @@ make(plan)
 
 If we run the `make()` function again without having changed anything, `drake` tells us that everything is up to date and does nothing else.
 
-This is *tangible evidence* that your output matches the code and data it came from. It is *tangible evidence* of reproducibility because it increases our ability to trust our results. Reproducibility can mean a lot of different things, but as Gabe Becker likes to say, it all comes down to trust.
+This is *tangible evidence* that your output matches the code and data it came from. It's a stamp of validation that you can recompute quickly at any time. It is *tangible evidence* of reproducibility because it increases our ability to trust our results.
+
+Reproducibility is explained in a lot of different ways, and it means different things to different people. But behind all that, as Gabe Becker likes to say, it all comes down to trust.
 
 ---
 
@@ -711,9 +716,11 @@ build_times(type = "build")
 
 ???
 
-Now to shift gears and touch on some new features. You may have heard most of this from me before, so I'll try to share something newer.
+Now that's where I usually stop. But since we have time, let's talk about some new features.
 
-drake now has special formats for more efficient data processing: one for data frames, one for data tables, one for Keras models, and an alternative RDS format that uses less memory than drake's default caching. And I'm looking to add more, so please let me know if you have ideas.
+drake now has special formats for more efficient data processing: one for data frames, one for data tables, one for Keras models, and an alternative RDS format that uses less memory than drake's default caching.
+
+The idea is that if we know we have a data frame or we know we have a Keras model, we can save and retrieve it a lot faster. I'm looking to add formats and increase efficiency in general, so please let me know if you have ideas.
 
 ---
 
@@ -725,16 +732,16 @@ drake_history()
 ## # A tibble: 10 x 10
 ##    target  current built  exists hash  command     seed runtime  prop act1 
 ##    &lt;chr&gt;   &lt;lgl&gt;   &lt;chr&gt;  &lt;lgl&gt;  &lt;chr&gt; &lt;chr&gt;      &lt;int&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;
-##  1 conf_r… TRUE    2019-… TRUE   2ae2… confusio… 4.05e8  0.251   NA   &lt;NA&gt; 
-##  2 conf_s… TRUE    2019-… TRUE   9ec4… confusio… 1.93e9  0.189   NA   &lt;NA&gt; 
-##  3 conf_s… TRUE    2019-… TRUE   01fa… confusio… 1.80e9  0.229   NA   &lt;NA&gt; 
-##  4 data    TRUE    2019-… TRUE   ca84… "read_cs… 1.29e9  0.052    0.3 &lt;NA&gt; 
-##  5 metrics FALSE   2019-… TRUE   f24b… compare_… 1.21e9  0.019   NA   &lt;NA&gt; 
-##  6 metrics TRUE    2019-… TRUE   641f… compare_… 1.21e9  0.0170  NA   &lt;NA&gt; 
-##  7 model_… TRUE    2019-… TRUE   7b75… "train_m… 1.47e9  7.66    NA   relu 
-##  8 model_… TRUE    2019-… TRUE   03c3… "train_m… 1.26e9  3.77    NA   sigm…
-##  9 model_… TRUE    2019-… TRUE   692e… "train_m… 8.05e8  4.18    NA   soft…
-## 10 rec     TRUE    2019-… TRUE   7605… prepare_… 6.29e8  0.125   NA   &lt;NA&gt;
+##  1 conf_r… TRUE    2019-… TRUE   cd50… confusio… 4.05e8  0.241   NA   &lt;NA&gt; 
+##  2 conf_s… TRUE    2019-… TRUE   48a4… confusio… 1.93e9  0.191   NA   &lt;NA&gt; 
+##  3 conf_s… TRUE    2019-… TRUE   c7fc… confusio… 1.80e9  0.244   NA   &lt;NA&gt; 
+##  4 data    TRUE    2019-… TRUE   ca84… "read_cs… 1.29e9  0.035    0.3 &lt;NA&gt; 
+##  5 metrics FALSE   2019-… TRUE   440e… compare_… 1.21e9  0.0190  NA   &lt;NA&gt; 
+##  6 metrics TRUE    2019-… TRUE   18ec… compare_… 1.21e9  0.0170  NA   &lt;NA&gt; 
+##  7 model_… TRUE    2019-… TRUE   b7ab… "train_m… 1.47e9  6.19    NA   relu 
+##  8 model_… TRUE    2019-… TRUE   ea23… "train_m… 1.26e9  4.04    NA   sigm…
+##  9 model_… TRUE    2019-… TRUE   9289… "train_m… 8.05e8  4.41    NA   soft…
+## 10 rec     TRUE    2019-… TRUE   7605… prepare_… 6.29e8  0.122   NA   &lt;NA&gt;
 ```
 
 ???
@@ -763,16 +770,16 @@ make(plan, recover = TRUE)
 
 proc.time() - start
 ##    user  system elapsed 
-##   0.077   0.005   0.082
+##   0.072   0.013   0.083
 ```
 
 - Details + how to rename a target: &lt;https://ropenscilabs.github.io/drake-manual/walkthrough.html#reproducible-data-recovery-and-renaming&gt;
 
 ???
 
-And depending on the conditions under which those old targets were built, you can recover them instead of building them all over again. Sometimes, the command, the upstream targets, the functions, and the random number generator seed are the same as for some run from the past. And in those cases, you can save extra time with data recovery.
+And depending on the conditions under which those old targets were built, you can recover them instead of building them all over again. Sometimes, the command, the upstream targets, the functions, the files, and the random number generator seed are the same as for some run from the past. And in those cases, you can save extra time with data recovery.
 
-Unfortunately, this is not the default because it assumes you are always using the same packages and computing environment. `drake` doesn't try to get involved with those things. To lock down your package dependencies and all that, `renv` and Docker are great tools. Not only are they fully compatible with `drake`, they compensate for some of its biggest relative weaknesses.
+Unfortunately, this is not the default because it assumes you are always using the same packages and computing environment. `drake` doesn't try to get involved with those things. To lock down your package dependencies and all that, `renv` and Docker are great tools. Not only are they fully compatible with `drake`, they help compensate for its relative weaknesses.
 
 ---
 
@@ -862,6 +869,8 @@ Here's how to learn more about drake. Just as drake itself exists and operates e
 For the online stuff, I highly recommend the "learndrake" workshop. Just go to the GitHub page and click the blue "launch binder" badge in the README, and suddenly you're in RStudio Server with everything ready to go. Karthik's `holepunch` package made setting that up really smooth.
 
 And if you use `drake` for a real project, please consider writing about it as an rOpenSci use case. It enhances these resources, it demonstrates the value of rOpenSci packages, and it grows the community.
+
+Ben Bond-Lamberty already wrote this one. Many more example projects are emerging, some of which are listed here in the manual. I still need to add more, including the great work Pat Schratz is doing to integrate `drake` with `mlr3`.
 
 ---
 
@@ -961,7 +970,9 @@ rOpenSci in particular is the one of the friendliest and most welcoming communit
 
 ???
 
-Let's end the talk portion with a riddle that totally stumped me. For fun, try to think of an example of a highly nontrivial function. I heard this was originally part of a math PhD oral exam, but apparently the best answers are unrelated to math or computing or statistics or data science. I do have an answer in mind, but I'm going to wait to share it.
+Let's end the talk portion with a riddle. Try to think of an example of a highly nontrivial function.
+
+I heard this was originally part of a math PhD qualifying exam, but all you need to know is the definition of a function. Apparently, the best answers are unrelated to math or computing or statistics or data science. I do have an answer in mind, but I'm going to wait to share it.
 
 I recommend taking something you already think is nontrivial, no matter what it is, and try turning it into a function. I'm curious what people come up with, and I think it could be a good exercise to get used to writing functions more often.
     </textarea>
