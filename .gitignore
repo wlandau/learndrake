@@ -27,7 +27,6 @@ Thumbs.db
 .Rapp.history
 .RData
 .Rhistory
-.Rproj*
 .Rproj.user
 docs
 inst/doc
