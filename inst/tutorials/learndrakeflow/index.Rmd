@@ -433,7 +433,7 @@ question(
   allow_retry = TRUE,
   random_answer_order = TRUE,
   answer("Nothing, because `drake` only tracks functions and commands."),
-  answer("Everything. We used `file_in()` in the plan to tell `drake` that all our targets are downstream of the data file.", correct = TRUE),
+  answer("Everything, because all the targets are downstream of a data file we declared with file_in().", correct = TRUE),
   answer("Everything, because `drake` always indiscriminately runs everything.")
 )
 ```
