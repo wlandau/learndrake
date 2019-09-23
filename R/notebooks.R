@@ -10,6 +10,7 @@
 #' save_notebooks()
 #' }
 save_notebooks <- function(path = "learndrake-notebooks", overwrite = FALSE) {
+  assert_fresh_dir(path = path, overwrite = overwrite)
   origin <- system.file("notebooks", package = "learndrake", mustWork = TRUE)
   fs::dir_copy(path = origin, new_path = path, overwrite = overwrite)
   invisible()

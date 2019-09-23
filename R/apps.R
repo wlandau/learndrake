@@ -65,6 +65,7 @@ save_app <- function(
   path = app,
   overwrite = FALSE
 ) {
+  assert_fresh_dir(path = path, overwrite = overwrite)
   app <- match.arg(app)
   dir <- ifelse(app == "drakeplanner", "apps", "tutorials")
   origin <- file.path(dir, app)
