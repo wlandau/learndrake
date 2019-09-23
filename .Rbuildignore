@@ -32,7 +32,7 @@ vignettes/.*_files
 ^.*\.log$
 ^.*\.out$
 ^.*\.nfs.*$
-^.*\.Rproj$
+^learndrake\.Rproj$
 ^.*\.svg$
 ^\.Rproj\.user$
 ^.*\.yaml$
