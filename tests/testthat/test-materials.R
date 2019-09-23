@@ -45,7 +45,10 @@ test_that("save_app() idempotence (#19)", {
   withr::local_dir(dir)
   path <- "learndrakeflow"
   dir.create(path)
-  save_app(app = path, path = path, overwrite = FALSE)
+  expect_error(
+    save_app(app = path, path = path, overwrite = FALSE),
+    regexp = "already exists"
+  )
   expect_false(file.exists(file.path(path, path)))
 })
 
@@ -55,7 +58,10 @@ test_that("save_notebooks() idempotence (#19)", {
   withr::local_dir(dir)
   for (path in c("notebooks", "learndrake-notebooks")) {
     dir.create(path)
-    save_notebooks(path = path, overwrite = FALSE)
+    expect_error(
+      save_notebooks(path = path, overwrite = FALSE),
+      regexp = "already exists"
+    )
     expect_false(file.exists(file.path(path, path)))
   }
 })
@@ -66,7 +72,10 @@ test_that("save_slides() idempotence (#19)", {
   withr::local_dir(dir)
   for (path in c("slides", "learndrake-slides")) {
     dir.create(path)
-    save_slides(path = path, overwrite = FALSE)
+    expect_error(
+      save_slides(path = path, overwrite = FALSE),
+      regexp = "already exists"
+    )
     expect_false(file.exists(file.path(path, path)))
   }
 })
