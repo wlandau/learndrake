@@ -58,7 +58,8 @@ Suggests:
   prettycode,
   shinytest,
   tidyselect (>= 0.2.4),
-  testthat (>= 2.1.0)
+  testthat (>= 2.1.0),
+  withr
 Remotes:
   ropensci/drake,
   wlandau/drakeplanner
