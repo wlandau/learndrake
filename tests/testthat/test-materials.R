@@ -1,5 +1,3 @@
-context("materials")
-
 test_that("slides", {
   expect_silent(view_slides(browse = FALSE))
   path <- tempfile()
@@ -39,4 +37,36 @@ test_that("apps", {
   out <- list.files(path)
   exp <- c("app.R")
   expect_true(all(exp %in% out))
+})
+
+test_that("save_app() idempotence (#19)", {
+  dir <- tempfile()
+  dir.create(dir)
+  withr::local_dir(dir)
+  path <- "learndrakeflow"
+  dir.create(path)
+  save_app(app = path, path = path, overwrite = FALSE)
+  expect_false(file.exists(file.path(path, path)))
+})
+
+test_that("save_notebooks() idempotence (#19)", {
+  dir <- tempfile()
+  dir.create(dir)
+  withr::local_dir(dir)
+  for (path in c("notebooks", "learndrake-notebooks")) {
+    dir.create(path)
+    save_notebooks(path = path, overwrite = FALSE)
+    expect_false(file.exists(file.path(path, path)))
+  }
+})
+
+test_that("save_slides() idempotence (#19)", {
+  dir <- tempfile()
+  dir.create(dir)
+  withr::local_dir(dir)
+  for (path in c("slides", "learndrake-slides")) {
+    dir.create(path)
+    save_slides(path = path, overwrite = FALSE)
+    expect_false(file.exists(file.path(path, path)))
+  }
 })

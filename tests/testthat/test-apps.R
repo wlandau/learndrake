@@ -1,5 +1,3 @@
-context("apps")
-
 if (FALSE) {
 
 test_that("drakeplanner", {
