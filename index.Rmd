@@ -272,7 +272,7 @@ output/
 
 ???
 
-But before we even begin to use `drake`, we need to adapt our style of writing code. This project is too big for the classic "numbered script" paradigm that so many of us use. Whenever I try it, it explodes. And I'm sure I'm not the only one.
+But before we even begin to use `drake`, we need to change the way we write code. This project is too big for the classic "numbered script" paradigm that so many of us use. Whenever I try it, it explodes. And I'm sure I'm not the only one.
 
 ---
 
