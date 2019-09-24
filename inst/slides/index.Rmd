@@ -307,7 +307,7 @@ I think the reason is that it tries to do too many things at once. The planning 
 
 In these scripts, you've got package dependencies and file-saving steps scattered all over the place. And for this preprocessing recipe, it looks like one thing, but it's really two things. You're defining a complicated procedure, and you're running it **as** you're defining it. We would do much better to define this thing in one place and call it somewhere else. Otherwise, it's hard to take the code out of context and test it.
 
-But more importantly, we want to be able to step back and think about what we're doing. We need modularity, and we need structure around our ideas. We want to somewhow write the flow of our project in a high-level shorthand that makes everything easier to read.
+But more importantly, we want to be able to step back and think about what we're doing. We need modularity, and we need structure around our ideas. We want to somewhow write the flow of our project in our own custom high-level shorthand that makes everything easier to read.
 
 ---
 
@@ -440,7 +440,7 @@ run_everything <- function() {
 
 ???
 
-And we can take the functions we define and call them from other functions, including a function that runs everything at the top level and controls the overall flow of the analysis in our own high-level shorthand that makes everything easier to read.
+And we can take the functions we define and call them from other functions, including a function that runs everything at the top level and controls the overall flow of the analysis in our own custom high-level shorthand that makes everything easier to read.
 
 ---
 
