@@ -94,7 +94,7 @@ Let's talk about what happens in large data science projects. Projects that are 
 
 ???
 
-The tasks of a data analysis project are interconnected.
+A large project has a bunch of interconnected tasks.
 
 ---
 
@@ -132,9 +132,9 @@ When you go back and change something...
 
 ???
 
-For large projects, this is where the programming and workflow management techniques we are used to start to break down. If it takes several hours just to fit a single model, you're not going to want to rerun your whole analysis every time you make a change. It's just too much frustration to get stuck in a loop where you tweak something small and restart the code and tweak something small and restart the code.
+For large projects, this is where the programming and workflow management techniques we are used to start to break down. If it takes several hours just to fit a single model, you're not going to want to rerun your whole analysis every time you make a change. It's just too much frustration to get stuck in a loop where you tweak something small and restart the code and tweak something small and restart the code, and pretty soon you're waiting forever.
 
-But I used to do this all the time. In my dissertation work, every model took about 3 hours, and I needed results from about 20 or 30 of them. I spent the last 6 or so months of grad school mostly restarting code and waiting it to finish. My results were totally out of sync, and it was hard to get any writing done under those conditions.
+This used to happen to me all the time. In my dissertation work, every model took about 3 hours, and I needed results from about 20 or 30 of them. I spent the last 6 or so months of grad school mostly restarting code and waiting it to finish. My results were totally out of sync, and it was hard to get any writing done under those conditions.
 
 ---
 
@@ -250,7 +250,7 @@ output/
 
 ???
 
-But before we even begin to use `drake`, we need to adapt our style of writing code. This project is too big for the classic "numbered script" paradigm that so many of us use. Numbered or not, this style of writing imperative scripts falls apart pretty easily.
+But before we even begin to use `drake`, we need to adapt our style of writing code. This project is too big for the classic "numbered script" paradigm that so many of us use. Whenever I try it, it explodes. And I'm sure I'm not the only one.
 
 ---
 
@@ -282,13 +282,11 @@ But before we even begin to use `drake`, we need to adapt our style of writing c
 
 ???
 
-And the reason is that it tries to do too many things at once. The planning and the execution happen at the same time, and the actual content of the analysis is muddled with the bookkeeping.
+I think the reason is that it tries to do too many things at once. The planning and the execution happen at the same time, and the actual content of the analysis is muddled with the bookkeeping.
 
-In these scripts, you've got package dependencies and file-saving steps scattered all over the place. And for this preprocessing recipe, it looks like one thing, but it's really two things. You're defining a complicated procedure, and you're running it **as** you're defining it. These things should really be separated. Otherwise, it's hard to take the code out of context and test it.
+In these scripts, you've got package dependencies and file-saving steps scattered all over the place. And for this preprocessing recipe, it looks like one thing, but it's really two things. You're defining a complicated procedure, and you're running it **as** you're defining it. We would do much better to define this thing in one place and call it somewhere else. Otherwise, it's hard to take the code out of context and test it.
 
-But more importantly, we don't have shorthand names for the long complicated steps we're doing. We don't have the structure to organize the ideas, so it's hard to take a step back and think about what we're doing.
-
-In the R community, we like to criticize Microsoft Excel. We give it a hard time for putting the formulas and the spreadsheets in the same file, and we claim it's not reproducible. And we have a point. But we are guilty of something very similar! We have a habit of knitting and weaving and tangling too many things together that don't necessarily belong together!
+But more importantly, we want to be able to step back and think about what we're doing. We need modularity, and we need structure around our ideas. We want to somewhow write the flow of our project in a high-level shorthand we define for ourselves in advance.
 
 ---
 
@@ -311,9 +309,7 @@ my_function(3, 4)
 
 ???
 
-An ubiquitous, standard way to address this problem is to write functions.
-
-A function is a reusable command that accepts one or more inputs and returns a single output. You define it once, you give it a name, and you call it whenever you need it on whatever data that fits.
+The way we do that is with functions. A function is a reusable command that accepts one or more inputs and returns a single output. You define it once, you give it a name, and you call it whenever you need it on whatever data that fits.
 
 ---
 
@@ -333,11 +329,11 @@ A function is a reusable command that accepts one or more inputs and returns a s
 
 But functions do so much more than that. They're not just for code you want to repeat and reuse. They're for code you want to **understand**.
 
-Functions break down complicated ideas into manageable pieces. Instead of a huge mess, you deal with pieces that are smaller, cleaner, less intimidating, and that mean something clear and useful.
+Functions break down complicated ideas into manageable pieces. Instead of confronting the whole thing at once, you deal with pieces that are smaller, cleaner, less intimidating, and that mean something clear and useful.
 
 Functions are like paragraphs. It's the same mental experience inside your head. You wouldn't write an endless wall of text as a paper or an email, right? It's the same thing here, and R Markdown chunks don't have the structure to get us there. With functions, you're crystallizing a stream of consciousness into clear, discrete, explainable, composable, chainable points you want to make.
 
-Now this may seem like a lot of extra work, but writing any kind of code is always a challenge. It always going to take focus, and it's always going to take effort. For **all** of us. And the more we accept that and lean into it, the better off we are in the long run, and the more things make sense. 
+This may seem like extra work, but the activity of writing code is always a challenge. It always going to take focus, and it's always going to take effort. For **every single one** of us. And the more we accept that and lean into it, the better off we are in the long run, and the more things start to make sense. 
 
 Another reason to use functions is that they are true to the process of data analysis itself. Functions are **fundamentally designed** to describe change. They are **designed** to transform things into other things. And in our workflows, we change raw data into clean data, clean data into model output, and so on. Those steps are *begging* to be functions.
 
@@ -430,7 +426,7 @@ run_everything &lt;- function() {
 
 ???
 
-And we can take the functions we define and call them from other functions, including a function that runs everything at the top level and controls the overall flow of the analysis.
+And we can take the functions we define and call them from other functions, including a function that runs everything at the top level and controls the overall flow of the analysis in our own special shorthand.
 
 ---
 
@@ -448,7 +444,7 @@ run_everything()
 
 Our top-level *script* does as little as possible. It pretty much just calls our "run everything" function.
 
-Now this is a good time to step back. This whole approach that got us here, that increased clarity and maintainability, is always available to you, `drake` or no `drake`.
+Now this is a good time to step back. This whole approach that got us here, the appropriate use of functions, is always available to you, `drake` or no `drake`.
 
 ---
 
@@ -464,7 +460,7 @@ Now this is a good time to step back. This whole approach that got us here, that
 
 ???
 
-But we can still do better. We can avoid rerunning all the computation every time. We can avoid micromanaging output files. All we need to do is cash in on all that attention and care we put into writing functions, and start using `drake`.
+But we can still do better. We can avoid rerunning all the computation every time. We can avoid micromanaging output files. All we need to do is cash in on all that attention and care we put into writing functions, and put them in `drake`.
 
 ---
 
@@ -497,7 +493,7 @@ plan &lt;- drake_plan(
 
 ???
 
-Instead of a `run_everything()` function, we create a drake plan. The plan defines a bunch of skippable steps. Each step has a command, and each command calls the R functions it needs, and returns a value called a **target**. We give these targets names you see on the left, and we list them in any order we want. So we can even define the data at the bottom here.
+Instead of a `run_everything()` function, we create a drake plan. The plan defines a bunch of skippable steps. Each step has a command, and each command calls the R functions it needs, and returns a value called a **target**. We give these targets the names you see on the left, and we list them in any order we want. So we can even define the data at the bottom here.
 
 ---
 
@@ -533,7 +529,7 @@ This plan is a tidy data frame of commands and targets. This is what you get ins
 
 ???
 
-Now as a first step, `drake` takes all this in, and it analyzes your plan, and it analyzes your functions, without running any of your code just yet. It detects the symbols that you mention, and any optional input files you choose to declare, and it decides which steps go first and which steps go last. So it puts "rec" after "data" because the command for "rec" mentions the symbol "data". And similarly, it resolves an entire flowchart of tasks, an entire directed acyclic *graph* of tasks.
+Now as a first step, `drake` takes all this in, and it analyzes your plan, and it analyzes your functions, without running any of your code just yet. It detects the symbols that you mention, and any optional input files you choose to declare, and it decides which steps go first and which steps go last. So it puts "rec" after "data" because the command for "rec" mentions the symbol "data" literally in the code. And similarly, it puts together an entire flowchart of tasks, an entire directed acyclic *graph* of tasks.
 
 ---
 
@@ -682,9 +678,7 @@ make(plan)
 
 If we run the `make()` function again without having changed anything, `drake` tells us that everything is up to date and does nothing else.
 
-This is *tangible evidence* that your output matches the code and data it came from. It's a stamp of validation that you can recompute quickly at any time. It is *tangible evidence* of reproducibility because it increases our ability to trust our results.
-
-Reproducibility is explained in a lot of different ways, and it means different things to different people. But behind all that, as Gabe Becker likes to say, it all comes down to trust.
+This is *tangible evidence* that your output matches the code and data it came from. It's a stamp of validation that you can recompute quickly at any time. It is *tangible evidence* of reproducibility because it increases our ability to trust our results. As Gabe Becker likes to say, reproducibility boils down to trust.
 
 ---
 
@@ -732,16 +726,16 @@ drake_history()
 ## # A tibble: 10 x 10
 ##    target  current built  exists hash  command     seed runtime  prop act1 
 ##    &lt;chr&gt;   &lt;lgl&gt;   &lt;chr&gt;  &lt;lgl&gt;  &lt;chr&gt; &lt;chr&gt;      &lt;int&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;
-##  1 conf_r… TRUE    2019-… TRUE   cd50… confusio… 4.05e8  0.241   NA   &lt;NA&gt; 
-##  2 conf_s… TRUE    2019-… TRUE   48a4… confusio… 1.93e9  0.191   NA   &lt;NA&gt; 
-##  3 conf_s… TRUE    2019-… TRUE   c7fc… confusio… 1.80e9  0.244   NA   &lt;NA&gt; 
-##  4 data    TRUE    2019-… TRUE   ca84… "read_cs… 1.29e9  0.035    0.3 &lt;NA&gt; 
-##  5 metrics FALSE   2019-… TRUE   440e… compare_… 1.21e9  0.0190  NA   &lt;NA&gt; 
-##  6 metrics TRUE    2019-… TRUE   18ec… compare_… 1.21e9  0.0170  NA   &lt;NA&gt; 
-##  7 model_… TRUE    2019-… TRUE   b7ab… "train_m… 1.47e9  6.19    NA   relu 
-##  8 model_… TRUE    2019-… TRUE   ea23… "train_m… 1.26e9  4.04    NA   sigm…
-##  9 model_… TRUE    2019-… TRUE   9289… "train_m… 8.05e8  4.41    NA   soft…
-## 10 rec     TRUE    2019-… TRUE   7605… prepare_… 6.29e8  0.122   NA   &lt;NA&gt;
+##  1 conf_r… TRUE    2019-… TRUE   0961… confusio… 4.05e8  0.341   NA   &lt;NA&gt; 
+##  2 conf_s… TRUE    2019-… TRUE   b1f9… confusio… 1.93e9  0.219   NA   &lt;NA&gt; 
+##  3 conf_s… TRUE    2019-… TRUE   d1b8… confusio… 1.80e9  0.295   NA   &lt;NA&gt; 
+##  4 data    TRUE    2019-… TRUE   ca84… "read_cs… 1.29e9  0.0390   0.3 &lt;NA&gt; 
+##  5 metrics FALSE   2019-… TRUE   6bd3… compare_… 1.21e9  0.024   NA   &lt;NA&gt; 
+##  6 metrics TRUE    2019-… TRUE   83ab… compare_… 1.21e9  0.0190  NA   &lt;NA&gt; 
+##  7 model_… TRUE    2019-… TRUE   b873… "train_m… 1.47e9  6.36    NA   relu 
+##  8 model_… TRUE    2019-… TRUE   2a93… "train_m… 1.26e9  4.07    NA   sigm…
+##  9 model_… TRUE    2019-… TRUE   42bc… "train_m… 8.05e8  4.37    NA   soft…
+## 10 rec     TRUE    2019-… TRUE   eae9… prepare_… 6.29e8  0.131   NA   &lt;NA&gt;
 ```
 
 ???
@@ -770,7 +764,7 @@ make(plan, recover = TRUE)
 
 proc.time() - start
 ##    user  system elapsed 
-##   0.072   0.013   0.083
+##   0.081   0.004   0.086
 ```
 
 - Details + how to rename a target: &lt;https://ropenscilabs.github.io/drake-manual/walkthrough.html#reproducible-data-recovery-and-renaming&gt;
@@ -953,6 +947,8 @@ For the development of drake itself, I have a lot of people to thank, many more 
 
 rOpenSci in particular is the one of the friendliest and most welcoming communities in tech, an amazing combination of expertise and approachability. `drake` is a better package and I am a better developer because they coached me during the software review process, they got the word out, and they connected me to users with insightful ideas and developers who I look up to.
 
+Also, all this stuff I've been saying about functions is from people like Ellis Hughes, Pat Schratz, and Stas Kolenikov. When I was in school, I took most of my computer science before most of my statistics, so I totally took this for granted. I needed help to see what other people were seeing.
+
 ---
 
 ## A riddle!
@@ -972,9 +968,9 @@ rOpenSci in particular is the one of the friendliest and most welcoming communit
 
 Let's end the talk portion with a riddle. Try to think of an example of a highly nontrivial function.
 
-I heard this was originally part of a math PhD qualifying exam, but all you need to know is the definition of a function. Apparently, the best answers are unrelated to math or computing or statistics or data science. I do have an answer in mind, but I'm going to wait to share it.
+I heard this was originally part of a math PhD oral exam, but all you need to know is the definition of a function. Apparently, the best answers are unrelated to math or computing or statistics or data science. I do have an answer in mind, but I'm not going to spoil it just yet.
 
-I recommend taking something you already think is nontrivial, no matter what it is, and try turning it into a function. I'm curious what people come up with, and I think it could be a good exercise to get used to writing functions more often.
+I recommend taking something you already think is nontrivial, no matter what it is in your life, and try turning it into a function. I'm curious what people come up with, and I think it could be a good exercise to get used to writing functions more often.
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
