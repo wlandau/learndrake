@@ -899,7 +899,7 @@ For the development of drake itself, I have a lot of people to thank, many more 
 
 rOpenSci in particular is the one of the friendliest and most welcoming communities in tech, an amazing combination of expertise and approachability. `drake` is a better package and I am a better developer because they coached me during the software review process, they got the word out, and they connected me to users with insightful ideas and developers who I look up to.
 
-Also, all this stuff I've been saying about functions is from people like Ellis Hughes, Pat Schratz, and Stas Kolenikov. When I was in school, I took most of my computer science before most of my statistics, so I totally took this for granted. I needed help to see what other people were seeing.
+Also, I said all that stuff about functions because of what I learned from Ellis Hughes, Pat Schratz, and Stas Kolenikov. They helped me see workflows how other people were seeing them. When I was in school, I took most of my computer science before most of my statistics, so I totally took functions for granted, and that made it super hard to explain `drake` in the early days. But thanks to people like them, I think I'm getting better.
 
 ---
 
