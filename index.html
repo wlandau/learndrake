@@ -293,23 +293,24 @@ But more importantly, we want to be able to step back and think about what we're
 ## &lt;img src="./images/yes.png" width="60" height="40"&gt; Instead, embrace **functions**!
 
 - A function is a reusable command that accepts one or more inputs and returns a single output.
+- It's a piece of custom shorthand for a single idea.
 
 
 ```r
-my_function &lt;- function(argument1, argument2) {
+add_things &lt;- function(argument1, argument2) {
   argument1 + argument2
 }
 
-my_function(1, 2)
+add_things(1, 2)
 ## [1] 3
 
-my_function(3, 4)
-## [1] 7
+add_things(c(3, 4), c(5, 6))
+## [1]  8 10
 ```
 
 ???
 
-The way we do that is with functions. A function is a reusable command that accepts one or more inputs and returns a single output. You define it once, you give it a name, and you call it whenever you need it on whatever data that fits.
+The way we do that is with functions. A function is a reusable command that accepts one or more inputs and returns a single output. In practical terms, it's a piece of custom shorthand for a single idea. You define it once, you give it a name, and you call it whenever you need it on whatever data that fits. You can run it in production, or you can take it out of context to debug and test it.
 
 ---
 
@@ -329,13 +330,13 @@ The way we do that is with functions. A function is a reusable command that acce
 
 But functions do so much more than that. They're not just for code you want to repeat and reuse. They're for code you want to **understand**.
 
-Functions break down complicated ideas into manageable pieces. Instead of confronting the whole thing at once, you deal with pieces that are smaller, cleaner, less intimidating, and that mean something clear and useful.
+Functions break down complicated ideas into manageable pieces. Instead of confronting the entirety of the project all at once, you deal with smaller components that are less intimidating and easier to work with.
 
-Functions are like paragraphs. It's the same mental experience inside your head. You wouldn't write an endless wall of text as a paper or an email, right? It's the same thing here, and R Markdown chunks don't have the structure to get us there. With functions, you're crystallizing a stream of consciousness into clear, discrete, explainable, composable, chainable points you want to make.
+As I said, functions are shorthand. They're also like paragraphs. The mental experience inside your head of writing functions is the same mental experience of writing paragraphs. We need *structure* in the text to fit the *structure* of our ideas so we can write stuff that makes sense. This is where functions succeed and R Markdown chunks tend to fall short. With functions, you're crystallizing a stream of consciousness into clear, discrete, explainable, composable, chainable points you want to make.
 
-This may seem like extra work, but the activity of writing code is always a challenge. It always going to take focus, and it's always going to take effort. For **every single one** of us. And the more we accept that and lean into it, the better off we are in the long run, and the more things start to make sense. 
+Now this may seem like extra work. But the activity of writing code is always a challenge. It always going to take focus, and it's always going to take effort. For **every single one** of us. And the more we accept that and lean into it, the better off we are in the long run.
 
-Another reason to use functions is that they are true to the process of data analysis itself. Functions are **fundamentally designed** to describe change. They are **designed** to transform things into other things. And in our workflows, we change raw data into clean data, clean data into model output, and so on. Those steps are *begging* to be functions.
+Once you develop the habit, it's hard to go back because it fits what you're doing so well. Functions are true to the process of data analysis itself because they are **fundamentally designed** to describe change. They are **designed** to transform things into other things. And in our workflows, we change raw data into clean data, clean data into model output, and so on. Those steps are *begging* to be functions.
 
 You're also being true to the R language. R was designed to be function-oriented. The more you express your thoughts as functions, the more you are using the language as it was **designed** to be used.
 
@@ -726,16 +727,16 @@ drake_history()
 ## # A tibble: 10 x 10
 ##    target  current built  exists hash  command     seed runtime  prop act1 
 ##    &lt;chr&gt;   &lt;lgl&gt;   &lt;chr&gt;  &lt;lgl&gt;  &lt;chr&gt; &lt;chr&gt;      &lt;int&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;
-##  1 conf_r… TRUE    2019-… TRUE   f65e… confusio… 4.05e8   0.23   NA   &lt;NA&gt; 
-##  2 conf_s… TRUE    2019-… TRUE   6dc2… confusio… 1.93e9   0.192  NA   &lt;NA&gt; 
-##  3 conf_s… TRUE    2019-… TRUE   c091… confusio… 1.80e9   0.245  NA   &lt;NA&gt; 
-##  4 data    TRUE    2019-… TRUE   ca84… "read_cs… 1.29e9   0.037   0.3 &lt;NA&gt; 
-##  5 metrics FALSE   2019-… TRUE   f7a5… compare_… 1.21e9   0.019  NA   &lt;NA&gt; 
-##  6 metrics TRUE    2019-… TRUE   0456… compare_… 1.21e9   0.018  NA   &lt;NA&gt; 
-##  7 model_… TRUE    2019-… TRUE   e3d0… "train_m… 1.47e9   6.09   NA   relu 
-##  8 model_… TRUE    2019-… TRUE   abbe… "train_m… 1.26e9   4.10   NA   sigm…
-##  9 model_… TRUE    2019-… TRUE   4b32… "train_m… 8.05e8   4.23   NA   soft…
-## 10 rec     TRUE    2019-… TRUE   eae9… prepare_… 6.29e8   0.123  NA   &lt;NA&gt;
+##  1 conf_r… TRUE    2019-… TRUE   6f99… confusio… 4.05e8  0.211   NA   &lt;NA&gt; 
+##  2 conf_s… TRUE    2019-… TRUE   3806… confusio… 1.93e9  0.206   NA   &lt;NA&gt; 
+##  3 conf_s… TRUE    2019-… TRUE   f9e6… confusio… 1.80e9  0.231   NA   &lt;NA&gt; 
+##  4 data    TRUE    2019-… TRUE   ca84… "read_cs… 1.29e9  0.0370   0.3 &lt;NA&gt; 
+##  5 metrics FALSE   2019-… TRUE   c387… compare_… 1.21e9  0.025   NA   &lt;NA&gt; 
+##  6 metrics TRUE    2019-… TRUE   8a51… compare_… 1.21e9  0.0210  NA   &lt;NA&gt; 
+##  7 model_… TRUE    2019-… TRUE   531a… "train_m… 1.47e9  4.87    NA   relu 
+##  8 model_… TRUE    2019-… TRUE   987e… "train_m… 1.26e9  3.15    NA   sigm…
+##  9 model_… TRUE    2019-… TRUE   330b… "train_m… 8.05e8  3.33    NA   soft…
+## 10 rec     TRUE    2019-… TRUE   eae9… prepare_… 6.29e8  0.142   NA   &lt;NA&gt;
 ```
 
 ???
@@ -764,7 +765,7 @@ make(plan, recover = TRUE)
 
 proc.time() - start
 ##    user  system elapsed 
-##   0.079   0.003   0.083
+##   0.105   0.043   0.308
 ```
 
 - Details + how to rename a target: &lt;https://ropenscilabs.github.io/drake-manual/walkthrough.html#reproducible-data-recovery-and-renaming&gt;
@@ -1015,7 +1016,24 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
     }
     deleted = true;
   });
-})();</script>
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
 
 <script>
 (function() {

@@ -314,20 +314,21 @@ But more importantly, we want to be able to step back and think about what we're
 ## <img src="./images/yes.png" width="60" height="40"> Instead, embrace **functions**!
 
 - A function is a reusable command that accepts one or more inputs and returns a single output.
+- It's a piece of custom shorthand for a single idea.
 
 ```{r def}
-my_function <- function(argument1, argument2) {
+add_things <- function(argument1, argument2) {
   argument1 + argument2
 }
 
-my_function(1, 2)
+add_things(1, 2)
 
-my_function(3, 4)
+add_things(c(3, 4), c(5, 6))
 ```
 
 ???
 
-The way we do that is with functions. A function is a reusable command that accepts one or more inputs and returns a single output. You define it once, you give it a name, and you call it whenever you need it on whatever data that fits.
+The way we do that is with functions. A function is a reusable command that accepts one or more inputs and returns a single output. In practical terms, it's a piece of custom shorthand for a single idea. You define it once, you give it a name, and you call it whenever you need it on whatever data that fits. You can run it in production, or you can take it out of context to debug and test it.
 
 ---
 
@@ -347,13 +348,13 @@ The way we do that is with functions. A function is a reusable command that acce
 
 But functions do so much more than that. They're not just for code you want to repeat and reuse. They're for code you want to **understand**.
 
-Functions break down complicated ideas into manageable pieces. Instead of confronting the whole thing at once, you deal with pieces that are smaller, cleaner, less intimidating, and that mean something clear and useful.
+Functions break down complicated ideas into manageable pieces. Instead of confronting the entirety of the project all at once, you deal with smaller components that are less intimidating and easier to work with.
 
-Functions are like paragraphs. It's the same mental experience inside your head. You wouldn't write an endless wall of text as a paper or an email, right? It's the same thing here, and R Markdown chunks don't have the structure to get us there. With functions, you're crystallizing a stream of consciousness into clear, discrete, explainable, composable, chainable points you want to make.
+As I said, functions are shorthand. They're also like paragraphs. The mental experience inside your head of writing functions is the same mental experience of writing paragraphs. We need *structure* in the text to fit the *structure* of our ideas so we can write stuff that makes sense. This is where functions succeed and R Markdown chunks tend to fall short. With functions, you're crystallizing a stream of consciousness into clear, discrete, explainable, composable, chainable points you want to make.
 
-This may seem like extra work, but the activity of writing code is always a challenge. It always going to take focus, and it's always going to take effort. For **every single one** of us. And the more we accept that and lean into it, the better off we are in the long run, and the more things start to make sense. 
+Now this may seem like extra work. But the activity of writing code is always a challenge. It always going to take focus, and it's always going to take effort. For **every single one** of us. And the more we accept that and lean into it, the better off we are in the long run.
 
-Another reason to use functions is that they are true to the process of data analysis itself. Functions are **fundamentally designed** to describe change. They are **designed** to transform things into other things. And in our workflows, we change raw data into clean data, clean data into model output, and so on. Those steps are *begging* to be functions.
+Once you develop the habit, it's hard to go back because it fits what you're doing so well. Functions are true to the process of data analysis itself because they are **fundamentally designed** to describe change. They are **designed** to transform things into other things. And in our workflows, we change raw data into clean data, clean data into model output, and so on. Those steps are *begging* to be functions.
 
 You're also being true to the R language. R was designed to be function-oriented. The more you express your thoughts as functions, the more you are using the language as it was **designed** to be used.
 
