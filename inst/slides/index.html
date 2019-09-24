@@ -726,16 +726,16 @@ drake_history()
 ## # A tibble: 10 x 10
 ##    target  current built  exists hash  command     seed runtime  prop act1 
 ##    &lt;chr&gt;   &lt;lgl&gt;   &lt;chr&gt;  &lt;lgl&gt;  &lt;chr&gt; &lt;chr&gt;      &lt;int&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;
-##  1 conf_r… TRUE    2019-… TRUE   598f… confusio… 4.05e8  0.234   NA   &lt;NA&gt; 
-##  2 conf_s… TRUE    2019-… TRUE   f7bc… confusio… 1.93e9  0.187   NA   &lt;NA&gt; 
-##  3 conf_s… TRUE    2019-… TRUE   389f… confusio… 1.80e9  0.238   NA   &lt;NA&gt; 
-##  4 data    TRUE    2019-… TRUE   ca84… "read_cs… 1.29e9  0.0370   0.3 &lt;NA&gt; 
-##  5 metrics FALSE   2019-… TRUE   1032… compare_… 1.21e9  0.031   NA   &lt;NA&gt; 
-##  6 metrics TRUE    2019-… TRUE   374f… compare_… 1.21e9  0.018   NA   &lt;NA&gt; 
-##  7 model_… TRUE    2019-… TRUE   0d67… "train_m… 1.47e9  6.32    NA   relu 
-##  8 model_… TRUE    2019-… TRUE   f536… "train_m… 1.26e9  3.97    NA   sigm…
-##  9 model_… TRUE    2019-… TRUE   d157… "train_m… 8.05e8  4.35    NA   soft…
-## 10 rec     TRUE    2019-… TRUE   eae9… prepare_… 6.29e8  0.126   NA   &lt;NA&gt;
+##  1 conf_r… TRUE    2019-… TRUE   db7b… confusio… 4.05e8  0.245   NA   &lt;NA&gt; 
+##  2 conf_s… TRUE    2019-… TRUE   dcbc… confusio… 1.93e9  0.205   NA   &lt;NA&gt; 
+##  3 conf_s… TRUE    2019-… TRUE   b614… confusio… 1.80e9  0.256   NA   &lt;NA&gt; 
+##  4 data    TRUE    2019-… TRUE   ca84… "read_cs… 1.29e9  0.037    0.3 &lt;NA&gt; 
+##  5 metrics FALSE   2019-… TRUE   a567… compare_… 1.21e9  0.0200  NA   &lt;NA&gt; 
+##  6 metrics TRUE    2019-… TRUE   8c59… compare_… 1.21e9  0.018   NA   &lt;NA&gt; 
+##  7 model_… TRUE    2019-… TRUE   d7d0… "train_m… 1.47e9  6.31    NA   relu 
+##  8 model_… TRUE    2019-… TRUE   9cff… "train_m… 1.26e9  3.93    NA   sigm…
+##  9 model_… TRUE    2019-… TRUE   5d12… "train_m… 8.05e8  4.28    NA   soft…
+## 10 rec     TRUE    2019-… TRUE   eae9… prepare_… 6.29e8  0.123   NA   &lt;NA&gt;
 ```
 
 ???
@@ -764,7 +764,7 @@ make(plan, recover = TRUE)
 
 proc.time() - start
 ##    user  system elapsed 
-##   0.080   0.004   0.085
+##   0.080   0.004   0.084
 ```
 
 - Details + how to rename a target: &lt;https://ropenscilabs.github.io/drake-manual/walkthrough.html#reproducible-data-recovery-and-renaming&gt;
@@ -947,7 +947,7 @@ For the development of drake itself, I have a lot of people to thank, many more 
 
 rOpenSci in particular is the one of the friendliest and most welcoming communities in tech, an amazing combination of expertise and approachability. `drake` is a better package and I am a better developer because they coached me during the software review process, they got the word out, and they connected me to users with insightful ideas and developers who I look up to.
 
-Also, all this stuff I've been saying about functions is from people like Ellis Hughes, Pat Schratz, and Stas Kolenikov. When I was in school, I took most of my computer science before most of my statistics, so I totally took this for granted. I needed help to see what other people were seeing.
+Also, I said all that stuff about functions because of what I learned from Ellis Hughes, Pat Schratz, and Stas Kolenikov. They helped me see workflows how other people were seeing them. When I was in school, I took most of my computer science before most of my statistics, so I totally took functions for granted, and that made it super hard to explain `drake` in the early days. But thanks to people like them, I think I'm getting better.
 
 ---
 
