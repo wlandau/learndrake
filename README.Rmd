@@ -37,9 +37,17 @@ Function | Purpose
 `save_slides()` | Save the introductory slides to your computer.
 `view_slides()` | Open the introductory slides in a web browser.
 
-# Introductory slides
+# Introductory presentation
 
-The workshop begins with an introductory presentation on [`drake`](https://github.com/ropensci/drake). View the slides at <https://wlandau.github.io/learndrake/index.html> or open them yourself in a browser with `view_slides()`. 
+The workshop begins with an introductory presentation on [`drake`](https://github.com/ropensci/drake). You can find a video recording [here](https://ropensci.org/commcalls/2019-09-24/). Alternatively, you can view the slides at <https://wlandau.github.io/learndrake/index.html> or open them yourself in a browser with `view_slides()`.
+
+<center>
+<a href="https://ropensci.org/commcalls/2019-09-24/">
+<img src="https://docs.ropensci.org/drake/reference/figures/commcall.png" alt="commcall" align="center" style = "border: none; float: center;">
+</a>
+</center>
+<br>
+<br>
 
 # Tutorials
 
