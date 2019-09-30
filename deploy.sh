@@ -28,4 +28,7 @@ then
   git commit -am "Update gh-pages slides" || true
   git push -q origin gh-pages
   cd ..
+  
+  echo "Deploying to shinyapps.io."
+  Rscript shinyapps.R
 fi

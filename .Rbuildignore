@@ -43,3 +43,4 @@ vignettes/.*_files
 ^codemeta\.json$
 ^\.httr-oauth$
 ^renv$
+^rsconnect\.R$
