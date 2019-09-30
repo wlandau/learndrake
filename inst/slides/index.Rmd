@@ -50,7 +50,7 @@ background-size: contain;
 }
 </style>
 
-```{r c1, include = FALSE}
+```{r, include = FALSE}
 options(
   warnPartialMatchArgs = FALSE,
   drake_clean_menu = FALSE,
@@ -253,7 +253,7 @@ background-image: ./images/not.png
 
 ## <img src="./images/no.png" width="40" height="40"> Let's move beyond numbered scripts.
 
-```{r files_bad, eval = FALSE}
+```{r, eval = FALSE}
 run_everything.R
 R/
 ├── 01-data.R
@@ -281,7 +281,7 @@ But before we even begin to use `drake`, we need to change the way we write code
 - The planning and the execution happen at the same time.
 - Too cumbersome, ad hoc, and tangled for ambitious projects.
 
-```{r c2, eval = FALSE}
+```{r, eval = FALSE}
 # 02-munge.R
 library(recipes) # Package dependencies scattered across scripts. #<<
 
@@ -316,7 +316,7 @@ But more importantly, we want to be able to step back and think about what we're
 - A function is a reusable command that accepts one or more inputs and returns a single output.
 - It's a piece of custom shorthand for a single idea.
 
-```{r def}
+```{r}
 add_things <- function(argument1, argument2) {
   argument1 + argument2
 }
@@ -362,7 +362,7 @@ You're also being true to the R language. R was designed to be function-oriented
 
 ## Functions in a workflow
 
-```{r files_good, eval = FALSE}
+```{r, eval = FALSE}
 make.R
 R/
 ├── packages.R
@@ -382,13 +382,13 @@ So let's use functions in the deep learning example. They're going to occupy mos
 
 ## Functions in a workflow
 
-```{r c3.0, eval = FALSE}
+```{r, eval = FALSE}
 # packages.R: all package dependencies #<<
 library(recipes)
 # other packages...
 ````
 
-```{r c3, eval = FALSE}
+```{r, eval = FALSE}
 # functions.R: pure reusable code #<<
 prepare_recipe <- function(data) {
   data %>%
@@ -415,7 +415,7 @@ Our preprocessing task is a single, clear, distinct idea with clearly-defined in
 
 ## Functions in a workflow
 
-```{r run_everything}
+```{r}
 # later in functions.R...
 
 run_everything <- function() {
@@ -447,7 +447,7 @@ And we can take the functions we define and call them from other functions, incl
 
 ## Conduct your analysis with your **functions**.
 
-```{r c3.5, eval = FALSE}
+```{r, eval = FALSE}
 # run_everything.R
 source("R/packages.R")
 source("R/functions.R")
@@ -480,7 +480,7 @@ But we can still do better. We can avoid rerunning all the computation every tim
 
 ## Enter drake! Define a **plan**.
 
-```{r c4}
+```{r}
 plan <- drake_plan(
   rec = prepare_recipe(data), # Use your functions. #<<
   model = target(
@@ -512,7 +512,7 @@ Instead of a `run_everything()` function, we create a drake plan. The plan defin
 
 ## The plan is a data frame of skippable tasks.
 
-```{r c5}
+```{r}
 plan
 ```
 
@@ -537,7 +537,7 @@ Now as a first step, `drake` takes all this in, and it analyzes your plan, and i
 
 ## Run the project in make.R.
 
-```{r c6}
+```{r}
 # like run_everything.R...
 source("R/packages.R")
 source("R/functions.R")
@@ -554,7 +554,7 @@ So after you source your packages and functions into your session, the `make()` 
 
 ## Compare models.
 
-```{r c7}
+```{r}
 readd(metrics) # See also loadd()
 ```
 
@@ -566,7 +566,7 @@ After that, you can retrieve any target at any time with convenient interface fu
 
 ## Add a new model.
 
-```{r c8}
+```{r}
 plan <- drake_plan(
   rec = prepare_recipe(data),
   model = target(
@@ -590,7 +590,7 @@ plan <- drake_plan(
 )
 ```
 
-```{r c8write, echo = FALSE}
+```{r, echo = FALSE}
 tmp <- file.copy("R/plan.R", "R/tmp.R", overwrite = TRUE)
 tmp <- file.copy("R/plan2.R", "R/plan.R", overwrite = TRUE)
 ```
@@ -618,7 +618,7 @@ Here, since we added a new model, that model and everything downstream are out o
 
 ## Refresh the results in make.R.
 
-```{r c9}
+```{r}
 source("R/packages.R")
 source("R/functions.R")
 source("R/plan.R") # modified #<<
@@ -636,7 +636,7 @@ In computing, we like to talk a lot about speed. How do we make our code run fas
 
 ## Compare models.
 
-```{r c7updated}
+```{r}
 readd(metrics)
 ```
 
@@ -648,7 +648,7 @@ And with minimal effort, our metrics are now up to date. The plot has all three 
 
 ## Evidence of reproducibility
 
-```{r c10}
+```{r}
 source("R/packages.R")
 source("R/functions.R")
 source("R/plan.R")
@@ -703,7 +703,7 @@ The idea is that if we know we have a data frame or we know we have a Keras mode
 
 ## History and provenance
 
-```{r history}
+```{r}
 drake_history()
 ```
 
@@ -715,7 +715,7 @@ drake_history()
 
 ## Reproducible data recovery
 
-```{r recovery}
+```{r}
 clean() # Oops!
 
 start <- proc.time()
@@ -738,7 +738,7 @@ Unfortunately, this is not the default because it assumes you are always using t
 
 - Just a little configuration...
 
-```{r c11, eval = FALSE}
+```{r, eval = FALSE}
 # template file with configuration
 drake_hpc_template_file("slurm_clustermq.tmpl")
 
@@ -772,19 +772,19 @@ And drake takes care of the rest. It launches a bunch of workers and sends those
 
 - Get [`drake`](https://github.com/ropensci/drake):
 
-```{r c12, eval = FALSE}
+```{r, eval = FALSE}
 install.packages("drake")
 ```
 
 - Example code from these slides:
 
-```{r c14, eval = FALSE}
+```{r, eval = FALSE}
 drake::drake_example("customer-churn")
 ```
 
 - Workshop materials:
 
-```{r c13, eval = FALSE}
+```{r, eval = FALSE}
 remotes::install_github("wlandau/learndrake")
 ```
 
@@ -925,7 +925,7 @@ I heard this was originally part of a math PhD oral exam, but all you need to kn
 
 I recommend taking something you already think is nontrivial, no matter what it is in your life, and try turning it into a function. I'm curious what people come up with, and I think it could be a good exercise to get used to writing functions more often.
 
-```{r c15, include = FALSE}
+```{r, include = FALSE}
 tmp <- file.copy("R/plan.R", "R/plan2.R", overwrite = TRUE)
 tmp <- file.copy("R/tmp.R", "R/plan.R", overwrite = TRUE)
 unlink("R/tmp.R")

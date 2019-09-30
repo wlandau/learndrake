@@ -14,7 +14,7 @@ Ambitious workflows in R, such as machine learning analyses, can be difficult to
 
 To obtain the workshop materials, install the [`learndrake`](https://github.com/wlandau/learndrake) package, [TensorFlow](https://www.tensorflow.org), and [Keras](https://keras.io/).
 
-```{r eval = FALSE}
+```{r, eval = FALSE}
 install.packages("remotes")
 remotes::install_github("wlandau/learndrake")
 tensorflow::install_tensorflow()

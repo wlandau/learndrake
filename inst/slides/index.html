@@ -566,7 +566,7 @@ So after you source your packages and functions into your session, the `make()` 
 readd(metrics) # See also loadd()
 ```
 
-&lt;img src="index_files/figure-html/c7-1.png" width="80%" height="80%" style="display: block; margin: auto;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-13-1.png" width="80%" height="80%" style="display: block; margin: auto;" /&gt;
 
 ???
 
@@ -653,7 +653,7 @@ In computing, we like to talk a lot about speed. How do we make our code run fas
 readd(metrics)
 ```
 
-&lt;img src="index_files/figure-html/c7updated-1.png" width="80%" height="80%" style="display: block; margin: auto;" /&gt;
+&lt;img src="index_files/figure-html/unnamed-chunk-17-1.png" width="80%" height="80%" style="display: block; margin: auto;" /&gt;
 
 ???
 
@@ -727,16 +727,16 @@ drake_history()
 ## # A tibble: 10 x 10
 ##    target  current built  exists hash  command     seed runtime  prop act1 
 ##    &lt;chr&gt;   &lt;lgl&gt;   &lt;chr&gt;  &lt;lgl&gt;  &lt;chr&gt; &lt;chr&gt;      &lt;int&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;
-##  1 conf_r… TRUE    2019-… TRUE   a946… confusio… 4.05e8  0.231   NA   &lt;NA&gt; 
-##  2 conf_s… TRUE    2019-… TRUE   b666… confusio… 1.93e9  0.233   NA   &lt;NA&gt; 
-##  3 conf_s… TRUE    2019-… TRUE   8df0… confusio… 1.80e9  0.234   NA   &lt;NA&gt; 
-##  4 data    TRUE    2019-… TRUE   ca84… "read_cs… 1.29e9  0.051    0.3 &lt;NA&gt; 
-##  5 metrics FALSE   2019-… TRUE   3109… compare_… 1.21e9  0.0250  NA   &lt;NA&gt; 
-##  6 metrics TRUE    2019-… TRUE   1c48… compare_… 1.21e9  0.024   NA   &lt;NA&gt; 
-##  7 model_… TRUE    2019-… TRUE   9ef3… "train_m… 1.47e9  7.98    NA   relu 
-##  8 model_… TRUE    2019-… TRUE   9c0c… "train_m… 1.26e9  3.54    NA   sigm…
-##  9 model_… TRUE    2019-… TRUE   82da… "train_m… 8.05e8  4.29    NA   soft…
-## 10 rec     TRUE    2019-… TRUE   eae9… prepare_… 6.29e8  0.190   NA   &lt;NA&gt;
+##  1 conf_r… TRUE    2019-… TRUE   b5ee… confusio… 4.05e8  0.287   NA   &lt;NA&gt; 
+##  2 conf_s… TRUE    2019-… TRUE   b18e… confusio… 1.93e9  0.248   NA   &lt;NA&gt; 
+##  3 conf_s… TRUE    2019-… TRUE   0e0e… confusio… 1.80e9  0.345   NA   &lt;NA&gt; 
+##  4 data    TRUE    2019-… TRUE   ca84… "read_cs… 1.29e9  0.0370   0.3 &lt;NA&gt; 
+##  5 metrics FALSE   2019-… TRUE   2850… compare_… 1.21e9  0.02    NA   &lt;NA&gt; 
+##  6 metrics TRUE    2019-… TRUE   3666… compare_… 1.21e9  0.018   NA   &lt;NA&gt; 
+##  7 model_… TRUE    2019-… TRUE   e422… "train_m… 1.47e9  8.71    NA   relu 
+##  8 model_… TRUE    2019-… TRUE   b0e9… "train_m… 1.26e9  5.99    NA   sigm…
+##  9 model_… TRUE    2019-… TRUE   d915… "train_m… 8.05e8  6.85    NA   soft…
+## 10 rec     TRUE    2019-… TRUE   eae9… prepare_… 6.29e8  0.130   NA   &lt;NA&gt;
 ```
 
 ???
@@ -765,7 +765,7 @@ make(plan, recover = TRUE)
 
 proc.time() - start
 ##    user  system elapsed 
-##   0.109   0.048   0.333
+##   0.089   0.000   0.090
 ```
 
 - Details + how to rename a target: &lt;https://ropenscilabs.github.io/drake-manual/walkthrough.html#reproducible-data-recovery-and-renaming&gt;
@@ -1016,24 +1016,7 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
     }
     deleted = true;
   });
-})();
-// adds .remark-code-has-line-highlighted class to <pre> parent elements
-// of code chunks containing highlighted lines with class .remark-code-line-highlighted
-(function(d) {
-  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
-  const preParents = [];
-  const findPreParent = function(line, p = 0) {
-    if (p > 1) return null; // traverse up no further than grandparent
-    const el = line.parentElement;
-    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
-  };
-
-  for (let line of hlines) {
-    let pre = findPreParent(line);
-    if (pre && !preParents.includes(pre)) preParents.push(pre);
-  }
-  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
-})(document);</script>
+})();</script>
 
 <script>
 (function() {
