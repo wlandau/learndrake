@@ -56,13 +56,11 @@ library(tidyverse)
 library(yardstick)
 ```
 
-Check if TensorFlow is installed. If you see "Hellow, Tensorflow!", you are all set. Do not worry about other console messages.
+Check if TensorFlow is installed. The code below should display the TensorFlow version. Do not worry about other console messages.
 
 ```{r, message = FALSE}
 library(tensorflow)
-sess <- tf$Session()
-hello <- tf$constant("Hello, TensorFlow!")
-sess$run(hello)
+tf_version()
 ```
 
 # Data
