@@ -57,8 +57,7 @@ Binder](http://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/wlandau/
 Your browser will open the materials in a free RStudio Server instance.
 
   - Advantage: no need to sign up for RStudio Cloud.
-  - Disadvantage: it takes a long time to load, and it times out
-    quickly.
+  - Disadvantage: long load times and quick timeouts.
 
 ## Local
 
