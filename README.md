@@ -1,3 +1,1 @@
-# Notebooks
-
-These files are part of a hands-on workshop on [`drake`](https://github.com/ropensci/drake). Participants are to work through the folders in the order they are numbered. Each numbered folder has an R notebook (an `*.Rmd` file) with instructions and exercises. For more information, please visit <https://github.com/wlandau/learndrake>.
+Welcome to the `drake` workshop! To get started, click navigate to `1-churn/` in the "Files" pane and click on `1-churn.Rproj`. After working through the `1-churn.Rmd` notebook, continue on through the notebooks in the other folders.
