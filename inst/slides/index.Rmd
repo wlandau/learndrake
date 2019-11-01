@@ -328,7 +328,7 @@ add_things(c(3, 4), c(5, 6))
 
 ???
 
-The way we do that is with functions. A function is a reusable command that accepts one or more inputs and returns a single output. In practical terms, it's a piece of custom shorthand for a single idea. You define it once, you give it a name, and you call it whenever you need it on whatever data that fits. You can run it in production, or you can take it out of context to debug and test it.
+The most natural way to do that is with functions. A function is a reusable command that accepts one or more inputs and returns a single output. In practical terms, it's a piece of custom shorthand for a single idea. You define it once, you give it a name, and you call it whenever you need it on whatever data that fits. You can run it in production, or you can take it out of context to debug and test it.
 
 ---
 
@@ -348,11 +348,11 @@ The way we do that is with functions. A function is a reusable command that acce
 
 But functions do so much more than that. They're not just for code you want to repeat and reuse. They're for code you want to **understand**.
 
-Functions break down complicated ideas into manageable pieces. Instead of confronting the entirety of the project all at once, you deal with smaller components that are less intimidating and easier to work with.
+Functions break down complicated ideas into manageable pieces. They're like paragraphs for computing. The mental experience is the same. It's much easier to write and read a sensibly organized article than it is to deal with an amorphous wall of text.
 
-As I said, functions are shorthand. They're also like paragraphs. The mental experience inside your head of writing functions is the same mental experience of writing paragraphs. We need *structure* in the text to fit the *structure* of our ideas so we can write stuff that makes sense. This is where functions succeed and R Markdown chunks tend to fall short. With functions, you're crystallizing a stream of consciousness into clear, discrete, explainable, composable, chainable points you want to make.
+Functions are also shorthand for bigger ideas. We use functions in a programming language for the same reason we use names in a spoken language. When I talk about a car, I use the word "car". I don't take the time to repeat "box on wheels that drives people around". We use names and functions to stay concise and avoid rabbit holes.
 
-Now this may seem like extra work. But the activity of writing code is always a challenge. It always going to take focus, and it's always going to take effort. For **every single one** of us. And the more we accept that and lean into it, the better off we are in the long run.
+Now it may seem like a lot of work to define your own vocabulary. But maintaining a large project is a lot of work anyway. The activity of writing code is always a challenge. It always takes effort and focus. For **every single one** of us. And the more we accept that and lean into it, the better off we are in the long run.
 
 Once you develop the habit, it's hard to go back because it fits what you're doing so well. Functions are true to the process of data analysis itself because they are **fundamentally designed** to describe change. They are **designed** to transform things into other things. And in our workflows, we change raw data into clean data, clean data into model output, and so on. Those steps are *begging* to be functions.
 
@@ -560,7 +560,7 @@ readd(metrics) # See also loadd()
 
 ???
 
-After that, you can retrieve any target at any time with convenient interface functions `loadd()` and `readd()`.
+After that, we can retrieve any target at any time with convenient interface functions `loadd()` and `readd()`. This is where `drake` truly respects exploratory data analysis. We don't need to rummage around for  data files. Everything is already at our fingertips. `drake` makes it super smooth to populate an R session and inspect things.
 
 ---
 
@@ -597,8 +597,7 @@ tmp <- file.copy("R/plan2.R", "R/plan.R", overwrite = TRUE)
 
 ???
 
-After you explore a bit, then it comes time for changes. 
-For this example, we go back and add another model and another confusion matrix to try to outperform the other models. We could have gone back and changed our commands and functions too.
+Then, based on what we learn from exploratory data analysis, we can come up with new targets or change old ones. For this example, we go back and add another model and another confusion matrix to try to outperform the other models.
 
 ---
 
@@ -610,7 +609,7 @@ For this example, we go back and add another model and another confusion matrix 
 
 ???
 
-But whatever we do, drake looks at all of that and decides which targets are up to date and which are outdated or missing. And there are several interface functions to display this information in different ways.
+Whatever we do, drake looks at all of that and decides which targets are up to date and which are outdated or missing. And there are several interface functions to display this information in different ways.
 
 Here, since we added a new model, that model and everything downstream are out of date. But the green targets are still up to date because we haven't changed any **functions** or files or commands or upstream targets or random number generator seeds they depend on.
 

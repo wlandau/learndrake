@@ -310,7 +310,7 @@ add_things(c(3, 4), c(5, 6))
 
 ???
 
-The way we do that is with functions. A function is a reusable command that accepts one or more inputs and returns a single output. In practical terms, it's a piece of custom shorthand for a single idea. You define it once, you give it a name, and you call it whenever you need it on whatever data that fits. You can run it in production, or you can take it out of context to debug and test it.
+The most natural way to do that is with functions. A function is a reusable command that accepts one or more inputs and returns a single output. In practical terms, it's a piece of custom shorthand for a single idea. You define it once, you give it a name, and you call it whenever you need it on whatever data that fits. You can run it in production, or you can take it out of context to debug and test it.
 
 ---
 
@@ -330,11 +330,11 @@ The way we do that is with functions. A function is a reusable command that acce
 
 But functions do so much more than that. They're not just for code you want to repeat and reuse. They're for code you want to **understand**.
 
-Functions break down complicated ideas into manageable pieces. Instead of confronting the entirety of the project all at once, you deal with smaller components that are less intimidating and easier to work with.
+Functions break down complicated ideas into manageable pieces. They're like paragraphs for computing. The mental experience is the same. It's much easier to write and read a sensibly organized article than it is to deal with an amorphous wall of text.
 
-As I said, functions are shorthand. They're also like paragraphs. The mental experience inside your head of writing functions is the same mental experience of writing paragraphs. We need *structure* in the text to fit the *structure* of our ideas so we can write stuff that makes sense. This is where functions succeed and R Markdown chunks tend to fall short. With functions, you're crystallizing a stream of consciousness into clear, discrete, explainable, composable, chainable points you want to make.
+Functions are also shorthand for bigger ideas. We use functions in a programming language for the same reason we use names in a spoken language. When I talk about a car, I use the word "car". I don't take the time to repeat "box on wheels that drives people around". We use names and functions to stay concise and avoid rabbit holes.
 
-Now this may seem like extra work. But the activity of writing code is always a challenge. It always going to take focus, and it's always going to take effort. For **every single one** of us. And the more we accept that and lean into it, the better off we are in the long run.
+Now it may seem like a lot of work to define your own vocabulary. But maintaining a large project is a lot of work anyway. The activity of writing code is always a  challenge. It always takes effort and focus. For **every single one** of us. And the more we accept that and lean into it, the better off we are in the long run.
 
 Once you develop the habit, it's hard to go back because it fits what you're doing so well. Functions are true to the process of data analysis itself because they are **fundamentally designed** to describe change. They are **designed** to transform things into other things. And in our workflows, we change raw data into clean data, clean data into model output, and so on. Those steps are *begging* to be functions.
 
@@ -546,10 +546,10 @@ source("R/plan.R")
 make(plan)
 ## target data
 ## target rec
-## target model_relu
 ## target model_sigmoid
-## target conf_relu
+## target model_relu
 ## target conf_sigmoid
+## target conf_relu
 ## target metrics
 ```
 
@@ -570,7 +570,7 @@ readd(metrics) # See also loadd()
 
 ???
 
-After that, you can retrieve any target at any time with convenient interface functions `loadd()` and `readd()`.
+After that, we can retrieve any target at any time with convenient interface functions `loadd()` and `readd()`. This is where `drake` truly respects exploratory data analysis. We don't need to rummage around for  data files. Everything is already at our fingertips. `drake` makes it super smooth to populate an R session and inspect things.
 
 ---
 
@@ -605,8 +605,7 @@ plan &lt;- drake_plan(
 
 ???
 
-After you explore a bit, then it comes time for changes. 
-For this example, we go back and add another model and another confusion matrix to try to outperform the other models. We could have gone back and changed our commands and functions too.
+Then, based on what we learn from exploratory data analysis, we can come up with new targets or change old ones. For this example, we go back and add another model and another confusion matrix to try to outperform the other models.
 
 ---
 
@@ -618,7 +617,7 @@ For this example, we go back and add another model and another confusion matrix 
 
 ???
 
-But whatever we do, drake looks at all of that and decides which targets are up to date and which are outdated or missing. And there are several interface functions to display this information in different ways.
+Whatever we do, drake looks at all of that and decides which targets are up to date and which are outdated or missing. And there are several interface functions to display this information in different ways.
 
 Here, since we added a new model, that model and everything downstream are out of date. But the green targets are still up to date because we haven't changed any **functions** or files or commands or upstream targets or random number generator seeds they depend on.
 
@@ -727,16 +726,16 @@ drake_history()
 ## # A tibble: 10 x 10
 ##    target  current built  exists hash  command     seed runtime  prop act1 
 ##    &lt;chr&gt;   &lt;lgl&gt;   &lt;chr&gt;  &lt;lgl&gt;  &lt;chr&gt; &lt;chr&gt;      &lt;int&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;
-##  1 conf_r… TRUE    2019-… TRUE   b5ee… confusio… 4.05e8  0.287   NA   &lt;NA&gt; 
-##  2 conf_s… TRUE    2019-… TRUE   b18e… confusio… 1.93e9  0.248   NA   &lt;NA&gt; 
-##  3 conf_s… TRUE    2019-… TRUE   0e0e… confusio… 1.80e9  0.345   NA   &lt;NA&gt; 
-##  4 data    TRUE    2019-… TRUE   ca84… "read_cs… 1.29e9  0.0370   0.3 &lt;NA&gt; 
-##  5 metrics FALSE   2019-… TRUE   2850… compare_… 1.21e9  0.02    NA   &lt;NA&gt; 
-##  6 metrics TRUE    2019-… TRUE   3666… compare_… 1.21e9  0.018   NA   &lt;NA&gt; 
-##  7 model_… TRUE    2019-… TRUE   e422… "train_m… 1.47e9  8.71    NA   relu 
-##  8 model_… TRUE    2019-… TRUE   b0e9… "train_m… 1.26e9  5.99    NA   sigm…
-##  9 model_… TRUE    2019-… TRUE   d915… "train_m… 8.05e8  6.85    NA   soft…
-## 10 rec     TRUE    2019-… TRUE   eae9… prepare_… 6.29e8  0.130   NA   &lt;NA&gt;
+##  1 conf_r… TRUE    2019-… TRUE   4a1c… confusio… 4.05e8  0.207   NA   &lt;NA&gt; 
+##  2 conf_s… TRUE    2019-… TRUE   f5e0… confusio… 1.93e9  0.212   NA   &lt;NA&gt; 
+##  3 conf_s… TRUE    2019-… TRUE   21ef… confusio… 1.80e9  0.237   NA   &lt;NA&gt; 
+##  4 data    TRUE    2019-… TRUE   ca84… "read_cs… 1.29e9  0.036    0.3 &lt;NA&gt; 
+##  5 metrics FALSE   2019-… TRUE   3176… compare_… 1.21e9  0.0200  NA   &lt;NA&gt; 
+##  6 metrics TRUE    2019-… TRUE   4c54… compare_… 1.21e9  0.018   NA   &lt;NA&gt; 
+##  7 model_… TRUE    2019-… TRUE   94fb… "train_m… 1.47e9  4.08    NA   relu 
+##  8 model_… TRUE    2019-… TRUE   c864… "train_m… 1.26e9  6.06    NA   sigm…
+##  9 model_… TRUE    2019-… TRUE   51f1… "train_m… 8.05e8  4.27    NA   soft…
+## 10 rec     TRUE    2019-… TRUE   eae9… prepare_… 6.29e8  0.115   NA   &lt;NA&gt;
 ```
 
 ???
@@ -755,17 +754,17 @@ start &lt;- proc.time()
 make(plan, recover = TRUE)
 ## recover data
 ## recover rec
-## recover model_relu
-## recover model_sigmoid
 ## recover model_softmax
-## recover conf_relu
-## recover conf_sigmoid
+## recover model_sigmoid
+## recover model_relu
 ## recover conf_softmax
+## recover conf_sigmoid
+## recover conf_relu
 ## recover metrics
 
 proc.time() - start
 ##    user  system elapsed 
-##   0.089   0.000   0.090
+##   0.072   0.015   0.088
 ```
 
 - Details + how to rename a target: &lt;https://ropenscilabs.github.io/drake-manual/walkthrough.html#reproducible-data-recovery-and-renaming&gt;
