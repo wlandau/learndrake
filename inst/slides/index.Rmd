@@ -723,7 +723,7 @@ make(plan, recover = TRUE)
 proc.time() - start
 ```
 
-- Details + how to rename a target: <https://ropenscilabs.github.io/drake-manual/walkthrough.html#reproducible-data-recovery-and-renaming>
+- Details + how to rename a target: <https://books.ropensci.org/drake/walkthrough.html#reproducible-data-recovery-and-renaming>
 
 ???
 
@@ -796,7 +796,7 @@ Here's how to learn more about drake. Just as drake itself exists and operates e
 ## Links
 
 - Development repository: <https://github.com/ropensci/drake>
-- Full user manual <https://ropenscilabs.github.io/drake-manual>
+- Full user manual <https://books.ropensci.org/drake/>
 - Reference website: <https://docs.ropensci.org/drake>
 - Hands-on workshop: <https://github.com/wlandau/learndrake>
 - Code examples: <https://github.com/wlandau/drake-examples>

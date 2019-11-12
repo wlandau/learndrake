@@ -69,7 +69,7 @@ vis_drake_graph(config)
 
 Instead of letting `drake` save our model automatically, let's manually save it to a custom file. That way, the return value of the target can be something else: say, the progression of the model fit over each epoch (<https://keras.rstudio.com/reference/fit.html#value>). To manually save the model, we use the [`save_model_hdf5()`](https://keras.rstudio.com/reference/save_model_hdf5.html) and `load_model_hdf5()` from `keras`. (This is what `drake` uses when you insert `format = "keras"` in the plan.)
 
-Your turn: follow the directions in the comments of `R/plan.R` and `R/functions.R` to save the model to a reproducibly-tracked HDF5 file. If you get stuck and need to reset your files, start over with a fresh copy of the notebooks and supporting files ([`learndrake::save_notebooks()`](https://github.com/wlandau/learndrake)). You can peek at [this chapter of the manual](https://ropenscilabs.github.io/drake-manual/churn.html#increasing-efficiency) for hints.
+Your turn: follow the directions in the comments of `R/plan.R` and `R/functions.R` to save the model to a reproducibly-tracked HDF5 file. If you get stuck and need to reset your files, start over with a fresh copy of the notebooks and supporting files ([`learndrake::save_notebooks()`](https://github.com/wlandau/learndrake)).
 
 When you are done, check your dependency graph.
 

@@ -83,7 +83,7 @@ dp_table <- function(plan) {
 
 ## Instructions
 
-Repair the unfinished [drake plans](https://ropenscilabs.github.io/drake-manual/plans.html#large-plans) in the following exercises. Optional: use [drakeplanner](https://wlandau.shinyapps.io/drakeplanner) to help write and check your plans.
+Repair the unfinished [drake plans](https://books.ropensci.org/drake/plans.html#large-plans) in the following exercises. Optional: use [drakeplanner](https://wlandau.shinyapps.io/drakeplanner) to help write and check your plans.
 
 ```{r q0}
 question(

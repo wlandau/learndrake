@@ -84,7 +84,7 @@ source(&quot;R/plan.R&quot;)</code></pre>
 </div>
 <div id="section-exercise-2" class="section level2">
 <h2>Exercise 2</h2>
-<p>You now have a <a href="https://ropenscilabs.github.io/drake-manual/plans.html">plan</a>.</p>
+<p>You now have a <a href="https://books.ropensci.org/drake/plans.html">plan</a>.</p>
 <pre class="r"><code>print(plan)
 #&gt; # A tibble: 5 x 3
 #&gt;   target  command                                                    format
@@ -94,7 +94,7 @@ source(&quot;R/plan.R&quot;)</code></pre>
 #&gt; 3 model   train_model(rec)                                         … keras 
 #&gt; 4 conf    confusion_matrix(data, rec, model)                       … &lt;NA&gt;  
 #&gt; 5 data    read_csv(file_in(&quot;../data/customer_churn.csv&quot;), col_types… &lt;NA&gt;</code></pre>
-<p>Did creating the <a href="https://ropenscilabs.github.io/drake-manual/plans.html">plan</a> actually run the workflow? Hint: <a href="https://docs.ropensci.org/drake/reference/cached.html"><code>cached()</code></a>.</p>
+<p>Did creating the <a href="https://books.ropensci.org/drake/plans.html">plan</a> actually run the workflow? Hint: <a href="https://docs.ropensci.org/drake/reference/cached.html"><code>cached()</code></a>.</p>
 <pre class="r"><code>cached()</code></pre>
 
 <div id="htmlwidget-db883fe2742d308f290f" style="width:100%;height:auto;", class = "quiz html-widget">
@@ -108,7 +108,7 @@ source(&quot;R/plan.R&quot;)</code></pre>
 </div>
 <div id="section-exercise-3" class="section level2">
 <h2>Exercise 3</h2>
-<p>Let’s look at the row order of the <a href="https://ropenscilabs.github.io/drake-manual/plans.html">plan</a>.</p>
+<p>Let’s look at the row order of the <a href="https://books.ropensci.org/drake/plans.html">plan</a>.</p>
 <pre class="r"><code>print(plan)
 #&gt; # A tibble: 5 x 3
 #&gt;   target  command                                                    format

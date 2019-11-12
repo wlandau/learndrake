@@ -19,7 +19,7 @@ hygiene, speed, scale, and reproducibility of such projects with the
 [`drake`](https://github.com/ropensci/drake) resolves the dependency
 structure of your analysis pipeline, skips tasks that are already up to
 date, executes the rest with [optional distributed
-computing](https://ropenscilabs.github.io/drake-manual/hpc.html), and
+computing](https://books.ropensci.org/drake/hpc.html), and
 organizes the output so you rarely have to think about data files. This
 workshop will teach you how to create and maintain machine learning
 projects with [`drake`](https://github.com/ropensci/drake)-powered
@@ -107,7 +107,7 @@ computer.
 | `1-churn.Rmd` | Deep learning case study                                                                  |
 | `2-setup.Rmd` | Convert the case study to a new [`drake`](https://github.com/ropensci/drake) project.     |
 | `3-flow.Rmd`  | Develop, work, and iterate on the project.                                                |
-| `4-plans`     | A deep dive into [`drake` plans](https://ropenscilabs.github.io/drake-manual/plans.html). |
+| `4-plans`     | A deep dive into [`drake` plans](https://books.ropensci.org/drake/plans.html). |
 | `5-files`     | Custom input and output data files.                                                       |
 | `6-reports`   | Special considerations of `knitr` and R Markdown reports.                                 |
 | `7-hpc`       | High-performance computing                                                                |
@@ -121,7 +121,7 @@ exercises.
 | App                                                                                  | Notebook      | Deploy locally               | Public URL                                    |
 | ------------------------------------------------------------------------------------ | ------------- | ---------------------------- | --------------------------------------------- |
 | Iterate on a [`drake`](https://github.com/ropensci/drake) workflow                   | `3-flow.Rmd`  | `launch_app("flow")`         | <http://wlandau.shinyapps.io/learndrakeflow>  |
-| Exercises on [`drake` plans](https://ropenscilabs.github.io/drake-manual/plans.html) | `4-plans.Rmd` | `launch_app("plans")`        | <http://wlandau.shinyapps.io/learndrakeplans> |
+| Exercises on [`drake` plans](https://books.ropensci.org/drake/plans.html) | `4-plans.Rmd` | `launch_app("plans")`        | <http://wlandau.shinyapps.io/learndrakeplans> |
 | Visualize [`drake`](https://github.com/ropensci/drake) projects                      | `4-plans.Rmd` | `launch_app("drakeplanner")` | <http://wlandau.shinyapps.io/drakeplanner>    |
 
 # Thanks

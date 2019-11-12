@@ -78,13 +78,13 @@ question(
 
 ## Exercise 2
 
-You now have a [plan](https://ropenscilabs.github.io/drake-manual/plans.html).
+You now have a [plan](https://books.ropensci.org/drake/plans.html).
 
 ```{r paged.print = FALSE, echo = TRUE}
 print(plan)
 ```
 
-Did creating the [plan](https://ropenscilabs.github.io/drake-manual/plans.html) actually run the workflow? Hint: [`cached()`](https://docs.ropensci.org/drake/reference/cached.html).
+Did creating the [plan](https://books.ropensci.org/drake/plans.html) actually run the workflow? Hint: [`cached()`](https://docs.ropensci.org/drake/reference/cached.html).
 
 ```r
 cached()
@@ -107,7 +107,7 @@ question(
 
 ## Exercise 3
 
-Let's look at the row order of the [plan](https://ropenscilabs.github.io/drake-manual/plans.html).
+Let's look at the row order of the [plan](https://books.ropensci.org/drake/plans.html).
 
 ```{r paged.print = FALSE, echo = TRUE}
 print(plan)
