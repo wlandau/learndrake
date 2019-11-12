@@ -21,7 +21,7 @@ source("../config/options.R")
 
 # Transformations
 
-`drake_plan()` supports a special shorthand to wrangle large collections of targets. As [described in the manual](https://ropenscilabs.github.io/drake-manual/plans.html#large-plans), there are four "transformations". In this workshop, we will cover `map()`, `cross()`, and `combine()`.
+`drake_plan()` supports a special shorthand to wrangle large collections of targets. As [described in the manual](https://books.ropensci.org/drake/static.html), there are four "transformations". In this workshop, we will cover `map()`, `cross()`, and `combine()`.
 
 | `drake`     | Tidyverse analogue          |
 |-------------|-----------------------------|

@@ -27,10 +27,10 @@ You may find these references on `drake` helpful (but hopefully not necessary fo
 
 - GitHub page: <https://github.com/ropensci/drake>
 - Reference website: <https://docs.ropensci.org/drake/>
-- User manual: <https://ropenscilabs.github.io/drake-manual/>
+- User manual: <https://books.ropensci.org/drake/>
 - Example code: <https://github.com/wlandau/drake-examples>
 - `drakeplanner` app: <https://github.com/wlandau/drakeplanner>
-- Existing presentations: <https://ropenscilabs.github.io/drake-manual/index.html#presentations>
+- Existing presentations: <https://books.ropensci.org/drake/index.html#presentations>
 - This workshop: <https://github.com/wlandau/learndrake>
 
 # Dependencies
@@ -69,7 +69,7 @@ conf <- confusion_matrix(data, rec, model)
 metrics <- compare_models(conf)
 ```
 
-But for `drake`-powered automation and reproducibility, we use a special data frame called a "`drake` plan" (<https://ropenscilabs.github.io/drake-manual/plans.html>).
+But for `drake`-powered automation and reproducibility, we use a special data frame called a "`drake` plan" (<https://books.ropensci.org/drake/plans.html>).
 
 Now it is your turn: fill out the `drake` plan below using the code from the previous chunk. The *targets* (`data`, `rec`, etc.) can be in any order.
 
@@ -187,4 +187,4 @@ But again, unless you call `clean(garbage_collection = TRUE)`, the actual data i
 make(plan, recover = TRUE)
 ```
 
-In fact, you can even rename a target this way: <https://ropenscilabs.github.io/drake-manual/walkthrough.html#automated-recovery-and-renaming>.
+In fact, you can even rename a target this way: <https://books.ropensci.org/drake/walkthrough.html#automated-recovery-and-renaming>.
