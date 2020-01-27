@@ -110,8 +110,7 @@ plan
 Did you write the plan correctly? Let's find out with a dependency graph. The graph is interactive. Zoom and drag for a better view.
 
 ```{r, message = FALSE}
-config <- drake_config(plan)
-vis_drake_graph(config, hover = TRUE)
+vis_drake_graph(plan) # or simply plot(plan)
 ```
 
 If you wrote the plan properly, your graph should look something like this.
@@ -138,7 +137,7 @@ make(plan)
 The graph displays the status of targets.
 
 ```{r}
-vis_drake_graph(config)
+vis_drake_graph(plan)
 ```
 
 Let's load some targets from on-disk storage.

@@ -358,8 +358,7 @@ question(
 Which targets are downstream of `conf`? Find out with  [`vis_drake_graph()`](https://docs.ropensci.org/drake/reference/vis_drake_graph.html).
 
 ```r
-config <- drake_config(plan)
-vis_drake_graph(config, hover = TRUE)
+vis_drake_graph(plan)
 ```
 
 ```{r q12}

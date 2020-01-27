@@ -63,14 +63,11 @@ same_plan <- function (out, exp) {
   all(out$target == exp$target & out$command == exp$command)
 }
 dp_graph <- function(plan) {
-  config <- drake_config(
-    plan,
+  vis_drake_graph(
+    plan = plan,
     cache = storr::storr_environment(),
     session_info = FALSE,
-    history = FALSE
-  )
-  vis_drake_graph(
-    config,
+    history = FALSE,
     main = "",
     hover = TRUE,
     from = file_store("data/customer_churn.csv")
@@ -105,7 +102,7 @@ question(
 Write a plan that tries different layer sizes. For each model, `units1` must equal `units2`.
 
 ```{r e1, exercise = TRUE, exercise.lines = 24}
-plan <- drake_plan(
+drake_plan(
   data = read_csv(
     file_in("data/customer_churn.csv"),
     col_types = cols()
@@ -200,7 +197,7 @@ drake_plan(
 Now, use `cross()` to create a new model for each combination of `units1` and `units2`
 
 ```{r e2, exercise = TRUE, exercise.lines = 24}
-plan <- drake_plan(
+drake_plan(
   data = read_csv(
     file_in("data/customer_churn.csv"),
     col_types = cols()
@@ -309,7 +306,7 @@ Try it with our deep learning plan. Use `!!` to insert lots of models with diffe
 ```{r e3, exercise = TRUE, exercise.lines = 25}
 my_units1 <- seq(8, 64, by = 1) # Use these values.
 
-plan <- drake_plan(
+drake_plan(
   data = read_csv(
     file_in("data/customer_churn.csv"),
     col_types = cols()
@@ -417,7 +414,7 @@ Try it with our deep learning plan. Set `max_expand = 4` in `drake_plan()`.
 ```{r e4, exercise = TRUE, exercise.lines = 25}
 my_units1 <- seq(8, 64, by = 1) # Use these values.
 
-plan <- drake_plan(
+drake_plan(
   # Your turn: set max_expand to 4.
   data = read_csv(
     file_in("data/customer_churn.csv"),
@@ -531,7 +528,7 @@ my_grid <- tibble(
 )
 
 # And this is our plan.
-plan <- drake_plan(
+drake_plan(
   data = read_csv(
     file_in("data/customer_churn.csv"),
     col_types = cols()
@@ -639,7 +636,7 @@ my_grid <- tibble(
   my_act1 = c("relu", "sigmoid", "softmax")
 )
 
-plan <- drake_plan(
+drake_plan(
   data = read_csv(
     file_in("data/customer_churn.csv"),
     col_types = cols()
@@ -766,7 +763,7 @@ my_grid <- tibble(
   my_act1 = c("relu", "sigmoid", "softmax")
 )
 
-plan <- drake_plan(
+drake_plan(
   data = read_csv(
     file_in("data/customer_churn.csv"),
     col_types = cols()
@@ -878,7 +875,7 @@ my_grid <- tibble(
   my_units2 = c(16, 32, 64)
 )
 
-plan <- drake_plan(
+drake_plan(
   data = read_csv(
     file_in("data/customer_churn.csv"),
     col_types = cols()
