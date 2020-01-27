@@ -4,8 +4,11 @@
 \alias{save_app}
 \title{Save the files for a supporting Shiny app}
 \usage{
-save_app(app = c("learndrakeflow", "learndrakeplans", "drakeplanner"),
-  path = app, overwrite = FALSE)
+save_app(
+  app = c("learndrakeflow", "learndrakeplans", "drakeplanner"),
+  path = app,
+  overwrite = FALSE
+)
 }
 \arguments{
 \item{app}{Character, name of the app to launch. Must be one of

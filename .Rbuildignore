@@ -44,3 +44,4 @@ vignettes/.*_files
 ^\.httr-oauth$
 ^renv$
 ^rsconnect\.R$
+^shinyapps\.R$
