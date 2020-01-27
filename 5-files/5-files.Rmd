@@ -44,8 +44,7 @@ plan %>%
 `file_in()` tells `make()` to fingerprint and track `customer_churn.csv`. As we saw in the `3-flow` exercises, `drake` updates the downstream targets when the data file changes.
 
 ```{r}
-config <- drake_config(plan)
-vis_drake_graph(config, from = file_store("../data/customer_churn.csv"))
+vis_drake_graph(plan, from = file_store("../data/customer_churn.csv"))
 ```
 
 `file_out()` works similarly, but for output files. Output files from upstream targets can serve as input files to downstream targets.
@@ -61,8 +60,7 @@ example_plan <- drake_plan(
   analysis_target = analyze_files(file_in(c("data1.csv", "data2.csv")))
 )
 
-config <- drake_config(example_plan)
-vis_drake_graph(config)
+vis_drake_graph(example_plan)
 ```
 
 # Exercise: back to customer churn
@@ -77,8 +75,7 @@ When you are done, check your dependency graph.
 source("R/packages.R")
 source("R/functions.R")
 source("R/plan.R")
-config <- drake_config(plan)
-vis_drake_graph(config, hover = TRUE)
+vis_drake_graph(plan)
 ```
 
 Your graph should look something like this.
@@ -96,7 +93,7 @@ make(plan)
 Sanity check: are all the targets up to date now?
 
 ```{r}
-outdated(config)
+outdated(plan)
 ```
 
 ```{r}
@@ -125,7 +122,7 @@ unlink("model.h5")
 Which targets are outdated now?
 
 ```{r}
-outdated(config)
+outdated(plan)
 ```
 
 Which targets get rebuilt when you call `make(plan)`?

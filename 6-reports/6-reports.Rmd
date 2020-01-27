@@ -52,8 +52,7 @@ Now, set up the `drake` pipeline and visualize the dependency graph.
 source("R/packages.R")
 source("R/functions.R")
 source("R/plan.R")
-config <- drake_config(plan)
-vis_drake_graph(config)
+vis_drake_graph(plan)
 ```
 
 Your dependency graph should look something like this.
@@ -71,7 +70,7 @@ deps_knitr("churn-results.Rmd")
 `deps_target()` should show `rmarkdown::render()`, `conf_model_16`, `metrics`, `churn-results.html`, and `churn-results.Rmd` as dependencies.
 
 ```{r, paged.print = FALSE}
-deps_target(report_step, config)
+deps_target(report_step, plan)
 ```
 
 ## Execution
@@ -94,11 +93,11 @@ Edit on the report and compile it as you would normally.
 Now, go back to the `drake` pipeline. The `report_step` target should be out of date because you worked on it.
 
 ```{r}
-outdated(config)
+outdated(plan)
 ```
 
 ```{r}
-vis_drake_graph(config)
+vis_drake_graph(plan)
 ```
 
 For production, call `make(plan)` to re-synchronize the report with the rest of the pipeline.
@@ -108,9 +107,9 @@ make(plan)
 ```
 
 ```{r}
-outdated(config)
+outdated(plan)
 ```
 
 ```{r}
-vis_drake_graph(config)
+vis_drake_graph(plan)
 ```

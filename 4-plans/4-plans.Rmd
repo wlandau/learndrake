@@ -69,8 +69,7 @@ drake_plan_source(plan)
 We have 3 models, 3 confusion matrices, and one final target with the performance metrics.
 
 ```{r}
-config <- drake_config(plan)
-vis_drake_graph(config, targets_only = TRUE)
+vis_drake_graph(plan, targets_only = TRUE)
 ```
 
 Let's see how those models compare.
@@ -152,8 +151,7 @@ plan
 
 
 ```{r}
-config <- drake_config(plan)
-vis_drake_graph(config)
+vis_drake_graph(plan) # or simply plot(plan)
 ```
 
 Now that may be too many targets to test, debug, run, and visualize right away. When you are still in the initial stages of your workflow, you may want to work with a smaller set of targets before scaling up. Let's try `drake_plan(max_expand = 2)` for a more manageable workflow. After we are done testing, we can remove `max_expand` to scale up again.
@@ -186,8 +184,7 @@ plan
 ```
 
 ```{r}
-config <- drake_config(plan)
-vis_drake_graph(config)
+vis_drake_graph(plan)
 ```
 
 Commands understand `!!` too. You can use it to execute code when the plan is created (i.e. during `drake_plan()`, before `make()`).
