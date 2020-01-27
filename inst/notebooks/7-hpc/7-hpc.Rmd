@@ -56,20 +56,19 @@ make(plan) # Sometimes multicore parallelism and keras don't work together.
 If you were to start the pipeline over from scratch, how much time would it take with one worker?
 
 ```{r}
-config <- drake_config(plan)
-predict_runtime(config, jobs = 1, from_scratch = TRUE)
+predict_runtime(plan, jobs = 1, from_scratch = TRUE)
 ```
 
 Less time with 2 workers, right?
 
 ```{r}
-predict_runtime(config, jobs = 2, from_scratch = TRUE)
+predict_runtime(plan, jobs = 2, from_scratch = TRUE)
 ```
 
 But no expected improvement with 3 workers.
 
 ```{r}
-predict_runtime(config, jobs = 3, from_scratch = TRUE)
+predict_runtime(plan, jobs = 3, from_scratch = TRUE)
 ```
 
 # Transient workers
