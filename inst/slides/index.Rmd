@@ -735,7 +735,7 @@ outdated(plan)
 ## Evidence of reproducibility
 
 ```{r, eval = FALSE}
-outdated(plan)
+vis_drake_graph(plan)
 ```
 
 <center>
