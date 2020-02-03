@@ -730,6 +730,8 @@ make(plan)
 outdated(plan)
 ```
 
+---
+
 ## Evidence of reproducibility
 
 ```{r, eval = FALSE}
