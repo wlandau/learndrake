@@ -29,7 +29,7 @@
 #' @importFrom drakeplanner drakeplanner
 #' @importFrom future plan future
 #' @importFrom future.callr callr
-#' @importFrom fs dir_copy
+#' @importFrom fs dir_copy file_copy
 #' @importFrom keras compile fit
 #' @importFrom learnr run_tutorial
 #' @importFrom lubridate duration dseconds
