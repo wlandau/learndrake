@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<html lang="" xml:lang="">
   <head>
-    <title>Reproducible workflows at scale with drake</title>
+    <title>Reproducible computation at scale in R</title>
     <meta charset="utf-8" />
     <meta name="author" content="Will Landau" />
     <link href="index_files/remark-css/default.css" rel="stylesheet" />
@@ -11,7 +11,7 @@
     <textarea id="source">
 class: center, middle, inverse, title-slide
 
-# Reproducible workflows at scale with drake
+# Reproducible computation at scale in R
 ### Will Landau
 
 ---
@@ -49,7 +49,7 @@ background-size: 25%;
 content: "Copyright Eli Lilly and Company";
 position: absolute;
 bottom: -5px;
-left: 20px;
+left: 10px;
 height: 40px;
 width: 100%;
 font-family: Helvetica, Arial, sans-serif;
@@ -62,28 +62,31 @@ background-size: contain;
 
 
 
-## Large data science workflows
 
-- Struggles
 
-  1. Long runtimes.
-  2. Many tasks.
-  3. Interconnected tasks.
+## Large computation in the life sciences
 
-- Examples
-  - Deep learning.
-  - Classical machine learning.
-  - Bayesian data analysis via Markov chain Monte Carlo.
-  - Spatial data analysis.
-  - Clinical trial modeling and simulation.
-  - Subgroup identification.
-  - Graph-based multiple comparison procedures.
-  - Genomics pipelines.
-  - PK/PD modeling.
+* [Bayesian model development](https://mc-stan.org/)
+* [Bayesian network meta-analysis](https://bookdown.org/MathiasHarrer/Doing_Meta_Analysis_in_R/bayesian-network-meta-analysis.html)
+* [Graph-based multiple comparison procedures](https://github.com/kornl/gMCP)
+* [Subgroup identification](https://cran.r-project.org/web/packages/TSDT/index.html)
+* [Predictive modeling](http://appliedpredictivemodeling.com/computing)
+* [Deep neural networks](https://keras.rstudio.com/)
+* [PK/PD modeling](https://github.com/nlmixrdevelopment/nlmixr)
+* Clinical trial simulation
+* Target identification
 
-???
+---
 
-Let's talk about what happens in large data science projects. Projects that are ambitious and complicated, that have a lot of moving parts and long runtimes. Projects that are difficult just to wrap your head around, that are difficult just to run from start to finish, but whose results really matter and carry important consequences.
+## Common features
+
+1. Heavy use of the [R language](https://www.r-project.org/).
+2. Long runtimes.
+3. Multiple sub-tasks.
+4. Frequent changes to code and data.
+
+&lt;img src = "./images/sisyphus.svg" align="left" style="border: none; box-shadow: none; height: 375px; text-align: center;"&gt;
+&lt;div style="font-size: 0.5em; text-align: center"&gt;&lt;a href="https://openclipart.org/detail/275842/sisyphus-overcoming-silhouette"&gt;https://openclipart.org/detail/275842/sisyphus-overcoming-silhouette&lt;/a&gt;&lt;/div&gt;
 
 ---
 
@@ -92,70 +95,25 @@ Let's talk about what happens in large data science projects. Projects that are 
 &lt;img src = "./images/workflow.png" align="middle" style="border: none; box-shadow: none; text-align: center;"&gt;
 &lt;/center&gt;
 
-???
-
-A large project has a bunch of interconnected tasks.
-
 ---
 
-## When you change something...
+## Changes
+
 &lt;center&gt;
 &lt;img src = "./images/change.png" align="middle" style="border: none; box-shadow: none; text-align: center;"&gt;
 &lt;/center&gt;
 
-???
-
-When you go back and change something...
-
 ---
 
-## ...the downstream output is **no longer valid**.
+## Consequences
 
 &lt;center&gt;
 &lt;img src = "./images/downstream.png" align="middle" style="border: none; box-shadow: none; text-align: center;"&gt;
 &lt;/center&gt;
 
-???
-
-...everything that depends on it is no longer valid. And somehow you gotta pick up the pieces.
-
 ---
 
-## Do you rerun **everything** from scratch?
-
-- Not if you deal with long runtimes!
-
-&lt;center&gt;
-&lt;img src = "./images/sisyphus.svg" align="middle" style="border: none; box-shadow: none; height: 375px; text-align: center;"&gt;
-&lt;div style="font-size: 0.5em; text-align: center"&gt;&lt;a href="https://openclipart.org/detail/275842/sisyphus-overcoming-silhouette"&gt;https://openclipart.org/detail/275842/sisyphus-overcoming-silhouette&lt;/a&gt;&lt;/div&gt;
-&lt;/center&gt;
-
-???
-
-For large projects, this is where the programming and workflow management techniques we are used to start to break down. If it takes several hours just to fit a single model, you're not going to want to rerun your whole analysis every time you make a change. It's just too much frustration to get stuck in a loop where you tweak something small and restart the code and tweak something small and restart the code, and pretty soon you're waiting forever.
-
-This used to happen to me all the time. In my dissertation work, every model took about 3 hours, and I needed results from about 20 or 30 of them. I spent the last 6 or so months of grad school mostly restarting code and waiting it to finish. My results were totally out of sync, and it was hard to get any writing done under those conditions.
-
----
-
-## Do you pick and choose what to update?
-
-- Messy.
-- Prone to human error.
-- Not reproducible.
-
-&lt;center&gt;
-&lt;img src = "./images/mess.svg" align="middle" style="border: none; box-shadow: none; height: 400px; text-align: center;"&gt;
-&lt;div style="font-size: 0.5em; text-align: center;"&gt;&lt;a href="https://openclipart.org/detail/216179/messy-desk"&gt;https://openclipart.org/detail/216179/messy-desk&lt;/a&gt;&lt;/div&gt;
-&lt;/center&gt;
-
-???
-
-But it's perilous to try to stop this cycle on your own without any help. If I'm the one deciding which code to skip and which code to rerun, it's a mess. It's too easy to make mistakes, and the results are not reproducible. I would not trust a human to do this.
-
----
-
-## Solution: pipeline tools
+## Pipeline tools and workflow managers
 
 &lt;center&gt;
 &lt;img src = "./images/infographic.svg" align="middle" style="border: none; box-shadow: none; text-align: center;"&gt;
@@ -163,19 +121,6 @@ But it's perilous to try to stop this cycle on your own without any help. If I'm
 
 - Tons exist already: [github.com/pditommaso/awesome-pipeline](https://github.com/pditommaso/awesome-pipeline).
 - Most are language-agnostic or designed for Python or the shell.
-
-???
-
-Fortunately, we can *automate* the process of bringing results up to date as fast as possible. The standard solution is a pipeline tool. You may have heard of examples already. There's
-
-- Make
-- Snakemake
-- Airflow
-- Nextflow
-- Luigi
-- Dask
-
-to name a few of the big names. But they're difficult to use with R. These kinds of tools generally try to be language-agnostic for the sake of versatility, but this means they add extra friction when you try to work with any one language in particular. My experience with Make specifically is that it obstructs my relationship with R. It pulls me out of the language and into sub-optimal programming practices.
 
 ---
 
@@ -185,36 +130,16 @@ to name a few of the big names. But they're difficult to use with R. These kinds
 &lt;img src = "./images/R.png" align="middle" style="border: none; box-shadow: none; text-align: center; height: 200px"&gt;
 &lt;/center&gt;
 
-- Aggressively designed for R.
-1. Think **functions**, not script files.
-2. Think **variables**, not output files.
-3. Think **data frames**, not `Makefile`s.
-- [`drake`](https://github.com/ropensci/drake) borrows (1) and (2) from the [`remake`](https://github.com/richfitz/remake) package by [Rich FitzJohn](https://github.com/richfitz).
-- [`remake`](https://github.com/richfitz/remake) is no longer under development.
-- [`drake`](https://github.com/ropensci/drake) tries to extend [`remake`](https://github.com/richfitz/remake)'s ideas further and handle larger projects.
-
-???
-
-
-drake, on the other hand, is designed for R at its very core. It works entirely *within* the language, and it nudges you to write good code.
-
-1. Instead of imperative script files, you write **functions**.
-
-2. Instead of saving output files manually and dealing with all the headache of trying to organize them yourself, you return **objects** from those functions, and drake saves them for you automatically.
-
-3. And instead of Makefiles in Make or YAML files in remake, you have an R-focused interface to define the skippable steps of your workflow.
-
-By the way, drake was not the first pipeline tool to respect the way R works. Before drake, there was a package called `remake` by Rich FitzJohn. remake was playing nicely with objects and functions long before I created drake.
-
-But remake isn't maintained anymore. And because it required you to work with YAML configuration files and supply your actual R scripts directly, it kind of had one foot in and one foot out anyway. drake tries to finish what remake started and scale up the intensity of work you can do with it.
+1. Respects the way R works.
+2. Pushes you to write better code.
 
 ---
 
-## Example: a deep learning workflow
+## Example drake workflow
 
-- Goal: predict customers who cancel their subscriptions with a telecom company.
-- Data: [IBM Watson Telco Customer Churn dataset](https://www.ibm.com/communities/analytics/watson-analytics-blog/predictive-insights-in-the-telco-customer-churn-data-set/).
-- Workflow principles generalize to other industries.
+- Use deep learning to predict which customers will cancel their telecom subscriptions.
+- [IBM Watson Telco Customer Churn dataset](https://www.ibm.com/communities/analytics/watson-analytics-blog/predictive-insights-in-the-telco-customer-churn-data-set/).
+- Workflow principles generalize to the life sciences.
 
 &lt;img src = "./images/combine.png" style="border: none; box-shadow: none; height: 200px"&gt;
 
@@ -228,7 +153,7 @@ To dive into drake, we're going to use a machine learning example. We've got a d
 
 background-image: ./images/not.png
 
-## &lt;img src="./images/no.png" width="40" height="40"&gt; Let's move beyond numbered scripts.
+## &lt;img src="./images/no.png" width="40" height="40"&gt; Say goodbye to numbered imperative scripts
 
 
 ```r
@@ -248,52 +173,17 @@ output/
 └── metrics_plot.png
 ```
 
-???
-
-But before we even begin to use `drake`, we need to change the way we write code. This project is too big for the classic "numbered script" paradigm that so many of us use. Whenever I try it, it explodes. And I'm sure I'm not the only one.
-
 ---
 
-## &lt;img src="./images/no.png" width="40" height="40"&gt; Why not numbered scripts?
+## &lt;img src="./images/yes.png" width="60" height="40"&gt; drake wants you to write **functions**
 
-- The planning and the execution happen at the same time.
-- Too cumbersome, ad hoc, and tangled for ambitious projects.
+&gt;    - Everything that exists is an object.
+&gt;    - Everything that happens is a function call.
+&gt;
+&gt; John Chambers
 
-
-```r
-# 02-munge.R
-*library(recipes) # Package dependencies scattered across scripts.
-
-*rec &lt;- data %&gt;% # Single-use code, difficult to test.
-  training() %&gt;%
-  recipe(Churn ~ .) %&gt;%
-  step_rm(customerID) %&gt;%
-  step_naomit(all_outcomes(), all_predictors()) %&gt;%
-  step_discretize(tenure, options = list(cuts = 6)) %&gt;%
-  step_log(TotalCharges) %&gt;%
-  step_mutate(Churn = ifelse(Churn == "Yes", 1, 0)) %&gt;%
-  step_dummy(all_nominal(), -all_outcomes()) %&gt;%
-  step_center(all_predictors(), -all_outcomes()) %&gt;%
-  step_scale(all_predictors(), -all_outcomes()) %&gt;%
-  prep()
-
-*saveRDS(rec, "recipe.rds") # Final output scattered across code.
-```
-
-???
-
-I think the reason is that it tries to do too many things at once. The planning and the execution happen at the same time, and the actual content of the analysis is muddled with the bookkeeping.
-
-In these scripts, you've got package dependencies and file-saving steps scattered all over the place. And for this preprocessing recipe, it looks like one thing, but it's really two things. You're defining a complicated procedure, and you're running it **as** you're defining it. We would do much better to define this thing in one place and call it somewhere else. Otherwise, it's hard to take the code out of context and test it.
-
-But more importantly, we want to be able to step back and think about what we're doing. We need modularity, and we need structure around our ideas. We want to somewhow write the flow of our project in our own custom high-level shorthand that makes everything easier to read.
-
----
-
-## &lt;img src="./images/yes.png" width="60" height="40"&gt; Instead, embrace **functions**!
-
-- A function is a reusable command that accepts one or more inputs and returns a single output.
-- It's a piece of custom shorthand for a single idea.
+* A function is a reusable command that accepts one or more inputs and returns a single output.
+* Functions are custom shorthand that makes your code easier to use and understand.
 
 
 ```r
@@ -302,79 +192,18 @@ add_things &lt;- function(argument1, argument2) {
 }
 
 add_things(1, 2)
-## [1] 3
+#&gt; [1] 3
 
 add_things(c(3, 4), c(5, 6))
-## [1]  8 10
+#&gt; [1]  8 10
 ```
-
-???
-
-The most natural way to do that is with functions. A function is a reusable command that accepts one or more inputs and returns a single output. In practical terms, it's a piece of custom shorthand for a single idea. You define it once, you give it a name, and you call it whenever you need it on whatever data that fits. You can run it in production, or you can take it out of context to debug and test it.
 
 ---
 
-## Why use functions?
-
-1. Clarity: break down complicated ideas into manageable pieces.
-2. Use R as intended.
-
-    &gt;    - Everything that exists is an object.
-    &gt;    - Everything that happens is a function call.
-    &gt;
-    &gt; John Chambers
-
-3. Reuse: define once, run wherever.
-
-???
-
-But functions do so much more than that. They're not just for code you want to repeat and reuse. They're for code you want to **understand**.
-
-Functions break down complicated ideas into manageable pieces. They're like paragraphs for computing. The mental experience is the same. It's much easier to write and read a sensibly organized article than it is to deal with an amorphous wall of text.
-
-Functions are also shorthand for bigger ideas. We use functions in a programming language for the same reason we use names in a spoken language. When I talk about a car, I use the word "car". I don't take the time to repeat "box on wheels that drives people around". We use names and functions to stay concise and avoid rabbit holes.
-
-Now it may seem like a lot of work to define your own vocabulary. But maintaining a large project is a lot of work anyway. The activity of writing code is always a  challenge. It always takes effort and focus. For **every single one** of us. And the more we accept that and lean into it, the better off we are in the long run.
-
-Once you develop the habit, it's hard to go back because it fits what you're doing so well. Functions are true to the process of data analysis itself because they are **fundamentally designed** to describe change. They are **designed** to transform things into other things. And in our workflows, we change raw data into clean data, clean data into model output, and so on. Those steps are *begging* to be functions.
-
-You're also being true to the R language. R was designed to be function-oriented. The more you express your thoughts as functions, the more you are using the language as it was **designed** to be used.
-
----
-
-## Functions in a workflow
+## Functions in a drake workflow
 
 
 ```r
-make.R
-R/
-├── packages.R
-*├── functions.R
-└── plan.R
-data/
-└── customer_churn.csv
-.drake/ # drake's cache
-└──     # Output automatically appears here.
-```
-
-???
-
-So let's use functions in the deep learning example. They're going to occupy most of the real estate in our scripts. This `functions.R` file usually gets pretty big, and I often split it up into multiple files.
-
----
-
-## Functions in a workflow
-
-
-```r
-*# packages.R: all package dependencies
-library(recipes)
-# other packages...
-```
-
-
-```r
-*# functions.R: pure reusable code
 prepare_recipe &lt;- function(data) {
   data %&gt;%
     training() %&gt;%
@@ -389,210 +218,62 @@ prepare_recipe &lt;- function(data) {
     step_scale(all_predictors(), -all_outcomes()) %&gt;%
     prep()
 }
-# other functions...
 ```
-
-???
-
-Our preprocessing task is a single, clear, distinct idea with clearly-defined inputs and a single return value. So we put it in a function.
 
 ---
 
-## Functions in a workflow
+## Functions in a drake workflow
 
 
 ```r
-# later in functions.R...
-
-run_everything &lt;- function() {
-  data &lt;- read_csv(file_in("data/customer_churn.csv"), col_types = cols()) %&gt;%
-    initial_split(prop = 0.3)
-  saveRDS(data, "output/data.rds")
-
-* rec &lt;- prepare_recipe(data) # Call your other functions.
-  saveRDS(rec, "output/rec.rds")
-
-  model_relu &lt;- train_model(rec, act1 = "relu")
-  save_model_hdf5(model_relu, "output/model_relu.h5")
-  # more models...
-
-  conf_sigmoid &lt;- confusion_matrix(data, rec, model_sigmoid)
-  saveRDS(conf_sigmoid, "output/conf_sigmoid.rds")
-  # more confusion matrices...
-
-  metrics &lt;- compare_models(conf_relu, conf_sigmoid)
-  saveRDS(metrics, "output/metrics.rds")
+define_model &lt;- function(rec, units1, units2, act1, act2, act3) {
+  # ...
 }
+
+train_model &lt;- function(
+  rec,
+  units1 = 16,
+  units2 = 16,
+  act1 = "relu",
+  act2 = "relu",
+  act3 = "sigmoid"
+) {
+  # ...
+}
+
+# more functions...
 ```
-
-???
-
-And we can take the functions we define and call them from other functions, including a function that runs everything at the top level and controls the overall flow of the analysis in our own custom high-level shorthand that makes everything easier to read.
 
 ---
 
-## Conduct your analysis with your **functions**.
+## Typical project structure
+
+* There are *many* variations on this overall theme.
 
 
 ```r
-# run_everything.R
-source("R/packages.R")
-source("R/functions.R")
-run_everything()
+make.R # Top-level script
+R/
+├── packages.R # Calls to library(drake), library(keras), etc.
+*├── functions.R
+└── plan.R
+data/
+└── customer_churn.csv
+.drake/ # drake's cache
+└──     # Output automatically appears here.
 ```
 
-???
 
-Our top-level *script* does as little as possible. It pretty much just calls our "run everything" function.
-
-Now this is a good time to step back. This whole approach that got us here, the appropriate use of functions, is always available to you, `drake` or no `drake`.
 
 ---
 
-## But we can still do better...
-
-- Avoid rerunning all the computation every time.
-- Avoid micromanaging output files.
-
-&lt;center&gt;
-&lt;img src = "./images/genie.png" align="middle" style="border: none; box-shadow: none; height: 375px; text-align: center;"&gt;
-&lt;div style="font-size: 0.5em; text-align: center"&gt;&lt;a href="https://publicdomainvectors.org/en/free-clipart/Golden-magic-lamp/61683.html"&gt;https://publicdomainvectors.org/en/free-clipart/Golden-magic-lamp/61683.html&lt;/a&gt;&lt;/div&gt;
-&lt;/center&gt;
-
-???
-
-But we can still do better. We can avoid rerunning all the computation every time. We can avoid micromanaging output files. All we need to do is cash in on all that attention and care we put into writing functions, and put them in `drake`.
-
----
-
-## Enter drake! Define a **plan**.
+## Build up your workflow in a **drake plan**
 
 
 ```r
+# R/plan.R
 plan &lt;- drake_plan(
 * rec = prepare_recipe(data), # Use your functions.
-  model = target(
-    train_model(rec, act1 = act),
-    format = "keras",
-    transform = map(act = c("relu", "sigmoid"))
-  ),
-  conf = target(
-    confusion_matrix(data, rec, model),
-    transform = map(model, .id = act)
-  ),
-  metrics = target(
-    compare_models(conf),
-    transform = combine(conf)
-  ),
-* data = read_csv(                      # flexible target order,
-*   file_in("data/customer_churn.csv"), # flexible commands
-    col_types = cols()
-  ) %&gt;%
-    initial_split(prop = 0.3)
-)
-```
-
-???
-
-Instead of a `run_everything()` function, we create a drake plan. The plan defines a bunch of skippable steps. Each step has a command, and each command calls the R functions it needs, and returns a value called a **target**. We give these targets the names you see on the left, and we list them in any order we want. So we can even define the data at the bottom here.
-
----
-
-## The plan is a data frame of skippable tasks.
-
-
-```r
-plan
-## # A tibble: 7 x 3
-##   target      command                                                format
-##   &lt;chr&gt;       &lt;expr&gt;                                                 &lt;chr&gt; 
-## 1 rec         prepare_recipe(data)                                 … &lt;NA&gt;  
-## 2 model_relu  train_model(rec, act1 = "relu")                      … keras 
-## 3 model_sigm… train_model(rec, act1 = "sigmoid")                   … keras 
-## 4 conf_relu   confusion_matrix(data, rec, model_relu)              … &lt;NA&gt;  
-## 5 conf_sigmo… confusion_matrix(data, rec, model_sigmoid)           … &lt;NA&gt;  
-## 6 metrics     compare_models(conf_relu, conf_sigmoid)              … &lt;NA&gt;  
-## 7 data        read_csv(file_in("data/customer_churn.csv"), col_type… &lt;NA&gt;
-```
-
-???
-
-This plan is a tidy data frame of commands and targets. This is what you get instead of a Makefile. It exists entirely within R, and it uses a data structure we all like.
-
----
-
-## The workflow
-
-&lt;br&gt;
-&lt;center&gt;
-&lt;img align="middle" src = "./images/vis1.png" style="border: none; box-shadow: none;"&gt;
-&lt;/center&gt;
-
-???
-
-Now as a first step, `drake` takes all this in, and it analyzes your plan, and it analyzes your functions, without running any of your code just yet. It detects the symbols that you mention, and any optional input files you choose to declare, and it decides which steps go first and which steps go last. So it puts "rec" after "data" because the command for "rec" mentions the symbol "data" literally in the code. And similarly, it puts together an entire flowchart of tasks, an entire directed acyclic *graph* of tasks.
-
----
-
-## Run the project in make.R.
-
-
-```r
-# like run_everything.R...
-source("R/packages.R")
-source("R/functions.R")
-source("R/plan.R")
-
-make(plan)
-## target data
-## target rec
-## target model_sigmoid
-## target model_relu
-## target conf_sigmoid
-## target conf_relu
-## target metrics
-```
-
-???
-
-So after you source your packages and functions into your session, the `make()` function does all that setup and code analysis I described, it constructs the graph, and it runs the correct commands in the correct order on that graph, and it stores the targets in a hidden cache.
-
----
-
-## Compare models.
-
-
-```r
-readd(metrics) # See also loadd()
-```
-
-&lt;img src="index_files/figure-html/unnamed-chunk-13-1.png" width="80%" height="80%" style="display: block; margin: auto;" /&gt;
-
-???
-
-After that, we can retrieve any target at any time with convenient interface functions `loadd()` and `readd()`. This is where `drake` truly respects exploratory data analysis. We don't need to rummage around for  data files. Everything is already at our fingertips. `drake` makes it super smooth to populate an R session and inspect things.
-
----
-
-## Add a new model.
-
-
-```r
-plan &lt;- drake_plan(
-  rec = prepare_recipe(data),
-  model = target(
-    train_model(rec, act1 = act),
-    format = "keras",
-*   transform = map(act = c("relu", "sigmoid", "softmax"))
-  ),
-  conf = target(
-    confusion_matrix(data, rec, model),
-    transform = map(model, .id = act)
-  ),
-  metrics = target(
-    compare_models(conf),
-    transform = combine(conf)
-  ),
   data = read_csv(
     file_in("data/customer_churn.csv"),
     col_types = cols()
@@ -601,62 +282,382 @@ plan &lt;- drake_plan(
 )
 ```
 
+---
+
+## The plan is a data frame of skippable *targets*.
 
 
-???
-
-Then, based on what we learn from exploratory data analysis, we can come up with new targets or change old ones. For this example, we go back and add another model and another confusion matrix to try to outperform the other models.
+```r
+plan
+#&gt; # A tibble: 2 x 2
+#&gt;   target command                                                                
+#&gt;   &lt;chr&gt;  &lt;expr&gt;                                                                 
+#&gt; 1 rec    prepare_recipe(data)                                                  …
+#&gt; 2 data   read_csv(file_in("data/customer_churn.csv"), col_types = cols()) %&gt;%  …
+```
 
 ---
 
-## vis_drake_graph()
-
-&lt;center&gt;
-&lt;img align="middle" src = "./images/vis2.png" style="border: none; box-shadow: none;"&gt;
-&lt;/center&gt;
-
-???
-
-Whatever we do, drake looks at all of that and decides which targets are up to date and which are outdated or missing. And there are several interface functions to display this information in different ways.
-
-Here, since we added a new model, that model and everything downstream are out of date. But the green targets are still up to date because we haven't changed any **functions** or files or commands or upstream targets or random number generator seeds they depend on.
-
----
-
-## Refresh the results in make.R.
+## drake understands code dependencies
 
 
 ```r
 source("R/packages.R")
 source("R/functions.R")
-*source("R/plan.R") # modified
-
-make(plan)
-## target model_softmax
-## target conf_softmax
-## target metrics
+source("R/plan.R")
 ```
-
-???
-
-When we run the new plan, we only build the outdated or missing targets. We run only **part** of the work, not all of it. Small changes to code or data no longer necessarily invalidate everything. We save a ton of time this way.
-
-In computing, we like to talk a lot about speed. How do we make our code run faster? How do we make it more efficient? But the fastest code is the code we don't run at all.
-
----
-
-## Compare models.
 
 
 ```r
-readd(metrics)
+vis_drake_graph(plan)
 ```
 
-&lt;img src="index_files/figure-html/unnamed-chunk-17-1.png" width="80%" height="80%" style="display: block; margin: auto;" /&gt;
+&lt;center&gt;
+&lt;img src = "./images/graph1.png" style="border: none; box-shadow: none; height: 300px"&gt;
+&lt;/center&gt;
 
-???
+---
 
-And with minimal effort, our metrics are now up to date. The plot has all three models now.
+## Build your first targets
+
+
+```r
+source("R/packages.R")
+source("R/functions.R")
+source("R/plan.R")
+```
+
+
+```r
+make(plan)
+#&gt; target data
+#&gt; target rec
+```
+
+---
+
+## Exploratory analysis
+
+* Did your targets come out okay?
+
+
+```r
+loadd(data)
+
+data # Split into training and testing datasets by rsample.
+#&gt; &lt;2113/4930/7043&gt;
+
+data$data %&gt;%
+  head() %&gt;%
+  select(customerID, gender, SeniorCitizen, Partner, Dependents, tenure)
+#&gt; # A tibble: 6 x 6
+#&gt;   customerID gender SeniorCitizen Partner Dependents tenure
+#&gt;   &lt;chr&gt;      &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;       &lt;dbl&gt;
+#&gt; 1 7590-VHVEG Female             0 Yes     No              1
+#&gt; 2 5575-GNVDE Male               0 No      No             34
+#&gt; 3 3668-QPYBK Male               0 No      No              2
+#&gt; 4 7795-CFOCW Male               0 No      No             45
+#&gt; 5 9237-HQITU Female             0 No      No              2
+#&gt; 6 9305-CDSKC Female             0 No      No              8
+```
+
+---
+
+## Exploratory analysis
+
+* Did your targets come out okay?
+
+
+```r
+readd(rec)
+#&gt; Data Recipe
+#&gt; 
+#&gt; Inputs:
+#&gt; 
+#&gt;       role #variables
+#&gt;    outcome          1
+#&gt;  predictor         20
+#&gt; 
+#&gt; Training data contained 2113 data points and 5 incomplete rows. 
+#&gt; 
+#&gt; Operations:
+#&gt; 
+#&gt; Variables removed customerID [trained]
+#&gt; Removing rows with NA values in all_outcomes, all_predictors
+#&gt; Dummy variables from tenure [trained]
+#&gt; Log transformation on TotalCharges [trained]
+#&gt; Variable mutation for  Churn [trained]
+#&gt; Dummy variables from gender, Partner, Dependents, tenure, ... [trained]
+#&gt; Centering for SeniorCitizen, MonthlyCharges, ... [trained]
+#&gt; Scaling for SeniorCitizen, MonthlyCharges, ... [trained]
+```
+
+---
+
+## Keep building up the plan
+
+* Continue on and fit some models.
+
+
+```r
+# R/plan.R
+plan &lt;- drake_plan(
+  rec = prepare_recipe(data), 
+  data = read_csv(
+    file_in("data/customer_churn.csv"),
+    col_types = cols()
+  ) %&gt;%
+    initial_split(prop = 0.3),
+* model_relu = target(
+*   train_model(rec, act1 = "relu"),
+*   format = "keras"
+* ),
+* model_sigmoid = target(
+*   train_model(rec, act1 = "sigmoid"),
+*   format = "keras"
+* )
+)
+```
+
+---
+
+## Previous work is still up to date 
+
+
+```r
+source("R/packages.R")
+source("R/functions.R")
+source("R/plan.R")
+```
+
+
+```r
+outdated(plan)
+#&gt; [1] "model_relu"    "model_sigmoid"
+```
+
+---
+
+## Previous work is still up to date 
+
+
+```r
+vis_drake_graph(plan)
+```
+
+&lt;center&gt;
+&lt;img src = "./images/graph2.png" style="border: none; box-shadow: none; height: 400px"&gt;
+&lt;/center&gt;
+
+---
+
+## drake skips up-to-date targets
+
+* The dataset and recipe are up to date, so `drake` skips them and focuses on the models.
+
+
+```r
+source("R/packages.R")
+source("R/functions.R")
+source("R/plan.R")
+```
+
+
+```r
+make(plan)
+#&gt; target model_relu
+#&gt; target model_sigmoid
+```
+
+---
+
+## Did the models turn out okay?
+
+
+```r
+readd(model_relu)
+#&gt; Model
+#&gt; ________________________________________________________________________________
+#&gt; Layer (type)                        Output Shape                    Param #     
+#&gt; ================================================================================
+#&gt; dense (Dense)                       (None, 16)                      576         
+#&gt; ________________________________________________________________________________
+#&gt; dropout (Dropout)                   (None, 16)                      0           
+#&gt; ________________________________________________________________________________
+#&gt; dense_1 (Dense)                     (None, 16)                      272         
+#&gt; ________________________________________________________________________________
+#&gt; dropout_1 (Dropout)                 (None, 16)                      0           
+#&gt; ________________________________________________________________________________
+#&gt; dense_2 (Dense)                     (None, 1)                       17          
+#&gt; ================================================================================
+#&gt; Total params: 865
+#&gt; Trainable params: 865
+#&gt; Non-trainable params: 0
+#&gt; ________________________________________________________________________________
+```
+
+---
+
+## Try another model
+
+
+```r
+# R/plan.R
+plan &lt;- drake_plan(
+  rec = prepare_recipe(data), 
+  data = read_csv(
+    file_in("data/customer_churn.csv"),
+    col_types = cols()
+  ) %&gt;%
+    initial_split(prop = 0.3),
+  model_relu = target(
+    train_model(rec, act1 = "relu"),
+    format = "keras"
+  ),
+  model_sigmoid = target(
+    train_model(rec, act1 = "sigmoid"),
+    format = "keras"
+  ),
+* model_softmax = target(
+*   train_model(rec, act1 = "sigmoid"),
+*   format = "keras"
+* )
+)
+```
+
+---
+
+## What gets done stays done
+
+
+```r
+source("R/packages.R")
+source("R/functions.R")
+source("R/plan.R")
+```
+
+
+```r
+outdated(plan)
+#&gt; [1] "model_softmax"
+```
+
+---
+
+## What gets done stays done
+
+
+```r
+vis_drake_graph(plan)
+```
+
+&lt;center&gt;
+&lt;img src = "./images/graph3.png" style="border: none; box-shadow: none; height: 400px"&gt;
+&lt;/center&gt;
+
+---
+
+## Major time savings
+
+
+```r
+source("R/packages.R")
+source("R/functions.R")
+source("R/plan.R")
+```
+
+
+```r
+make(plan)
+#&gt; target model_softmax
+```
+
+---
+
+## What if we need to change a function?
+
+
+```r
+define_model &lt;- function(rec, units1, units2, act1, act2, act3) {
+  input_shape &lt;- ncol(
+    juice(rec, all_predictors(), composition = "matrix")
+  )
+  keras_model_sequential() %&gt;%
+    layer_dense(
+      units = units1,
+      kernel_initializer = "uniform",
+      activation = act1,
+      input_shape = input_shape
+    ) %&gt;%
+*   layer_dropout(rate = 0.2) %&gt;% # changed
+    layer_dense(
+      units = units2,
+      kernel_initializer = "uniform",
+      activation = act2
+    ) %&gt;%
+    layer_dropout(rate = 0.1) %&gt;%
+    layer_dense(
+      units = 1,
+      kernel_initializer = "uniform",
+      activation = act3
+    )
+}
+```
+
+---
+
+## drake knows what to do
+
+
+```r
+source("R/functions.R")
+vis_drake_graph(plan)
+```
+
+&lt;center&gt;
+&lt;img src = "./images/graph4.png" style="border: none; box-shadow: none; height: 400px"&gt;
+&lt;/center&gt;
+
+---
+
+## drake knows what to do
+
+
+```r
+source("R/packages.R")
+source("R/functions.R")
+source("R/plan.R")
+```
+
+
+```r
+make(plan)
+#&gt; target model_relu
+#&gt; target model_sigmoid
+#&gt; target model_softmax
+```
+
+---
+
+## Similar story if the data file changes
+
+
+```r
+source("R/packages.R")
+source("R/functions.R")
+source("R/plan.R")
+```
+
+
+```r
+make(plan)
+#&gt; target data
+#&gt; target rec
+#&gt; target model_relu
+#&gt; target model_sigmoid
+#&gt; target model_softmax
+```
+
 
 ---
 
@@ -667,177 +668,62 @@ And with minimal effort, our metrics are now up to date. The plot has all three 
 source("R/packages.R")
 source("R/functions.R")
 source("R/plan.R")
+```
 
+
+```r
 make(plan)
-## All targets are already up to date.
+#&gt; All targets are already up to date.
+
+outdated(plan)
+#&gt; character(0)
 ```
 
-- See also `outdated()`.
-
-???
-
-If we run the `make()` function again without having changed anything, `drake` tells us that everything is up to date and does nothing else.
-
-This is *tangible evidence* that your output matches the code and data it came from. It's a stamp of validation that you can recompute quickly at any time. It is *tangible evidence* of reproducibility because it increases our ability to trust our results. As Gabe Becker likes to say, reproducibility boils down to trust.
-
----
-
-## Efficient data formats
-
-- Increased speed and reduced memory consumption.
+## Evidence of reproducibility
 
 
 ```r
-library(drake)
-n &lt;- 1e8 # Each target is 1.6 GB in memory.
-plan &lt;- drake_plan(
-  data_fst = target(
-    data.frame(x = runif(n), y = runif(n)),
-*   format = "fst"
-  ),
-  data_old = data.frame(x = runif(n), y = runif(n))
-)
-make(plan)
-#&gt; target data_fst
-#&gt; target data_old
-build_times(type = "build")
-#&gt; # A tibble: 2 x 4
-#&gt;   target   elapsed              user                 system    
-#&gt;   &lt;chr&gt;    &lt;Duration&gt;           &lt;Duration&gt;           &lt;Duration&gt;
-*#&gt; 1 data_fst 13.93s               37.562s              7.954s
-*#&gt; 2 data_old 184s (~3.07 minutes) 177s (~2.95 minutes) 4.157s
+outdated(plan)
 ```
 
-???
-
-Now that's where I usually stop. But since we have time, let's talk about some new features.
-
-drake now has special formats for more efficient data processing: one for data frames, one for data tables, one for Keras models, and an alternative RDS format that uses less memory than drake's default caching.
-
-The idea is that if we know we have a data frame or we know we have a Keras model, we can save and retrieve it a lot faster. I'm looking to add formats and increase efficiency in general, so please let me know if you have ideas.
+&lt;center&gt;
+&lt;img src = "./images/graph5.png" style="border: none; box-shadow: none; height: 400px"&gt;
+&lt;/center&gt;
 
 ---
 
-## History and provenance
+## More highlights
 
-
-```r
-drake_history()
-## # A tibble: 10 x 10
-##    target  current built  exists hash  command     seed runtime  prop act1 
-##    &lt;chr&gt;   &lt;lgl&gt;   &lt;chr&gt;  &lt;lgl&gt;  &lt;chr&gt; &lt;chr&gt;      &lt;int&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;
-##  1 conf_r… TRUE    2019-… TRUE   4a1c… confusio… 4.05e8  0.207   NA   &lt;NA&gt; 
-##  2 conf_s… TRUE    2019-… TRUE   f5e0… confusio… 1.93e9  0.212   NA   &lt;NA&gt; 
-##  3 conf_s… TRUE    2019-… TRUE   21ef… confusio… 1.80e9  0.237   NA   &lt;NA&gt; 
-##  4 data    TRUE    2019-… TRUE   ca84… "read_cs… 1.29e9  0.036    0.3 &lt;NA&gt; 
-##  5 metrics FALSE   2019-… TRUE   3176… compare_… 1.21e9  0.0200  NA   &lt;NA&gt; 
-##  6 metrics TRUE    2019-… TRUE   4c54… compare_… 1.21e9  0.018   NA   &lt;NA&gt; 
-##  7 model_… TRUE    2019-… TRUE   94fb… "train_m… 1.47e9  4.08    NA   relu 
-##  8 model_… TRUE    2019-… TRUE   c864… "train_m… 1.26e9  6.06    NA   sigm…
-##  9 model_… TRUE    2019-… TRUE   51f1… "train_m… 8.05e8  4.27    NA   soft…
-## 10 rec     TRUE    2019-… TRUE   eae9… prepare_… 6.29e8  0.115   NA   &lt;NA&gt;
-```
-
-???
-
-`drake` also tracks history and provenance. Up to date or not, you can see what you built, when you built it, how much time it took, and the top-level function arguments you used in your commands. Best of all, you can see multiple versions of multiple targets across the whole timeline of your project.
-
----
-
-## Reproducible data recovery
-
-
-```r
-clean() # Oops!
-
-start &lt;- proc.time()
-make(plan, recover = TRUE)
-## recover data
-## recover rec
-## recover model_softmax
-## recover model_sigmoid
-## recover model_relu
-## recover conf_softmax
-## recover conf_sigmoid
-## recover conf_relu
-## recover metrics
-
-proc.time() - start
-##    user  system elapsed 
-##   0.072   0.015   0.088
-```
-
-- Details + how to rename a target: &lt;https://books.ropensci.org/drake/walkthrough.html#reproducible-data-recovery-and-renaming&gt;
-
-???
-
-And depending on the conditions under which those old targets were built, you can recover them instead of building them all over again. Sometimes, the command, the upstream targets, the functions, the files, and the random number generator seed are the same as for some run from the past. And in those cases, you can save extra time with data recovery.
-
-Unfortunately, this is not the default because it assumes you are always using the same packages and computing environment. `drake` doesn't try to get involved with those things. To lock down your package dependencies and all that, `renv` and Docker are great tools. Not only are they fully compatible with `drake`, they help compensate for its relative weaknesses.
-
----
-
-## Dependency-aware high-performance computing
-
-- Just a little configuration...
-
-
-```r
-# template file with configuration
-drake_hpc_template_file("slurm_clustermq.tmpl")
-
-# Use SLURM resource manager with the template.
-options(
-  clustermq.scheduler = "slurm",
-  clustermq.template = "slurm_clustermq.tmpl"
-)
-
-# make() is the basically the same.
-make(plan, jobs = 2, parallelism = "clustermq")
-```
-
-???
-
-And here's another feature that's been around for a long time: parallel computing. drake automatically decides which targets can run at the same time and which need to wait for dependencies. How it works is you declare the number of workers, the parallel backend, and resource requirements if you're on a cluster...
-
----
-
-## Dependency-aware high-performance computing
-
-&lt;iframe width="800" height="450" src="https://www.powtoon.com/embed/bUfSIaXjrw5/" frameborder="0"&gt;&lt;/iframe&gt;
-
-???
-
-And drake takes care of the rest. It launches a bunch of workers and sends those workers to the targets as soon as they're ready to go. It automatically accounts for the fact that some targets depend on others. 
+* [Efficient data formats](https://books.ropensci.org/drake/plans.html#special-data-formats-for-targets)
+* [History and data recovery](https://books.ropensci.org/drake/walkthrough.html#history-and-provenance)
+* [Dynamic branching](https://books.ropensci.org/drake/dynamic.html)
+* [High-performance computing](https://books.ropensci.org/drake/hpc.html)
+* [Memory management options](https://books.ropensci.org/drake/memory.html)
 
 ---
 
 ## Resources
 
-- Get [`drake`](https://github.com/ropensci/drake):
+* Get [`drake`](https://github.com/ropensci/drake):
 
 
 ```r
 install.packages("drake")
 ```
 
-- Example code from these slides:
+* Example code from these slides:
 
 
 ```r
 drake::drake_example("customer-churn")
 ```
 
-- Workshop materials:
+* Workshop materials:
 
 
 ```r
 remotes::install_github("wlandau/learndrake")
 ```
-
-???
-
-Here's how to learn more about drake. Just as drake itself exists and operates entirely within R, so do many of its resources.
 
 ---
 
@@ -857,14 +743,6 @@ Here's how to learn more about drake. Just as drake itself exists and operates e
 &lt;center&gt;
 &lt;img src = "./images/ropensci.png" style="border: none; box-shadow: none; height: 150px"&gt;
 &lt;/center&gt;
-
-???
-
-For the online stuff, I highly recommend the "learndrake" workshop. Just go to the GitHub page and click the blue "launch binder" badge in the README, and suddenly you're in RStudio Server with everything ready to go. Karthik's `holepunch` package made setting that up really smooth.
-
-And if you use `drake` for a real project, please consider writing about it as an rOpenSci use case. It enhances these resources, it demonstrates the value of rOpenSci packages, and it grows the community.
-
-Ben Bond-Lamberty already wrote this one. Many more example projects are emerging, some of which are listed here in the manual. I still need to add more, including the great work Pat Schratz is doing to integrate `drake` with `mlr3`.
 
 ---
 
@@ -890,10 +768,6 @@ Ben Bond-Lamberty already wrote this one. Many more example projects are emergin
 &lt;/td&gt;
 &lt;/tr&gt;
 &lt;/table&gt;
-
-???
-
-Today, the deep learning example came from Matt Dancho and Edgar Ruiz.
 
 ---
 
@@ -940,37 +814,6 @@ Today, the deep learning example came from Matt Dancho and Edgar Ruiz.
 &lt;/td&gt;
 &lt;/tr&gt;
 &lt;/table&gt;
-
-???
-
-For the development of drake itself, I have a lot of people to thank, many more than are on this list.
-
-rOpenSci in particular is the one of the friendliest and most welcoming communities in tech, an amazing combination of expertise and approachability. `drake` is a better package and I am a better developer because they coached me during the software review process, they got the word out, and they connected me to users with insightful ideas and developers who I look up to.
-
-Also, I learned a lot about how other people see workflows from Jenny Bryan, Hilary Parker, Ellis Hughes, Pat Schratz, Stas Kolenikov, and Michael Lawrence. I used to take functions for granted, but thanks to them, I am making more of a point to explain the style of coding that `drake` requires.
-
----
-
-## A riddle!
-
-- From a math PhD oral exam:
-
-&gt; Define an example of a nontrivial function.
-
-- Hint: the best answers do not even come from math or computing!
-
-&lt;center&gt;
-&lt;img src = "./images/pythagoras.png" align="middle" style="border: none; box-shadow: none; height: 375px; text-align: center;"&gt;
-&lt;div style="font-size: 0.5em; text-align: center"&gt;&lt;a href="https://publicdomainvectors.org/en/free-clipart/Pythagoras-tree/58775.html"&gt;https://publicdomainvectors.org/en/free-clipart/Pythagoras-tree/58775.html&lt;/a&gt;&lt;/div&gt;
-&lt;/center&gt;
-
-???
-
-Let's end the talk portion with a riddle. Try to think of an example of a highly nontrivial function.
-
-I heard this was originally part of a math PhD oral exam, but all you need to know is the definition of a function. Apparently, the best answers are unrelated to math or computing or statistics or data science. I do have an answer in mind, but I'm not going to spoil it just yet.
-
-I recommend taking something you already think is nontrivial, no matter what it is in your life, and try turning it into a function. I'm curious what people come up with, and I think it could be a good exercise to get used to writing functions more often.
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
@@ -1015,7 +858,24 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
     }
     deleted = true;
   });
-})();</script>
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
 
 <script>
 (function() {
