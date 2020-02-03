@@ -64,7 +64,7 @@ background-size: contain;
 
 
 
-## Large computation in the life sciences
+## Large statistical computation
 
 * [Bayesian model development](https://mc-stan.org/)
 * [Bayesian network meta-analysis](https://bookdown.org/MathiasHarrer/Doing_Meta_Analysis_in_R/bayesian-network-meta-analysis.html)
@@ -268,6 +268,8 @@ data/
 ---
 
 ## Build up your workflow in a **drake plan**
+
+* Usually goes in the `R/plan.R` script.
 
 
 ```r
@@ -519,7 +521,7 @@ plan &lt;- drake_plan(
     format = "keras"
   ),
 * model_softmax = target(
-*   train_model(rec, act1 = "sigmoid"),
+*   train_model(rec, act1 = "softmax"),
 *   format = "keras"
 * )
 )
@@ -557,7 +559,7 @@ vis_drake_graph(plan)
 
 ---
 
-## Major time savings
+## Skipping up-to-date models saves time
 
 
 ```r
