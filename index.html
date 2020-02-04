@@ -66,7 +66,7 @@ background-size: contain;
 
 ## Large statistical computation
 
-* [Bayesian model development](https://mc-stan.org/)
+* [Bayesian data analysis](https://mc-stan.org/)
 * [Bayesian network meta-analysis](https://bookdown.org/MathiasHarrer/Doing_Meta_Analysis_in_R/bayesian-network-meta-analysis.html)
 * [Graph-based multiple comparison procedures](https://github.com/kornl/gMCP)
 * [Subgroup identification](https://cran.r-project.org/web/packages/TSDT/index.html)
@@ -153,7 +153,7 @@ To dive into drake, we're going to use a machine learning example. We've got a d
 
 background-image: ./images/not.png
 
-## &lt;img src="./images/no.png" width="40" height="40"&gt; Say goodbye to numbered imperative scripts
+## &lt;img src="./images/no.png" width="40" height="40"&gt; Say goodbye to numbered imperative scripts!
 
 
 ```r
@@ -175,15 +175,12 @@ output/
 
 ---
 
-## &lt;img src="./images/yes.png" width="60" height="40"&gt; drake wants you to write **functions**
+## &lt;img src="./images/yes.png" width="60" height="40"&gt; drake wants you to write **functions**.
 
 &gt;    - Everything that exists is an object.
 &gt;    - Everything that happens is a function call.
 &gt;
 &gt; John Chambers
-
-* A function is a reusable command that accepts one or more inputs and returns a single output.
-* Functions are custom shorthand that makes your code easier to use and understand.
 
 
 ```r
@@ -248,7 +245,7 @@ train_model &lt;- function(
 
 ## Typical project structure
 
-* There are *many* variations on this overall theme.
+* There are *many* variations on this theme.
 
 
 ```r
@@ -267,7 +264,7 @@ data/
 
 ---
 
-## Build up your workflow in a **drake plan**
+## Build up your workflow in a **drake plan**.
 
 * Usually goes in the `R/plan.R` script.
 
@@ -300,7 +297,7 @@ plan
 
 ---
 
-## drake understands code dependencies
+## drake understands code and data dependencies.
 
 
 ```r
@@ -320,7 +317,7 @@ vis_drake_graph(plan)
 
 ---
 
-## Build your first targets
+## Build your first targets.
 
 
 ```r
@@ -344,59 +341,15 @@ make(plan)
 
 
 ```r
-loadd(data)
+loadd(data) # From drake's cache.
 
-data # Split into training and testing datasets by rsample.
+print(data)
 #&gt; &lt;2113/4930/7043&gt;
-
-data$data %&gt;%
-  head() %&gt;%
-  select(customerID, gender, SeniorCitizen, Partner, Dependents, tenure)
-#&gt; # A tibble: 6 x 6
-#&gt;   customerID gender SeniorCitizen Partner Dependents tenure
-#&gt;   &lt;chr&gt;      &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;       &lt;dbl&gt;
-#&gt; 1 7590-VHVEG Female             0 Yes     No              1
-#&gt; 2 5575-GNVDE Male               0 No      No             34
-#&gt; 3 3668-QPYBK Male               0 No      No              2
-#&gt; 4 7795-CFOCW Male               0 No      No             45
-#&gt; 5 9237-HQITU Female             0 No      No              2
-#&gt; 6 9305-CDSKC Female             0 No      No              8
 ```
 
 ---
 
-## Exploratory analysis
-
-* Did your targets come out okay?
-
-
-```r
-readd(rec)
-#&gt; Data Recipe
-#&gt; 
-#&gt; Inputs:
-#&gt; 
-#&gt;       role #variables
-#&gt;    outcome          1
-#&gt;  predictor         20
-#&gt; 
-#&gt; Training data contained 2113 data points and 5 incomplete rows. 
-#&gt; 
-#&gt; Operations:
-#&gt; 
-#&gt; Variables removed customerID [trained]
-#&gt; Removing rows with NA values in all_outcomes, all_predictors
-#&gt; Dummy variables from tenure [trained]
-#&gt; Log transformation on TotalCharges [trained]
-#&gt; Variable mutation for  Churn [trained]
-#&gt; Dummy variables from gender, Partner, Dependents, tenure, ... [trained]
-#&gt; Centering for SeniorCitizen, MonthlyCharges, ... [trained]
-#&gt; Scaling for SeniorCitizen, MonthlyCharges, ... [trained]
-```
-
----
-
-## Keep building up the plan
+## Keep building up the plan.
 
 * Continue on and fit some models.
 
@@ -423,7 +376,7 @@ plan &lt;- drake_plan(
 
 ---
 
-## Previous work is still up to date 
+## Previous work is still up to date.
 
 
 ```r
@@ -440,7 +393,7 @@ outdated(plan)
 
 ---
 
-## Previous work is still up to date 
+## Previous work is still up to date.
 
 
 ```r
@@ -453,7 +406,7 @@ vis_drake_graph(plan)
 
 ---
 
-## drake skips up-to-date targets
+## drake skips up-to-date targets.
 
 * The dataset and recipe are up to date, so `drake` skips them and focuses on the models.
 
@@ -500,7 +453,7 @@ readd(model_relu)
 
 ---
 
-## Try another model
+## Try another model.
 
 
 ```r
@@ -529,7 +482,7 @@ plan &lt;- drake_plan(
 
 ---
 
-## What gets done stays done
+## What gets done stays done.
 
 
 ```r
@@ -546,7 +499,7 @@ outdated(plan)
 
 ---
 
-## What gets done stays done
+## What gets done stays done.
 
 
 ```r
@@ -559,7 +512,7 @@ vis_drake_graph(plan)
 
 ---
 
-## Skipping up-to-date models saves time
+## Skipping up-to-date models saves time.
 
 
 ```r
@@ -608,7 +561,7 @@ define_model &lt;- function(rec, units1, units2, act1, act2, act3) {
 
 ---
 
-## drake knows what to do
+## drake knows what to do.
 
 
 ```r
@@ -622,7 +575,7 @@ vis_drake_graph(plan)
 
 ---
 
-## drake knows what to do
+## drake knows what to do.
 
 
 ```r
@@ -641,7 +594,7 @@ make(plan)
 
 ---
 
-## Similar story if the data file changes
+## Similar story if the data file changes.
 
 
 ```r

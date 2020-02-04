@@ -90,7 +90,7 @@ clean(destroy = TRUE)
 
 ## Large statistical computation
 
-* [Bayesian model development](https://mc-stan.org/)
+* [Bayesian data analysis](https://mc-stan.org/)
 * [Bayesian network meta-analysis](https://bookdown.org/MathiasHarrer/Doing_Meta_Analysis_in_R/bayesian-network-meta-analysis.html)
 * [Graph-based multiple comparison procedures](https://github.com/kornl/gMCP)
 * [Subgroup identification](https://cran.r-project.org/web/packages/TSDT/index.html)
@@ -177,7 +177,7 @@ To dive into drake, we're going to use a machine learning example. We've got a d
 
 background-image: ./images/not.png
 
-## <img src="./images/no.png" width="40" height="40"> Say goodbye to numbered imperative scripts
+## <img src="./images/no.png" width="40" height="40"> Say goodbye to numbered imperative scripts!
 
 ```{r, eval = FALSE}
 run_everything.R
@@ -198,15 +198,12 @@ output/
 
 ---
 
-## <img src="./images/yes.png" width="60" height="40"> drake wants you to write **functions**
+## <img src="./images/yes.png" width="60" height="40"> drake wants you to write **functions**.
 
 >    - Everything that exists is an object.
 >    - Everything that happens is a function call.
 >
 > John Chambers
-
-* A function is a reusable command that accepts one or more inputs and returns a single output.
-* Functions are custom shorthand that makes your code easier to use and understand.
 
 ```{r}
 add_things <- function(argument1, argument2) {
@@ -266,7 +263,7 @@ train_model <- function(
 
 ## Typical project structure
 
-* There are *many* variations on this overall theme.
+* There are *many* variations on this theme.
 
 ```{r, eval = FALSE}
 make.R # Top-level script
@@ -412,7 +409,7 @@ compare_models <- function(...) {
 
 ---
 
-## Build up your workflow in a **drake plan**
+## Build up your workflow in a **drake plan**.
 
 * Usually goes in the `R/plan.R` script.
 
@@ -438,7 +435,7 @@ plan
 
 ---
 
-## drake understands code dependencies
+## drake understands code and data dependencies.
 
 ```{r, eval = FALSE}
 source("R/packages.R")
@@ -456,7 +453,7 @@ vis_drake_graph(plan)
 
 ---
 
-## Build your first targets
+## Build your first targets.
 
 ```{r, eval = FALSE}
 source("R/packages.R")
@@ -475,28 +472,14 @@ make(plan)
 * Did your targets come out okay?
 
 ```{r}
-loadd(data)
+loadd(data) # From drake's cache.
 
-data # Split into training and testing datasets by rsample.
-
-data$data %>%
-  head() %>%
-  select(customerID, gender, SeniorCitizen, Partner, Dependents, tenure)
+print(data)
 ```
 
 ---
 
-## Exploratory analysis
-
-* Did your targets come out okay?
-
-```{r}
-readd(rec)
-```
-
----
-
-## Keep building up the plan
+## Keep building up the plan.
 
 * Continue on and fit some models.
 
@@ -522,7 +505,7 @@ plan <- drake_plan(
 
 ---
 
-## Previous work is still up to date 
+## Previous work is still up to date.
 
 ```{r, eval = FALSE}
 source("R/packages.R")
@@ -536,7 +519,7 @@ outdated(plan)
 
 ---
 
-## Previous work is still up to date 
+## Previous work is still up to date.
 
 ```{r, eval = FALSE}
 vis_drake_graph(plan)
@@ -548,7 +531,7 @@ vis_drake_graph(plan)
 
 ---
 
-## drake skips up-to-date targets
+## drake skips up-to-date targets.
 
 * The dataset and recipe are up to date, so `drake` skips them and focuses on the models.
 
@@ -572,7 +555,7 @@ readd(model_relu)
 
 ---
 
-## Try another model
+## Try another model.
 
 ```{r}
 # R/plan.R
@@ -600,7 +583,7 @@ plan <- drake_plan(
 
 ---
 
-## What gets done stays done
+## What gets done stays done.
 
 ```{r, eval = FALSE}
 source("R/packages.R")
@@ -614,7 +597,7 @@ outdated(plan)
 
 ---
 
-## What gets done stays done
+## What gets done stays done.
 
 ```{r, eval = FALSE}
 vis_drake_graph(plan)
@@ -626,7 +609,7 @@ vis_drake_graph(plan)
 
 ---
 
-## Skipping up-to-date models saves time
+## Skipping up-to-date models saves time.
 
 ```{r, eval = FALSE}
 source("R/packages.R")
@@ -671,7 +654,7 @@ define_model <- function(rec, units1, units2, act1, act2, act3) {
 
 ---
 
-## drake knows what to do
+## drake knows what to do.
 
 ```{r, eval = FALSE}
 source("R/functions.R")
@@ -684,7 +667,7 @@ vis_drake_graph(plan)
 
 ---
 
-## drake knows what to do
+## drake knows what to do.
 
 ```{r, eval = FALSE}
 source("R/packages.R")
@@ -698,7 +681,7 @@ make(plan)
 
 ---
 
-## Similar story if the data file changes
+## Similar story if the data file changes.
 
 ```{r, eval = FALSE}
 source("R/packages.R")
