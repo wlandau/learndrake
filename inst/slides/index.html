@@ -225,6 +225,14 @@ define_model &lt;- function(churn_recipe, units1, units2, act1, act2, act3) {
 train_model &lt;- function(churn_recipe, units1, units2, act1, act2, act3) {
   # ...
 }
+
+test_accuracy &lt;- function(churn_data, churn_recipe, model) {
+  # ...
+}
+
+test_model &lt;- function(churn_data, churn_recipe, units1, units2, act1, act2, act3) {
+  # ...
+}
 ```
 
 ---
@@ -352,8 +360,8 @@ plan &lt;- drake_plan(
     col_types = cols()
   ) %&gt;%
     initial_split(prop = 0.3),
-* run_relu = train_model(churn_recipe, act1 = "relu"),
-* run_sigmoid = train_model(churn_recipe, act1 = "sigmoid")
+* run_relu = test_model(act1 = "relu", churn_data, churn_recipe),
+* run_sigmoid = test_model(act1 = "sigmoid", churn_data, churn_recipe)
 )
 ```
 
@@ -413,10 +421,18 @@ make(plan)
 
 
 ```r
-readd(run_relu) # model training history
-```
+readd(run_relu)
+#&gt; # A tibble: 1 x 6
+#&gt;   accuracy units1 units2 act1  act2  act3   
+#&gt;      &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;  
+#&gt; 1    0.798     16     16 relu  relu  sigmoid
 
-&lt;img src="index_files/figure-html/unnamed-chunk-22-1.png" width="80%" height="80%" style="display: block; margin: auto;" /&gt;
+readd(run_sigmoid)
+#&gt; # A tibble: 1 x 6
+#&gt;   accuracy units1 units2 act1    act2  act3   
+#&gt;      &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;  
+#&gt; 1    0.801     16     16 sigmoid relu  sigmoid
+```
 
 ---
 
@@ -432,9 +448,9 @@ plan &lt;- drake_plan(
     col_types = cols()
   ) %&gt;%
     initial_split(prop = 0.3),
-  run_relu = train_model(churn_recipe, act1 = "relu"),
-  run_sigmoid = train_model(churn_recipe, act1 = "sigmoid"),
-* run_softmax = train_model(churn_recipe, act1 = "softmax")
+  run_relu = test_model(act1 = "relu", churn_data, churn_recipe),
+  run_sigmoid = test_model(act1 = "sigmoid", churn_data, churn_recipe),
+* run_softmax = test_model(act1 = "softmax", churn_data, churn_recipe)
 )
 ```
 
@@ -618,12 +634,12 @@ history &lt;- drake_history() %&gt;%
 #&gt; # A tibble: 6 x 4
 #&gt;   target      act1    exists hash            
 #&gt;   &lt;chr&gt;       &lt;chr&gt;   &lt;lgl&gt;  &lt;chr&gt;           
-#&gt; 1 run_relu    relu    TRUE   a3b3a1a422631a74
-#&gt; 2 run_relu    relu    TRUE   2a3ba987a8178f60
-#&gt; 3 run_sigmoid sigmoid TRUE   ca33669d1af7d30a
-#&gt; 4 run_sigmoid sigmoid TRUE   14351de49fb0b6ab
-#&gt; 5 run_softmax softmax TRUE   278805cd340ddf0a
-#&gt; 6 run_softmax softmax TRUE   0c8148d2f71ef4f6
+#&gt; 1 run_relu    relu    TRUE   d18e61338781810b
+#&gt; 2 run_relu    relu    TRUE   6aaa0fd1755562cc
+#&gt; 3 run_sigmoid sigmoid TRUE   9c3cd39da58076f7
+#&gt; 4 run_sigmoid sigmoid TRUE   1deed12333dcc519
+#&gt; 5 run_softmax softmax TRUE   8974060fcb5ba0d4
+#&gt; 6 run_softmax softmax TRUE   c61cc9339d81a6e8
 ```
 
 ---
@@ -633,9 +649,11 @@ history &lt;- drake_history() %&gt;%
 
 ```r
 drake_cache()$get_value(history$hash[1])
+#&gt; # A tibble: 1 x 6
+#&gt;   accuracy units1 units2 act1  act2  act3   
+#&gt;      &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;  
+#&gt; 1    0.798     16     16 relu  relu  sigmoid
 ```
-
-&lt;img src="index_files/figure-html/unnamed-chunk-39-1.png" width="80%" height="80%" style="display: block; margin: auto;" /&gt;
 
 ---
 

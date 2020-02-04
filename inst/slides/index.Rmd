@@ -243,6 +243,14 @@ define_model <- function(churn_recipe, units1, units2, act1, act2, act3) {
 train_model <- function(churn_recipe, units1, units2, act1, act2, act3) {
   # ...
 }
+
+test_accuracy <- function(churn_data, churn_recipe, model) {
+  # ...
+}
+
+test_model <- function(churn_data, churn_recipe, units1, units2, act1, act2, act3) {
+  # ...
+}
 ```
 
 ---
@@ -319,14 +327,7 @@ train_model <- function(
   act2 = "relu",
   act3 = "sigmoid"
 ) {
-  model <- define_model(
-    churn_recipe = churn_recipe,
-    units1 = units1,
-    units2 = units2,
-    act1 = act1,
-    act2 = act2,
-    act3 = act3
-  )
+  model <- define_model(churn_recipe, units1, units2, act1, act2, act3)
   compile(
     model,
     optimizer = "adam",
@@ -340,7 +341,7 @@ train_model <- function(
   )
   y_train_vec <- juice(churn_recipe, all_outcomes()) %>%
     pull()
-  history <- fit(
+  fit(
     object = model,
     x = x_train_tbl,
     y = y_train_vec,
@@ -349,8 +350,59 @@ train_model <- function(
     validation_split = 0.3,
     verbose = 0
   )
-  plot(history) +
-    theme_gray(16)
+  model
+}
+
+test_accuracy <- function(churn_data, churn_recipe, model) {
+  testing_data <- bake(churn_recipe, testing(churn_data))
+  x_test_tbl <- testing_data %>%
+    select(-Churn) %>%
+    as.matrix()
+  y_test_vec <- testing_data %>%
+    select(Churn) %>%
+    pull()
+  yhat_keras_class_vec <- model %>%
+    predict_classes(x_test_tbl) %>%
+    as.factor() %>%
+    fct_recode(yes = "1", no = "0")
+  yhat_keras_prob_vec <-
+    model %>%
+    predict_proba(x_test_tbl) %>%
+    as.vector()
+  test_truth <- y_test_vec %>%
+    as.factor() %>%
+    fct_recode(yes = "1", no = "0")
+  estimates_keras_tbl <- tibble(
+    truth = test_truth,
+    estimate = yhat_keras_class_vec,
+    class_prob = yhat_keras_prob_vec
+  )
+  estimates_keras_tbl %>%
+    conf_mat(truth, estimate) %>%
+    summary() %>%
+    filter(.metric == "accuracy") %>%
+    pull(.estimate)
+}
+
+test_model <- function(
+  churn_data,
+  churn_recipe,
+  units1 = 16,
+  units2 = 16,
+  act1 = "relu",
+  act2 = "relu",
+  act3 = "sigmoid"
+) {
+  model <- train_model(churn_recipe, units1, units2, act1, act2, act3)
+  accuracy <- test_accuracy(churn_data, churn_recipe, model)
+  tibble(
+    accuracy = accuracy,
+    units1 = units1,
+    units2 = units2,
+    act1 = act1,
+    act2 = act2,
+    act3 = act3
+  )
 }
 ```
 
@@ -441,8 +493,8 @@ plan <- drake_plan(
     col_types = cols()
   ) %>%
     initial_split(prop = 0.3),
-  run_relu = train_model(churn_recipe, act1 = "relu"), #<<
-  run_sigmoid = train_model(churn_recipe, act1 = "sigmoid") #<<
+  run_relu = test_model(act1 = "relu", churn_data, churn_recipe), #<<
+  run_sigmoid = test_model(act1 = "sigmoid", churn_data, churn_recipe) #<<
 )
 ```
 
@@ -493,7 +545,9 @@ make(plan)
 ## Inspect the newest targets.
 
 ```{r}
-readd(run_relu) # model training history
+readd(run_relu)
+
+readd(run_sigmoid)
 ```
 
 ---
@@ -509,9 +563,9 @@ plan <- drake_plan(
     col_types = cols()
   ) %>%
     initial_split(prop = 0.3),
-  run_relu = train_model(churn_recipe, act1 = "relu"),
-  run_sigmoid = train_model(churn_recipe, act1 = "sigmoid"),
-  run_softmax = train_model(churn_recipe, act1 = "softmax") #<<
+  run_relu = test_model(act1 = "relu", churn_data, churn_recipe),
+  run_sigmoid = test_model(act1 = "sigmoid", churn_data, churn_recipe),
+  run_softmax = test_model(act1 = "softmax", churn_data, churn_recipe) #<<
 )
 ```
 
