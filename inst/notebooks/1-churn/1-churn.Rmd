@@ -359,8 +359,8 @@ run_16
 Now, let's identify the model with the highest accuracy and train it. In the `drake` workflows to come, this is the only model we will save.
 
 ```{r}
-best_model <- function(..., churn_recipe) {
-  best <- bind_rows(...) %>%
+best_model <- function(runs, churn_recipe) {
+  best <- runs %>%
     arrange(desc(accuracy)) %>%
     head(n = 1)
   train_model(
@@ -377,5 +377,5 @@ best_model <- function(..., churn_recipe) {
 Try it out.
 
 ```{r}
-best_model(run_16, run_32, churn_recipe = churn_recipe)
+best_model(bind_rows(run_16, run_32), churn_recipe = churn_recipe)
 ```

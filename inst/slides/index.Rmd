@@ -63,7 +63,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r, include = FALSE}
+```{r, include = FALSE, message = FALSE}
 options(
   warnPartialMatchArgs = FALSE,
   drake_clean_menu = FALSE,
@@ -85,6 +85,7 @@ purrr::walk(
     suppressMessages(suppressWarnings(library(pkg, character.only = TRUE)))
   }
 )
+drake:::r_make_message(force = TRUE)
 clean(destroy = TRUE)
 ```
 
@@ -110,7 +111,9 @@ clean(destroy = TRUE)
 4. Frequent changes to code and data.
 
 <img src = "./images/sisyphus.svg" align="left" style="border: none; box-shadow: none; height: 375px; text-align: center;">
-<div style="font-size: 0.5em; text-align: center"><a href="https://openclipart.org/detail/275842/sisyphus-overcoming-silhouette">https://openclipart.org/detail/275842/sisyphus-overcoming-silhouette</a></div>
+<br>
+
+* <https://openclipart.org/detail/275842/sisyphus-overcoming-silhouette>
 
 ---
 
@@ -249,6 +252,10 @@ test_accuracy <- function(churn_data, churn_recipe, model) {
 }
 
 test_model <- function(churn_data, churn_recipe, units1, units2, act1, act2, act3) {
+  # ...
+}
+
+best_model <- function(runs, churn_recipe) {
   # ...
 }
 ```
@@ -404,6 +411,20 @@ test_model <- function(
     act3 = act3
   )
 }
+
+best_model <- function(runs, churn_recipe) {
+  best <- runs %>%
+    arrange(desc(accuracy)) %>%
+    head(n = 1)
+  train_model(
+    churn_recipe,
+    best$units1,
+    best$units2,
+    best$act1,
+    best$act2,
+    best$act3
+  )
+}
 ```
 
 ---
@@ -446,9 +467,14 @@ source("R/plan.R")
 vis_drake_graph(plan)
 ```
 
+```{r, echo = FALSE}
+vis_drake_graph(plan, main = "", file = "images/graph1.png", navigationButtons = FALSE)
+```
+
 <center>
-<img src = "./images/graph1.png" style="border: none; box-shadow: none; height: 300px">
+<img src="images/graph1.png", height = "450px" align="middle" style="border: none; box-shadow: none; text-align: center;">
 </center>
+
 
 ---
 
@@ -520,8 +546,12 @@ outdated(plan)
 vis_drake_graph(plan)
 ```
 
+```{r, echo = FALSE}
+vis_drake_graph(plan, main = "", file = "images/graph2.png", navigationButtons = FALSE)
+```
+
 <center>
-<img src = "./images/graph2.png" style="border: none; box-shadow: none; height: 400px">
+<img src="images/graph2.png", height = "550px" align="middle" style="border: none; box-shadow: none; text-align: center;">
 </center>
 
 ---
@@ -552,6 +582,44 @@ readd(run_sigmoid)
 
 ---
 
+## Find the best model
+
+```{r}
+plan <- drake_plan(
+  churn_recipe = prepare_recipe(churn_data), 
+  churn_data = read_csv(
+    file_in("data/customer_churn.csv"),
+    col_types = cols()
+  ) %>%
+    initial_split(prop = 0.3),
+  run_relu = test_model(act1 = "relu", churn_data, churn_recipe),
+  run_sigmoid = test_model(act1 = "sigmoid", churn_data, churn_recipe),
+  runs = bind_rows(run_relu, run_sigmoid), #<<
+  model = target( #<<
+    best_model(runs, churn_recipe), #<<
+    format = "keras" #<<
+  ) #<<
+)
+```
+
+---
+
+## Find the best model
+
+```{r}
+make(plan)
+```
+
+---
+
+## Find the best model
+
+```{r}
+readd(model)
+```
+
+---
+
 ## Try another model.
 
 ```{r}
@@ -565,7 +633,12 @@ plan <- drake_plan(
     initial_split(prop = 0.3),
   run_relu = test_model(act1 = "relu", churn_data, churn_recipe),
   run_sigmoid = test_model(act1 = "sigmoid", churn_data, churn_recipe),
-  run_softmax = test_model(act1 = "softmax", churn_data, churn_recipe) #<<
+  run_softmax = test_model(act1 = "softmax", churn_data, churn_recipe), #<<
+  runs = bind_rows(run_relu, run_sigmoid, run_softmax), #<<
+  model = target(
+    best_model(runs, churn_recipe),
+    format = "keras"
+  )
 )
 ```
 
@@ -591,13 +664,17 @@ outdated(plan)
 vis_drake_graph(plan)
 ```
 
+```{r, echo = FALSE}
+vis_drake_graph(plan, main = "", file = "images/graph3.png", navigationButtons = FALSE)
+```
+
 <center>
-<img src = "./images/graph3.png" style="border: none; box-shadow: none; height: 400px">
+<img src="images/graph3.png", height = "550px" align="middle" style="border: none; box-shadow: none; text-align: center;">
 </center>
 
 ---
 
-## Skipping up-to-date models saves time.
+## What gets done stays done.
 
 ```{r, eval = FALSE}
 source("R/packages.R")
@@ -605,8 +682,16 @@ source("R/functions.R")
 source("R/plan.R")
 ```
 
-```{r}
+```{r, message = FALSE}
 make(plan)
+```
+
+---
+
+## New best model?
+
+```{r}
+readd(model)
 ```
 
 ---
@@ -649,8 +734,12 @@ source("R/functions.R")
 vis_drake_graph(plan)
 ```
 
+```{r, echo = FALSE}
+vis_drake_graph(plan, main = "", file = "images/graph4.png", navigationButtons = FALSE)
+```
+
 <center>
-<img src = "./images/graph4.png" style="border: none; box-shadow: none; height: 400px">
+<img src="images/graph4.png", height = "550px" align="middle" style="border: none; box-shadow: none; text-align: center;">
 </center>
 
 ---
@@ -679,13 +768,14 @@ source("R/plan.R")
 
 ```{r, eval = FALSE}
 make(plan)
-#> target data
-#> target rec
+#> target churn_data
+#> target churn_recipe
 #> target run_relu
 #> target run_sigmoid
 #> target run_softmax
+#> target runs
+#> target model
 ```
-
 
 ---
 
@@ -711,13 +801,17 @@ outdated(plan)
 vis_drake_graph(plan)
 ```
 
+```{r, echo = FALSE}
+vis_drake_graph(plan, main = "", file = "images/graph5.png", navigationButtons = FALSE)
+```
+
 <center>
-<img src = "./images/graph5.png" style="border: none; box-shadow: none; height: 400px">
+<img src="images/graph5.png", height = "550px" align="middle" style="border: none; box-shadow: none; text-align: center;">
 </center>
 
 ---
 
-## Workflow history
+## History of past model runs
 
 ```{r}
 history <- drake_history() %>%

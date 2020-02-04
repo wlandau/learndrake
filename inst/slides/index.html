@@ -86,7 +86,9 @@ background-size: contain;
 4. Frequent changes to code and data.
 
 &lt;img src = "./images/sisyphus.svg" align="left" style="border: none; box-shadow: none; height: 375px; text-align: center;"&gt;
-&lt;div style="font-size: 0.5em; text-align: center"&gt;&lt;a href="https://openclipart.org/detail/275842/sisyphus-overcoming-silhouette"&gt;https://openclipart.org/detail/275842/sisyphus-overcoming-silhouette&lt;/a&gt;&lt;/div&gt;
+&lt;br&gt;
+
+* &lt;https://openclipart.org/detail/275842/sisyphus-overcoming-silhouette&gt;
 
 ---
 
@@ -233,6 +235,10 @@ test_accuracy &lt;- function(churn_data, churn_recipe, model) {
 test_model &lt;- function(churn_data, churn_recipe, units1, units2, act1, act2, act3) {
   # ...
 }
+
+best_model &lt;- function(runs, churn_recipe) {
+  # ...
+}
 ```
 
 ---
@@ -305,9 +311,12 @@ source("R/plan.R")
 vis_drake_graph(plan)
 ```
 
+
+
 &lt;center&gt;
-&lt;img src = "./images/graph1.png" style="border: none; box-shadow: none; height: 300px"&gt;
+&lt;img src="images/graph1.png", height = "450px" align="middle" style="border: none; box-shadow: none; text-align: center;"&gt;
 &lt;/center&gt;
+
 
 ---
 
@@ -391,8 +400,10 @@ outdated(plan)
 vis_drake_graph(plan)
 ```
 
+
+
 &lt;center&gt;
-&lt;img src = "./images/graph2.png" style="border: none; box-shadow: none; height: 400px"&gt;
+&lt;img src="images/graph2.png", height = "550px" align="middle" style="border: none; box-shadow: none; text-align: center;"&gt;
 &lt;/center&gt;
 
 ---
@@ -425,13 +436,74 @@ readd(run_relu)
 #&gt; # A tibble: 1 x 6
 #&gt;   accuracy units1 units2 act1  act2  act3   
 #&gt;      &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;  
-#&gt; 1    0.798     16     16 relu  relu  sigmoid
+#&gt; 1    0.800     16     16 relu  relu  sigmoid
 
 readd(run_sigmoid)
 #&gt; # A tibble: 1 x 6
 #&gt;   accuracy units1 units2 act1    act2  act3   
 #&gt;      &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;  
 #&gt; 1    0.801     16     16 sigmoid relu  sigmoid
+```
+
+---
+
+## Find the best model
+
+
+```r
+plan &lt;- drake_plan(
+  churn_recipe = prepare_recipe(churn_data), 
+  churn_data = read_csv(
+    file_in("data/customer_churn.csv"),
+    col_types = cols()
+  ) %&gt;%
+    initial_split(prop = 0.3),
+  run_relu = test_model(act1 = "relu", churn_data, churn_recipe),
+  run_sigmoid = test_model(act1 = "sigmoid", churn_data, churn_recipe),
+* runs = bind_rows(run_relu, run_sigmoid),
+* model = target(
+*   best_model(runs, churn_recipe),
+*   format = "keras"
+* )
+)
+```
+
+---
+
+## Find the best model
+
+
+```r
+make(plan)
+#&gt; target runs
+#&gt; target model
+```
+
+---
+
+## Find the best model
+
+
+```r
+readd(model)
+#&gt; Model
+#&gt; ________________________________________________________________________________
+#&gt; Layer (type)                        Output Shape                    Param #     
+#&gt; ================================================================================
+#&gt; dense_6 (Dense)                     (None, 16)                      576         
+#&gt; ________________________________________________________________________________
+#&gt; dropout_4 (Dropout)                 (None, 16)                      0           
+#&gt; ________________________________________________________________________________
+#&gt; dense_7 (Dense)                     (None, 16)                      272         
+#&gt; ________________________________________________________________________________
+#&gt; dropout_5 (Dropout)                 (None, 16)                      0           
+#&gt; ________________________________________________________________________________
+#&gt; dense_8 (Dense)                     (None, 1)                       17          
+#&gt; ================================================================================
+#&gt; Total params: 865
+#&gt; Trainable params: 865
+#&gt; Non-trainable params: 0
+#&gt; ________________________________________________________________________________
 ```
 
 ---
@@ -450,7 +522,12 @@ plan &lt;- drake_plan(
     initial_split(prop = 0.3),
   run_relu = test_model(act1 = "relu", churn_data, churn_recipe),
   run_sigmoid = test_model(act1 = "sigmoid", churn_data, churn_recipe),
-* run_softmax = test_model(act1 = "softmax", churn_data, churn_recipe)
+* run_softmax = test_model(act1 = "softmax", churn_data, churn_recipe),
+* runs = bind_rows(run_relu, run_sigmoid, run_softmax),
+  model = target(
+    best_model(runs, churn_recipe),
+    format = "keras"
+  )
 )
 ```
 
@@ -468,7 +545,7 @@ source("R/plan.R")
 
 ```r
 outdated(plan)
-#&gt; [1] "run_softmax"
+#&gt; [1] "model"       "run_softmax" "runs"
 ```
 
 ---
@@ -480,13 +557,15 @@ outdated(plan)
 vis_drake_graph(plan)
 ```
 
+
+
 &lt;center&gt;
-&lt;img src = "./images/graph3.png" style="border: none; box-shadow: none; height: 400px"&gt;
+&lt;img src="images/graph3.png", height = "550px" align="middle" style="border: none; box-shadow: none; text-align: center;"&gt;
 &lt;/center&gt;
 
 ---
 
-## Skipping up-to-date models saves time.
+## What gets done stays done.
 
 
 ```r
@@ -498,7 +577,33 @@ source("R/plan.R")
 
 ```r
 make(plan)
-#&gt; target run_softmax
+```
+
+---
+
+## New best model?
+
+
+```r
+readd(model)
+#&gt; Model
+#&gt; ________________________________________________________________________________
+#&gt; Layer (type)                        Output Shape                    Param #     
+#&gt; ================================================================================
+#&gt; dense_12 (Dense)                    (None, 16)                      576         
+#&gt; ________________________________________________________________________________
+#&gt; dropout_8 (Dropout)                 (None, 16)                      0           
+#&gt; ________________________________________________________________________________
+#&gt; dense_13 (Dense)                    (None, 16)                      272         
+#&gt; ________________________________________________________________________________
+#&gt; dropout_9 (Dropout)                 (None, 16)                      0           
+#&gt; ________________________________________________________________________________
+#&gt; dense_14 (Dense)                    (None, 1)                       17          
+#&gt; ================================================================================
+#&gt; Total params: 865
+#&gt; Trainable params: 865
+#&gt; Non-trainable params: 0
+#&gt; ________________________________________________________________________________
 ```
 
 ---
@@ -543,8 +648,10 @@ source("R/functions.R")
 vis_drake_graph(plan)
 ```
 
+
+
 &lt;center&gt;
-&lt;img src = "./images/graph4.png" style="border: none; box-shadow: none; height: 400px"&gt;
+&lt;img src="images/graph4.png", height = "550px" align="middle" style="border: none; box-shadow: none; text-align: center;"&gt;
 &lt;/center&gt;
 
 ---
@@ -564,6 +671,8 @@ make(plan)
 #&gt; target run_relu
 #&gt; target run_softmax
 #&gt; target run_sigmoid
+#&gt; target runs
+#&gt; target model
 ```
 
 ---
@@ -580,13 +689,14 @@ source("R/plan.R")
 
 ```r
 make(plan)
-#&gt; target data
-#&gt; target rec
+#&gt; target churn_data
+#&gt; target churn_recipe
 #&gt; target run_relu
 #&gt; target run_sigmoid
 #&gt; target run_softmax
+#&gt; target runs
+#&gt; target model
 ```
-
 
 ---
 
@@ -617,13 +727,15 @@ outdated(plan)
 vis_drake_graph(plan)
 ```
 
+
+
 &lt;center&gt;
-&lt;img src = "./images/graph5.png" style="border: none; box-shadow: none; height: 400px"&gt;
+&lt;img src="images/graph5.png", height = "550px" align="middle" style="border: none; box-shadow: none; text-align: center;"&gt;
 &lt;/center&gt;
 
 ---
 
-## Workflow history
+## History of past model runs
 
 
 ```r
@@ -634,12 +746,12 @@ history &lt;- drake_history() %&gt;%
 #&gt; # A tibble: 6 x 4
 #&gt;   target      act1    exists hash            
 #&gt;   &lt;chr&gt;       &lt;chr&gt;   &lt;lgl&gt;  &lt;chr&gt;           
-#&gt; 1 run_relu    relu    TRUE   d18e61338781810b
-#&gt; 2 run_relu    relu    TRUE   6aaa0fd1755562cc
+#&gt; 1 run_relu    relu    TRUE   04885d30af50957a
+#&gt; 2 run_relu    relu    TRUE   ecac2e1d2d118807
 #&gt; 3 run_sigmoid sigmoid TRUE   9c3cd39da58076f7
-#&gt; 4 run_sigmoid sigmoid TRUE   1deed12333dcc519
-#&gt; 5 run_softmax softmax TRUE   8974060fcb5ba0d4
-#&gt; 6 run_softmax softmax TRUE   c61cc9339d81a6e8
+#&gt; 4 run_sigmoid sigmoid TRUE   c35dc93ec40ffe4a
+#&gt; 5 run_softmax softmax TRUE   3a062066743c0bb9
+#&gt; 6 run_softmax softmax TRUE   8447ade95ffc1760
 ```
 
 ---
@@ -652,7 +764,7 @@ drake_cache()$get_value(history$hash[1])
 #&gt; # A tibble: 1 x 6
 #&gt;   accuracy units1 units2 act1  act2  act3   
 #&gt;      &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;  
-#&gt; 1    0.798     16     16 relu  relu  sigmoid
+#&gt; 1    0.800     16     16 relu  relu  sigmoid
 ```
 
 ---
