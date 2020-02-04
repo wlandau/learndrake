@@ -137,7 +137,7 @@ background-size: contain;
 
 ## Example drake workflow
 
-- Use deep learning to predict which customers will cancel their telecom subscriptions.
+- Find the model that best predicts which customers will cancel their telecom subscriptions.
 - [IBM Watson Telco Customer Churn dataset](https://www.ibm.com/communities/analytics/watson-analytics-blog/predictive-insights-in-the-telco-customer-churn-data-set/).
 - Workflow principles generalize to the life sciences.
 
@@ -166,11 +166,6 @@ R/
 └── 05-plot.R
 data/
 └── customer_churn.csv
-output/
-├── model_relu.h5
-├── model_sigmoid.h5
-├── confusion_matrix.rds
-└── metrics_plot.png
 ```
 
 ---
@@ -201,8 +196,8 @@ add_things(c(3, 4), c(5, 6))
 
 
 ```r
-prepare_recipe &lt;- function(data) {
-  data %&gt;%
+prepare_recipe &lt;- function(churn_data) {
+  churn_data %&gt;%
     training() %&gt;%
     recipe(Churn ~ .) %&gt;%
     step_rm(customerID) %&gt;%
@@ -223,22 +218,13 @@ prepare_recipe &lt;- function(data) {
 
 
 ```r
-define_model &lt;- function(rec, units1, units2, act1, act2, act3) {
+define_model &lt;- function(churn_recipe, units1, units2, act1, act2, act3) {
   # ...
 }
 
-train_model &lt;- function(
-  rec,
-  units1 = 16,
-  units2 = 16,
-  act1 = "relu",
-  act2 = "relu",
-  act3 = "sigmoid"
-) {
+train_model &lt;- function(churn_recipe, units1, units2, act1, act2, act3) {
   # ...
 }
-
-# more functions...
 ```
 
 ---
@@ -272,8 +258,8 @@ data/
 ```r
 # R/plan.R
 plan &lt;- drake_plan(
-* rec = prepare_recipe(data), # Use your functions.
-  data = read_csv(
+* churn_recipe = prepare_recipe(churn_data), # Use your functions.
+  churn_data = read_csv(
     file_in("data/customer_churn.csv"),
     col_types = cols()
   ) %&gt;%
@@ -289,10 +275,10 @@ plan &lt;- drake_plan(
 ```r
 plan
 #&gt; # A tibble: 2 x 2
-#&gt;   target command                                                                
-#&gt;   &lt;chr&gt;  &lt;expr&gt;                                                                 
-#&gt; 1 rec    prepare_recipe(data)                                                  …
-#&gt; 2 data   read_csv(file_in("data/customer_churn.csv"), col_types = cols()) %&gt;%  …
+#&gt;   target      command                                                           
+#&gt;   &lt;chr&gt;       &lt;expr&gt;                                                            
+#&gt; 1 churn_reci… prepare_recipe(churn_data)                                       …
+#&gt; 2 churn_data  read_csv(file_in("data/customer_churn.csv"), col_types = cols()) …
 ```
 
 ---
@@ -329,22 +315,25 @@ source("R/plan.R")
 
 ```r
 make(plan)
-#&gt; target data
-#&gt; target rec
+#&gt; target churn_data
+#&gt; target churn_recipe
 ```
 
 ---
 
 ## Exploratory analysis
 
-* Did your targets come out okay?
+* Load targets from the cache.
+* Make sure they came out as expected.
 
 
 ```r
-loadd(data) # From drake's cache.
+ncol(training(readd(churn_data)))
+#&gt; [1] 21
 
-print(data)
-#&gt; &lt;2113/4930/7043&gt;
+loadd(churn_recipe)
+ncol(juice(churn_recipe))
+#&gt; [1] 36
 ```
 
 ---
@@ -357,20 +346,14 @@ print(data)
 ```r
 # R/plan.R
 plan &lt;- drake_plan(
-  rec = prepare_recipe(data), 
-  data = read_csv(
+  churn_recipe = prepare_recipe(churn_data), 
+  churn_data = read_csv(
     file_in("data/customer_churn.csv"),
     col_types = cols()
   ) %&gt;%
     initial_split(prop = 0.3),
-* model_relu = target(
-*   train_model(rec, act1 = "relu"),
-*   format = "keras"
-* ),
-* model_sigmoid = target(
-*   train_model(rec, act1 = "sigmoid"),
-*   format = "keras"
-* )
+* run_relu = train_model(churn_recipe, act1 = "relu"),
+* run_sigmoid = train_model(churn_recipe, act1 = "sigmoid")
 )
 ```
 
@@ -388,7 +371,7 @@ source("R/plan.R")
 
 ```r
 outdated(plan)
-#&gt; [1] "model_relu"    "model_sigmoid"
+#&gt; [1] "run_relu"    "run_sigmoid"
 ```
 
 ---
@@ -420,36 +403,20 @@ source("R/plan.R")
 
 ```r
 make(plan)
-#&gt; target model_relu
-#&gt; target model_sigmoid
+#&gt; target run_relu
+#&gt; target run_sigmoid
 ```
 
 ---
 
-## Did the models turn out okay?
+## Inspect the newest targets.
 
 
 ```r
-readd(model_relu)
-#&gt; Model
-#&gt; ________________________________________________________________________________
-#&gt; Layer (type)                        Output Shape                    Param #     
-#&gt; ================================================================================
-#&gt; dense (Dense)                       (None, 16)                      576         
-#&gt; ________________________________________________________________________________
-#&gt; dropout (Dropout)                   (None, 16)                      0           
-#&gt; ________________________________________________________________________________
-#&gt; dense_1 (Dense)                     (None, 16)                      272         
-#&gt; ________________________________________________________________________________
-#&gt; dropout_1 (Dropout)                 (None, 16)                      0           
-#&gt; ________________________________________________________________________________
-#&gt; dense_2 (Dense)                     (None, 1)                       17          
-#&gt; ================================================================================
-#&gt; Total params: 865
-#&gt; Trainable params: 865
-#&gt; Non-trainable params: 0
-#&gt; ________________________________________________________________________________
+readd(run_relu) # model training history
 ```
+
+&lt;img src="index_files/figure-html/unnamed-chunk-22-1.png" width="80%" height="80%" style="display: block; margin: auto;" /&gt;
 
 ---
 
@@ -459,24 +426,15 @@ readd(model_relu)
 ```r
 # R/plan.R
 plan &lt;- drake_plan(
-  rec = prepare_recipe(data), 
-  data = read_csv(
+  churn_recipe = prepare_recipe(churn_data), 
+  churn_data = read_csv(
     file_in("data/customer_churn.csv"),
     col_types = cols()
   ) %&gt;%
     initial_split(prop = 0.3),
-  model_relu = target(
-    train_model(rec, act1 = "relu"),
-    format = "keras"
-  ),
-  model_sigmoid = target(
-    train_model(rec, act1 = "sigmoid"),
-    format = "keras"
-  ),
-* model_softmax = target(
-*   train_model(rec, act1 = "softmax"),
-*   format = "keras"
-* )
+  run_relu = train_model(churn_recipe, act1 = "relu"),
+  run_sigmoid = train_model(churn_recipe, act1 = "sigmoid"),
+* run_softmax = train_model(churn_recipe, act1 = "softmax")
 )
 ```
 
@@ -494,7 +452,7 @@ source("R/plan.R")
 
 ```r
 outdated(plan)
-#&gt; [1] "model_softmax"
+#&gt; [1] "run_softmax"
 ```
 
 ---
@@ -524,7 +482,7 @@ source("R/plan.R")
 
 ```r
 make(plan)
-#&gt; target model_softmax
+#&gt; target run_softmax
 ```
 
 ---
@@ -533,9 +491,9 @@ make(plan)
 
 
 ```r
-define_model &lt;- function(rec, units1, units2, act1, act2, act3) {
+define_model &lt;- function(churn_recipe, units1, units2, act1, act2, act3) {
   input_shape &lt;- ncol(
-    juice(rec, all_predictors(), composition = "matrix")
+    juice(churn_recipe, all_predictors(), composition = "matrix")
   )
   keras_model_sequential() %&gt;%
     layer_dense(
@@ -544,7 +502,7 @@ define_model &lt;- function(rec, units1, units2, act1, act2, act3) {
       activation = act1,
       input_shape = input_shape
     ) %&gt;%
-*   layer_dropout(rate = 0.2) %&gt;% # changed
+*   layer_dropout(rate = 0.2) %&gt;% # previously 0.1
     layer_dense(
       units = units2,
       kernel_initializer = "uniform",
@@ -587,9 +545,9 @@ source("R/plan.R")
 
 ```r
 make(plan)
-#&gt; target model_relu
-#&gt; target model_sigmoid
-#&gt; target model_softmax
+#&gt; target run_relu
+#&gt; target run_softmax
+#&gt; target run_sigmoid
 ```
 
 ---
@@ -608,9 +566,9 @@ source("R/plan.R")
 make(plan)
 #&gt; target data
 #&gt; target rec
-#&gt; target model_relu
-#&gt; target model_sigmoid
-#&gt; target model_softmax
+#&gt; target run_relu
+#&gt; target run_sigmoid
+#&gt; target run_softmax
 ```
 
 
@@ -646,6 +604,38 @@ vis_drake_graph(plan)
 &lt;center&gt;
 &lt;img src = "./images/graph5.png" style="border: none; box-shadow: none; height: 400px"&gt;
 &lt;/center&gt;
+
+---
+
+## Workflow history
+
+
+```r
+history &lt;- drake_history() %&gt;%
+  select(target, act1, exists, hash) %&gt;%
+  filter(!is.na(act1)) %&gt;%
+  print()
+#&gt; # A tibble: 6 x 4
+#&gt;   target      act1    exists hash            
+#&gt;   &lt;chr&gt;       &lt;chr&gt;   &lt;lgl&gt;  &lt;chr&gt;           
+#&gt; 1 run_relu    relu    TRUE   a3b3a1a422631a74
+#&gt; 2 run_relu    relu    TRUE   2a3ba987a8178f60
+#&gt; 3 run_sigmoid sigmoid TRUE   ca33669d1af7d30a
+#&gt; 4 run_sigmoid sigmoid TRUE   14351de49fb0b6ab
+#&gt; 5 run_softmax softmax TRUE   278805cd340ddf0a
+#&gt; 6 run_softmax softmax TRUE   0c8148d2f71ef4f6
+```
+
+---
+
+## Recover an old model run.
+
+
+```r
+drake_cache()$get_value(history$hash[1])
+```
+
+&lt;img src="index_files/figure-html/unnamed-chunk-39-1.png" width="80%" height="80%" style="display: block; margin: auto;" /&gt;
 
 ---
 

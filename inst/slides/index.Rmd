@@ -161,7 +161,7 @@ clean(destroy = TRUE)
 
 ## Example drake workflow
 
-- Use deep learning to predict which customers will cancel their telecom subscriptions.
+- Find the model that best predicts which customers will cancel their telecom subscriptions.
 - [IBM Watson Telco Customer Churn dataset](https://www.ibm.com/communities/analytics/watson-analytics-blog/predictive-insights-in-the-telco-customer-churn-data-set/).
 - Workflow principles generalize to the life sciences.
 
@@ -189,11 +189,6 @@ R/
 └── 05-plot.R
 data/
 └── customer_churn.csv
-output/
-├── model_relu.h5
-├── model_sigmoid.h5
-├── confusion_matrix.rds
-└── metrics_plot.png
 ```
 
 ---
@@ -220,8 +215,8 @@ add_things(c(3, 4), c(5, 6))
 ## Functions in a drake workflow
 
 ```{r, eval = FALSE}
-prepare_recipe <- function(data) {
-  data %>%
+prepare_recipe <- function(churn_data) {
+  churn_data %>%
     training() %>%
     recipe(Churn ~ .) %>%
     step_rm(customerID) %>%
@@ -241,22 +236,13 @@ prepare_recipe <- function(data) {
 ## Functions in a drake workflow
 
 ```{r, eval = FALSE}
-define_model <- function(rec, units1, units2, act1, act2, act3) {
+define_model <- function(churn_recipe, units1, units2, act1, act2, act3) {
   # ...
 }
 
-train_model <- function(
-  rec,
-  units1 = 16,
-  units2 = 16,
-  act1 = "relu",
-  act2 = "relu",
-  act3 = "sigmoid"
-) {
+train_model <- function(churn_recipe, units1, units2, act1, act2, act3) {
   # ...
 }
-
-# more functions...
 ```
 
 ---
@@ -285,8 +271,8 @@ library(rsample)
 library(recipes)
 library(yardstick)
 
-prepare_recipe <- function(data) {
-  data %>%
+prepare_recipe <- function(churn_data) {
+  churn_data %>%
     training() %>%
     recipe(Churn ~ .) %>%
     step_rm(customerID) %>%
@@ -300,9 +286,9 @@ prepare_recipe <- function(data) {
     prep()
 }
 
-define_model <- function(rec, units1, units2, act1, act2, act3) {
+define_model <- function(churn_recipe, units1, units2, act1, act2, act3) {
   input_shape <- ncol(
-    juice(rec, all_predictors(), composition = "matrix")
+    juice(churn_recipe, all_predictors(), composition = "matrix")
   )
   keras_model_sequential() %>%
     layer_dense(
@@ -326,7 +312,7 @@ define_model <- function(rec, units1, units2, act1, act2, act3) {
 }
 
 train_model <- function(
-  rec,
+  churn_recipe,
   units1 = 16,
   units2 = 16,
   act1 = "relu",
@@ -334,7 +320,7 @@ train_model <- function(
   act3 = "sigmoid"
 ) {
   model <- define_model(
-    rec = rec,
+    churn_recipe = churn_recipe,
     units1 = units1,
     units2 = units2,
     act1 = act1,
@@ -348,13 +334,13 @@ train_model <- function(
     metrics = c("accuracy")
   )
   x_train_tbl <- juice(
-    rec,
+    churn_recipe,
     all_predictors(),
     composition = "matrix"
   )
-  y_train_vec <- juice(rec, all_outcomes()) %>%
+  y_train_vec <- juice(churn_recipe, all_outcomes()) %>%
     pull()
-  fit(
+  history <- fit(
     object = model,
     x = x_train_tbl,
     y = y_train_vec,
@@ -363,47 +349,8 @@ train_model <- function(
     validation_split = 0.3,
     verbose = 0
   )
-  model
-}
-
-confusion_matrix <- function(data, rec, model) {
-  testing_data <- bake(rec, testing(data))
-  x_test_tbl <- testing_data %>%
-    select(-Churn) %>%
-    as.matrix()
-  y_test_vec <- testing_data %>%
-    select(Churn) %>%
-    pull()
-  yhat_keras_class_vec <- model %>%
-    predict_classes(x_test_tbl) %>%
-    as.factor() %>%
-    fct_recode(yes = "1", no = "0")
-  yhat_keras_prob_vec <-
-    model %>%
-    predict_proba(x_test_tbl) %>%
-    as.vector()
-  test_truth <- y_test_vec %>%
-    as.factor() %>%
-    fct_recode(yes = "1", no = "0")
-  estimates_keras_tbl <- tibble(
-    truth = test_truth,
-    estimate = yhat_keras_class_vec,
-    class_prob = yhat_keras_prob_vec
-  )
-  estimates_keras_tbl %>%
-    conf_mat(truth, estimate)
-}
-
-compare_models <- function(...) {
-  name <- match.call()[-1] %>%
-    as.character()
-  df <- map_df(list(...), summary) %>%
-    filter(.metric %in% c("accuracy", "sens", "spec")) %>%
-    mutate(name = rep(name, each = n() / length(name))) %>%
-    rename(metric = .metric, estimate = .estimate)
-  ggplot(df) +
-    geom_line(aes(x = metric, y = estimate, color = name, group = name)) +
-    theme_gray(24)
+  plot(history) +
+    theme_gray(16)
 }
 ```
 
@@ -416,8 +363,8 @@ compare_models <- function(...) {
 ```{r}
 # R/plan.R
 plan <- drake_plan(
-  rec = prepare_recipe(data), # Use your functions. #<<
-  data = read_csv(
+  churn_recipe = prepare_recipe(churn_data), # Use your functions. #<<
+  churn_data = read_csv(
     file_in("data/customer_churn.csv"),
     col_types = cols()
   ) %>%
@@ -469,12 +416,14 @@ make(plan)
 
 ## Exploratory analysis
 
-* Did your targets come out okay?
+* Load targets from the cache.
+* Make sure they came out as expected.
 
 ```{r}
-loadd(data) # From drake's cache.
+ncol(training(readd(churn_data)))
 
-print(data)
+loadd(churn_recipe)
+ncol(juice(churn_recipe))
 ```
 
 ---
@@ -486,20 +435,14 @@ print(data)
 ```{r}
 # R/plan.R
 plan <- drake_plan(
-  rec = prepare_recipe(data), 
-  data = read_csv(
+  churn_recipe = prepare_recipe(churn_data), 
+  churn_data = read_csv(
     file_in("data/customer_churn.csv"),
     col_types = cols()
   ) %>%
     initial_split(prop = 0.3),
-  model_relu = target( #<<
-    train_model(rec, act1 = "relu"), #<<
-    format = "keras" #<<
-  ), #<<
-  model_sigmoid = target( #<<
-    train_model(rec, act1 = "sigmoid"), #<<
-    format = "keras" #<<
-  ) #<<
+  run_relu = train_model(churn_recipe, act1 = "relu"), #<<
+  run_sigmoid = train_model(churn_recipe, act1 = "sigmoid") #<<
 )
 ```
 
@@ -547,10 +490,10 @@ make(plan)
 
 ---
 
-## Did the models turn out okay?
+## Inspect the newest targets.
 
 ```{r}
-readd(model_relu)
+readd(run_relu) # model training history
 ```
 
 ---
@@ -560,24 +503,15 @@ readd(model_relu)
 ```{r}
 # R/plan.R
 plan <- drake_plan(
-  rec = prepare_recipe(data), 
-  data = read_csv(
+  churn_recipe = prepare_recipe(churn_data), 
+  churn_data = read_csv(
     file_in("data/customer_churn.csv"),
     col_types = cols()
   ) %>%
     initial_split(prop = 0.3),
-  model_relu = target(
-    train_model(rec, act1 = "relu"),
-    format = "keras"
-  ),
-  model_sigmoid = target(
-    train_model(rec, act1 = "sigmoid"),
-    format = "keras"
-  ),
-  model_softmax = target( #<<
-    train_model(rec, act1 = "softmax"), #<<
-    format = "keras" #<<
-  ) #<<
+  run_relu = train_model(churn_recipe, act1 = "relu"),
+  run_sigmoid = train_model(churn_recipe, act1 = "sigmoid"),
+  run_softmax = train_model(churn_recipe, act1 = "softmax") #<<
 )
 ```
 
@@ -626,9 +560,9 @@ make(plan)
 ## What if we need to change a function?
 
 ```{r}
-define_model <- function(rec, units1, units2, act1, act2, act3) {
+define_model <- function(churn_recipe, units1, units2, act1, act2, act3) {
   input_shape <- ncol(
-    juice(rec, all_predictors(), composition = "matrix")
+    juice(churn_recipe, all_predictors(), composition = "matrix")
   )
   keras_model_sequential() %>%
     layer_dense(
@@ -637,7 +571,7 @@ define_model <- function(rec, units1, units2, act1, act2, act3) {
       activation = act1,
       input_shape = input_shape
     ) %>%
-    layer_dropout(rate = 0.2) %>% # changed #<<
+    layer_dropout(rate = 0.2) %>% # previously 0.1 #<<
     layer_dense(
       units = units2,
       kernel_initializer = "uniform",
@@ -693,9 +627,9 @@ source("R/plan.R")
 make(plan)
 #> target data
 #> target rec
-#> target model_relu
-#> target model_sigmoid
-#> target model_softmax
+#> target run_relu
+#> target run_sigmoid
+#> target run_softmax
 ```
 
 
@@ -726,6 +660,25 @@ vis_drake_graph(plan)
 <center>
 <img src = "./images/graph5.png" style="border: none; box-shadow: none; height: 400px">
 </center>
+
+---
+
+## Workflow history
+
+```{r}
+history <- drake_history() %>%
+  select(target, act1, exists, hash) %>%
+  filter(!is.na(act1)) %>%
+  print()
+```
+
+---
+
+## Recover an old model run.
+
+```{r}
+drake_cache()$get_value(history$hash[1])
+```
 
 ---
 
