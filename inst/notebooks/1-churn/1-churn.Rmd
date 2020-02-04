@@ -23,13 +23,14 @@ source("../config/options.R")
 
 # About
 
-In this notebook, we will explore Keras models that predict customer behavior, and we will express our implementation in 5 custom functions. These functions are the essential building blocks of the `drake` workflows to come.
+In this notebook, we will explore Keras models that predict customer behavior, and we will express our implementation in 6 custom functions. These functions are the essential building blocks of the `drake` workflows to come.
 
 1. `prepare_recipe()`: preprocess the data.
 2. `define_model()`: define a Keras model.
 3. `train_model()`: call `define_model()` to define a Keras model, fit it to the testing data, and return the fitted model object.
-3. `test_accuracy()`: get the test accuracy of a fitted Keras model.
-4. `test_model()`: call `train_model()` and `test_accuracy()` to train a model and summarize its testing accuracy.
+4. `test_accuracy()`: get the test accuracy of a fitted Keras model.
+5. `test_model()`: call `train_model()` and `test_accuracy()` to train a model and summarize its testing accuracy.
+6. `best_model()`: identify the model with the highest test accuracy and train that it. In the `drake` workflows to come, this is the only model we will save.
 
 # Customer churn
 
@@ -347,5 +348,34 @@ test_model <- function(
 Try it out.
 
 ```{r, output = FALSE}
-test_model(churn_data, churn_recipe, units1 = 16, units2 = 16)
+run_16 <- test_model(churn_data, churn_recipe, units1 = 16, units2 = 16)
+run_32 <- test_model(churn_data, churn_recipe, units1 = 32, units2 = 32)
+
+run_16
+```
+
+## `best_model()`
+
+Now, let's identify the model with the highest accuracy and train it. In the `drake` workflows to come, this is the only model we will save.
+
+```{r}
+best_model <- function(..., churn_recipe) {
+  best <- bind_rows(...) %>%
+    arrange(desc(accuracy)) %>%
+    head(n = 1)
+  train_model(
+    churn_recipe,
+    best$units1,
+    best$units2,
+    best$act1,
+    best$act2,
+    best$act3
+  )
+}
+```
+
+Try it out.
+
+```{r}
+best_model(run_16, run_32, churn_recipe = churn_recipe)
 ```
