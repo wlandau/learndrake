@@ -15,7 +15,7 @@ output:
 basename(getwd()) # Should be "1-functions"
 ```
 
-4. Run the setup chunk below.
+4. Run the code chunk below. (Click on the green arrow on the right.)
 
 ```{r, include = FALSE}
 source("../config/options.R")
@@ -38,7 +38,7 @@ Using the IBM Watson Telco Customer Churn dataset, we will train deep neural net
 
 # Packages
 
-Our functions will need the following R packages.
+Our functions will need the following R packages. Run the code chunk below to load them now. (Click on the green arrow on the right.)
 
 ```{r, message = FALSE}
 # Build and train deep neural nets.
@@ -348,10 +348,10 @@ test_model <- function(
 Try it out.
 
 ```{r, output = FALSE}
-run_16 <- test_model(churn_data, churn_recipe, units1 = 16, units2 = 16)
-run_32 <- test_model(churn_data, churn_recipe, units1 = 32, units2 = 32)
+run_relu <- test_model(act1 = "relu", churn_data, churn_recipe)
+run_sigmoid <- test_model(act1 = "sigmoid", churn_data, churn_recipe)
 
-run_16
+run_relu
 ```
 
 ## `best_model()`
@@ -377,5 +377,6 @@ best_model <- function(runs, churn_recipe) {
 Try it out.
 
 ```{r}
-best_model(bind_rows(run_16, run_32), churn_recipe = churn_recipe)
+runs <- bind_rows(run_relu, run_sigmoid)
+best_model(runs, churn_recipe = churn_recipe)
 ```
