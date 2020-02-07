@@ -47,11 +47,8 @@ Your initial plan will
 Code for (1):
 
 ```{r, eval = FALSE}
-churn_data <- read_csv(
-  file_in("../data/customer_churn.csv"),
-  col_types = cols()
-) %>%
-  initial_split(prop = 0.3)
+# file_in() will tell drake to rebuild targets when the file changes.
+churn_data <- split_data(file_in("../data/customer_churn.csv"))
 ```
 
 Code for (2):
@@ -64,11 +61,7 @@ Now, let's create a new `drake` plan with these two steps as *targets*:
 
 ```{r}
 plan <- drake_plan(
-  churn_data = read_csv(
-    file_in("../data/customer_churn.csv"), # file_in() is important here
-    col_types = cols()
-  ) %>%
-    initial_split(prop = 0.3),
+  churn_data = split_data(file_in("../data/customer_churn.csv")),
   churn_recipe = prepare_recipe(churn_data)
 )
 ```
@@ -141,11 +134,7 @@ How does `drake` know all this? Static code analysis: <http://adv-r.had.co.nz/Ex
 ```{r}
 plan <- drake_plan(
   churn_recipe = prepare_recipe(churn_data), # previously last
-  churn_data = read_csv(
-    file_in("../data/customer_churn.csv"),
-    col_types = cols()
-  ) %>%
-    initial_split(prop = 0.3)
+  churn_data = split_data(file_in("../data/customer_churn.csv"))
 )
 ```
 
@@ -192,11 +181,7 @@ Your turn: add these targets to the plan.
 
 ```{r}
 plan <- drake_plan(
-  churn_data = read_csv(
-    file_in("../data/customer_churn.csv"),
-    col_types = cols()
-  ) %>%
-    initial_split(prop = 0.3),
+  churn_data = split_data(file_in("../data/customer_churn.csv")),
   churn_recipe = prepare_recipe(churn_data),
   run_relu = , # Write the command between the equals sign and comma.
   run_sigmoid = # Write the command here.
@@ -247,11 +232,7 @@ Now, let's add a third model with a different activation function. Use the `act1
 
 ```{r}
 plan <- drake_plan(
-  churn_data = read_csv(
-    file_in("../data/customer_churn.csv"),
-    col_types = cols()
-  ) %>%
-    initial_split(prop = 0.3),
+  churn_data = split_data(file_in("../data/customer_churn.csv")),
   churn_recipe = prepare_recipe(churn_data),
   run_relu = test_model(act1 = "relu", churn_data, churn_recipe),
   run_sigmoid = test_model(act1 = "sigmoid", churn_data, churn_recipe),
@@ -283,20 +264,24 @@ readd(run_softmax)
 
 # Pick the best model.
 
-Let's aggregate all the model runs into a single data frame. Define a new `runs` target with the command `bind_rows(run_relu, run_sigmoid, run_softmax)`.
+Let's aggregate all the model runs into a single data frame. Define a new `best_run` target with following command:
+
+```{r, eval = FALSE}
+# Do not run here.
+bind_rows(run_relu, run_sigmoid, run_softmax) %>%
+  filter(accuracy == max(accuracy))
+```
+
+Write the command in the plan below. Note: commands do not always need to be function calls. They can be arbitrary code chunks too.
 
 ```{r}
 plan <- drake_plan(
-  churn_data = read_csv(
-    file_in("../data/customer_churn.csv"),
-    col_types = cols()
-  ) %>%
-    initial_split(prop = 0.3),
+  churn_data = split_data(file_in("../data/customer_churn.csv")),
   churn_recipe = prepare_recipe(churn_data),
   run_relu = test_model(act1 = "relu", churn_data, churn_recipe),
   run_sigmoid = test_model(act1 = "sigmoid", churn_data, churn_recipe),
   run_softmax = test_model(act1 = "softmax", churn_data, churn_recipe),
-  runs = # Bind the rows of all the runs.
+  best_run = # Write the command to get the best model run.
 )
 ```
 
@@ -306,28 +291,25 @@ The next `make()` should just build `runs` and be quick.
 make(plan)
 ```
 
-It should contain 3 rows, each with a different model run.
+It should contain one row with the accuracy and features of the best model.
 
 ```{r}
-readd(runs)
+readd(best_run)
 ```
 
-Now, let's run the best model and tell `drake` to hold on to the trained model. Below, we use the `target()` function for extra customization because Keras models need the special `"keras"` storage format (<https://books.ropensci.org/drake/plans.html#special-data-formats-for-targets>). Below, write the command `best_model(runs, churn_recipe)`.
+Now, let's run the best model and tell `drake` to hold on to the trained model. Below, we use the `target()` function for extra customization because Keras models need the special `"keras"` storage format (<https://books.ropensci.org/drake/plans.html#special-data-formats-for-targets>). Below, write the command `train_best_model(best_run, churn_recipe)`.
 
 ```{r}
 plan <- drake_plan(
-  churn_data = read_csv(
-    file_in("../data/customer_churn.csv"),
-    col_types = cols()
-  ) %>%
-    initial_split(prop = 0.3),
+  churn_data = split_data(file_in("../data/customer_churn.csv")),
   churn_recipe = prepare_recipe(churn_data),
   run_relu = test_model(act1 = "relu", churn_data, churn_recipe),
   run_sigmoid = test_model(act1 = "sigmoid", churn_data, churn_recipe),
   run_softmax = test_model(act1 = "softmax", churn_data, churn_recipe),
-  runs = bind_rows(run_relu, run_sigmoid, run_softmax),
-  model = target( # We use target() to customize the target.
-    , # Write the command, best_model(runs, churn_recipe).
+  best_run = bind_rows(run_relu, run_sigmoid, run_softmax) %>%
+    filter(accuracy == max(accuracy)),
+  best_model = target( # We use target() to customize the target.
+    , # Write the command, train_best_model(best_run, churn_recipe).
     format = "keras" # Tell drake to store the target as a Keras model.
   )
 )

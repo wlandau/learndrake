@@ -86,6 +86,9 @@ purrr::walk(
   }
 )
 drake:::r_make_message(force = TRUE)
+if (file.exists(".drake")) {
+  drake_cache()$unlock()
+}
 clean(destroy = TRUE)
 ```
 
@@ -218,6 +221,11 @@ add_things(c(3, 4), c(5, 6))
 ## Functions in a drake workflow
 
 ```{r, eval = FALSE}
+split_data <- function(churn_file) {
+  read_csv(churn_file, col_types = cols()) %>%
+    initial_split(prop = 0.3)
+}
+
 prepare_recipe <- function(churn_data) {
   churn_data %>%
     training() %>%
@@ -255,7 +263,7 @@ test_model <- function(churn_data, churn_recipe, units1, units2, act1, act2, act
   # ...
 }
 
-best_model <- function(runs, churn_recipe) {
+train_best_model <- function(best_run, churn_recipe) {
   # ...
 }
 ```
@@ -285,6 +293,11 @@ library(tidyverse)
 library(rsample)
 library(recipes)
 library(yardstick)
+
+split_data <- function(churn_file) {
+  read_csv(churn_file, col_types = cols()) %>%
+    initial_split(prop = 0.3)
+}
 
 prepare_recipe <- function(churn_data) {
   churn_data %>%
@@ -412,17 +425,14 @@ test_model <- function(
   )
 }
 
-best_model <- function(runs, churn_recipe) {
-  best <- runs %>%
-    arrange(desc(accuracy)) %>%
-    head(n = 1)
+train_best_model <- function(best_run, churn_recipe) {
   train_model(
     churn_recipe,
-    best$units1,
-    best$units2,
-    best$act1,
-    best$act2,
-    best$act3
+    best_run$units1,
+    best_run$units2,
+    best_run$act1,
+    best_run$act2,
+    best_run$act3
   )
 }
 ```
@@ -436,12 +446,8 @@ best_model <- function(runs, churn_recipe) {
 ```{r}
 # R/plan.R
 plan <- drake_plan(
-  churn_recipe = prepare_recipe(churn_data), # Use your functions. #<<
-  churn_data = read_csv(
-    file_in("data/customer_churn.csv"),
-    col_types = cols()
-  ) %>%
-    initial_split(prop = 0.3)
+  churn_recipe = prepare_recipe(churn_data),
+  churn_data = split_data(file_in("data/customer_churn.csv"))
 )
 ```
 
@@ -492,10 +498,9 @@ make(plan)
 
 ---
 
-## Exploratory analysis
+## Check the targets for problems
 
-* Load targets from the cache.
-* Make sure they came out as expected.
+- `loadd()` and `readd()` get targets from the cache.
 
 ```{r}
 ncol(training(readd(churn_data)))
@@ -514,11 +519,7 @@ ncol(juice(churn_recipe))
 # R/plan.R
 plan <- drake_plan(
   churn_recipe = prepare_recipe(churn_data), 
-  churn_data = read_csv(
-    file_in("data/customer_churn.csv"),
-    col_types = cols()
-  ) %>%
-    initial_split(prop = 0.3),
+  churn_data = split_data(file_in("data/customer_churn.csv")),
   run_relu = test_model(act1 = "relu", churn_data, churn_recipe), #<<
   run_sigmoid = test_model(act1 = "sigmoid", churn_data, churn_recipe) #<<
 )
@@ -558,8 +559,6 @@ vis_drake_graph(plan, main = "", file = "images/graph2.png", navigationButtons =
 
 ## drake skips up-to-date targets.
 
-* The dataset and recipe are up to date, so `drake` skips them and focuses on the models.
-
 ```{r, eval = FALSE}
 source("R/packages.R")
 source("R/functions.R")
@@ -587,16 +586,13 @@ readd(run_sigmoid)
 ```{r}
 plan <- drake_plan(
   churn_recipe = prepare_recipe(churn_data), 
-  churn_data = read_csv(
-    file_in("data/customer_churn.csv"),
-    col_types = cols()
-  ) %>%
-    initial_split(prop = 0.3),
+  churn_data = split_data(file_in("data/customer_churn.csv")),
   run_relu = test_model(act1 = "relu", churn_data, churn_recipe),
   run_sigmoid = test_model(act1 = "sigmoid", churn_data, churn_recipe),
-  runs = bind_rows(run_relu, run_sigmoid), #<<
-  model = target( #<<
-    best_model(runs, churn_recipe), #<<
+  best_run = bind_rows(run_relu, run_sigmoid) %>% #<<
+    filter(accuracy == max(accuracy)), #<<
+  best_model = target( #<<
+    train_best_model(best_run, churn_recipe), #<<
     format = "keras" #<<
   ) #<<
 )
@@ -615,7 +611,7 @@ make(plan)
 ## Find the best model
 
 ```{r}
-readd(model)
+readd(best_model)
 ```
 
 ---
@@ -626,17 +622,14 @@ readd(model)
 # R/plan.R
 plan <- drake_plan(
   churn_recipe = prepare_recipe(churn_data), 
-  churn_data = read_csv(
-    file_in("data/customer_churn.csv"),
-    col_types = cols()
-  ) %>%
-    initial_split(prop = 0.3),
+  churn_data = split_data(file_in("data/customer_churn.csv")),
   run_relu = test_model(act1 = "relu", churn_data, churn_recipe),
   run_sigmoid = test_model(act1 = "sigmoid", churn_data, churn_recipe),
   run_softmax = test_model(act1 = "softmax", churn_data, churn_recipe), #<<
-  runs = bind_rows(run_relu, run_sigmoid, run_softmax), #<<
-  model = target(
-    best_model(runs, churn_recipe),
+  best_run = bind_rows(run_relu, run_sigmoid, run_softmax) %>% #<<
+    filter(accuracy == max(accuracy)),
+  best_model = target(
+    train_best_model(best_run, churn_recipe),
     format = "keras"
   )
 )
@@ -674,7 +667,10 @@ vis_drake_graph(plan, main = "", file = "images/graph3.png", navigationButtons =
 
 ---
 
-## What gets done stays done.
+## New best model?
+
+- Only if the new run beats the old runs.
+- Otherwise, `drake` does not bother to retrain the best model.
 
 ```{r, eval = FALSE}
 source("R/packages.R")
@@ -682,16 +678,14 @@ source("R/functions.R")
 source("R/plan.R")
 ```
 
-```{r, message = FALSE}
+```{r, eval = FALSE}
 make(plan)
+#> target run_softmax
+#> target best_run
 ```
 
----
-
-## New best model?
-
-```{r}
-readd(model)
+```{r, echo = FALSE, message = FALSE}
+make(plan)
 ```
 
 ---
@@ -758,12 +752,59 @@ make(plan)
 
 ---
 
-## Similar story if the data file changes.
+## Undo the change.
+
+```{r}
+define_model <- function(churn_recipe, units1, units2, act1, act2, act3) {
+  input_shape <- ncol(
+    juice(churn_recipe, all_predictors(), composition = "matrix")
+  )
+  keras_model_sequential() %>%
+    layer_dense(
+      units = units1,
+      kernel_initializer = "uniform",
+      activation = act1,
+      input_shape = input_shape
+    ) %>%
+    layer_dropout(rate = 0.1) %>% # Changed back to 0.1. #<<
+    layer_dense(
+      units = units2,
+      kernel_initializer = "uniform",
+      activation = act2
+    ) %>%
+    layer_dropout(rate = 0.1) %>%
+    layer_dense(
+      units = 1,
+      kernel_initializer = "uniform",
+      activation = act3
+    )
+}
+```
+
+---
+
+## Undo the change.
 
 ```{r, eval = FALSE}
 source("R/packages.R")
 source("R/functions.R")
 source("R/plan.R")
+```
+
+* Recover old targets instead of building new ones.
+
+```{r}
+make(plan, recover = TRUE)
+```
+
+---
+
+## Similar story if the data file changes.
+
+```{r, eval = FALSE}
+source("R/packages.R")
+source("R/functions.R")
+source("R/plan.R") # Requires file_in() in the plan.
 ```
 
 ```{r, eval = FALSE}
@@ -773,8 +814,8 @@ make(plan)
 #> target run_relu
 #> target run_sigmoid
 #> target run_softmax
-#> target runs
-#> target model
+#> target best_run
+#> target best_model
 ```
 
 ---

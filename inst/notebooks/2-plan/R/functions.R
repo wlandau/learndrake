@@ -1,3 +1,8 @@
+split_data <- function(churn_file) {
+  read_csv(churn_file, col_types = cols()) %>%
+    initial_split(prop = 0.3) # from the rsample package
+}
+
 prepare_recipe <- function(churn_data) {
   churn_data %>%
     training() %>%
@@ -124,16 +129,13 @@ test_model <- function(
   )
 }
 
-best_model <- function(runs, churn_recipe) {
-  best <- runs %>%
-    arrange(desc(accuracy)) %>%
-    head(n = 1)
+train_best_model <- function(best_run, churn_recipe) {
   train_model(
     churn_recipe,
-    best$units1,
-    best$units2,
-    best$act1,
-    best$act2,
-    best$act3
+    best_run$units1,
+    best_run$units2,
+    best_run$act1,
+    best_run$act2,
+    best_run$act3
   )
 }
