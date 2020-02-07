@@ -35,16 +35,16 @@ source("R/packages.R")  # Load the packages.
 source("R/functions.R") # Define our custom functions.
 ```
 
-Take a moment to open up `packages.R` and `functions.R` scripts in RStudio to look at how they are organized.
+Take a quick moment to look at `packages.R` and `functions.R`. Open them in RStudio and see how they are organized.
 
 # Start the plan
 
-Your initial plan will have code to
+Your initial plan will
 
 1. Read the customer churn data from a CSV file, and
 2. Clean it up for the deep learning models.
 
-The code to read the data is:
+Code for (1):
 
 ```{r, eval = FALSE}
 churn_data <- read_csv(
@@ -54,7 +54,7 @@ churn_data <- read_csv(
   initial_split(prop = 0.3)
 ```
 
-And the code to clean up the data is:
+Code for (2):
 
 ```{r, eval = FALSE}
 churn_recipe <- prepare_recipe(churn_data)
@@ -81,7 +81,7 @@ plan
 
 # Run the plan
 
-When you created the plan, you did not actually run the commands. To run the commands and build targets, use `make()`.
+When you first created the plan, you did not actually run the commands. To actually run the workflow, use `make()`.
 
 ```{r}
 make(plan)
@@ -95,13 +95,13 @@ Targets `churn_data` and `churn_recipe` now live in a special `.drake/` folder.
 list.files(all = TRUE)
 ```
 
-The `.drake/` folder is a special kind of cache (<https://github.com/richfitz/storr>) and it is not designed for meddling users to explore.
+The `.drake/` folder is a special kind of cache (<https://github.com/richfitz/storr>) and the files and subfolders were designed for machines only. No humans allowed!
 
 ```{r}
 list.files(".drake/data")
 ```
 
-Instead, use `drake` functions `loadd()` and `readd()` to get the targets back into memory. This is a good time to check the data for potential problems.
+To get the targets from the cache, use `drake` functions `loadd()` and `readd()`. Let's check the data for potential problems.
 
 ```{r, paged.print = FALSE}
 readd(churn_data)
@@ -112,13 +112,13 @@ loadd(churn_recipe)
 class(churn_recipe)
 ```
 
-# Dependencies of the plan
+# Interlude: dependencies
 
 `drake` understands the dependency relationships among
 
 1. The two targets in the plan.
 2. The CSV data you declared with `file_in()`.
-3. The functions you loaded when you ran `source("R/functions.R")`.
+3. The functions you loaded with `source("R/functions.R")`.
 
 To see for yourself, visualize the graph.
 
@@ -136,9 +136,7 @@ deps_target(churn_data, plan)
 deps_target(churn_recipe, plan)
 ```
 
-`drake` figures it out with static code analysis (<http://adv-r.had.co.nz/Expressions.html#ast-funs>). In other words, `drake` dissects the structure of your code without actually running it.
-
-That means the order of the targets in the plan does not matter. In fact, let's reverse the recipe and the data.
+How does `drake` know all this? Static code analysis: <http://adv-r.had.co.nz/Expressions.html#ast-funs>. In other words, `drake` dissects the structure of your code without actually running it. That means the order of the targets in the plan does not matter. In fact, if we reverse the recipe and the data, it has no effect.
 
 ```{r}
 plan <- drake_plan(
@@ -157,13 +155,17 @@ We still get the same graph.
 vis_drake_graph(plan)
 ```
 
-And our targets is still up to date.
+And our targets are still up to date.
+
+```{r}
+outdated(plan)
+```
 
 ```{r}
 make(plan)
 ```
 
-If you *invalidate* the targets and run `make()` from scratch, `churn_recipe` runs second even though it is now first in the plan. `make()` uses dependency relationships to run the correct targets in the correct order.
+If you *invalidate* the targets and run `make()` from scratch, still `churn_recipe` runs second. `make()` always uses *dependency relationships* to run the correct targets in the correct order.
 
 ```{r}
 clean()
@@ -172,21 +174,21 @@ make(plan)
 
 # Build up the plan
 
-Now that you built the data targets and checked them with `loadd()` and `readd()`, let's add two models. One has a relu activation function:
+Let's add two model runs to the plan. One model has a relu activation function:
 
 ```{r, eval = FALSE}
 # Do not run now.
 run_relu <- test_model(act1 = "relu", churn_data, churn_recipe)
 ```
 
-And another has a sigmoid activation function:
+The other has a sigmoid activation function:
 
 ```{r, eval = FALSE}
 # Do not run now.
 run_sigmoid <- test_model(act1 = "sigmoid", churn_data, churn_recipe)
 ```
 
-Your turn: add these targets and commands to the plan.
+Your turn: add these targets to the plan.
 
 ```{r}
 plan <- drake_plan(
@@ -213,23 +215,23 @@ vis_drake_graph(plan)
 outdated(plan)
 ```
 
-So `make()` skips the data and just runs the models. When you run `make()` below, ignore TensorFlow messages like "Your CPU supports instructions that this TensorFlow binary was not compiled to use".
+So `make()` skips the data and just runs the models. Run `make()` below and ignore any TensorFlow messages that pop up.
 
 ```{r}
 make(plan) # slow
 ```
 
-Those models took a while to run, right? That is why `make()` tries to keep them up to date.
-
-```{r}
-make(plan) # fast
-```
+Those models took a long time to run, right? That is why `make()` tries to keep them up to date.
 
 ```{r}
 outdated(plan)
 ```
 
-Now, check your model runs. Each should be a data frame with the accuracy and features of the model.
+```{r}
+make(plan) # fast
+```
+
+Now, check your model runs. Each should be a data frame with the accuracy and features of a model.
 
 ```{r, paged.print = FALSE}
 readd(run_relu)
@@ -241,7 +243,7 @@ readd(run_sigmoid)
 
 # Add another model
 
-Now we know our first model runs came out well, so let's add a third model with a different activation function. Use the `act1 = "softmax"` this time.
+Now, let's add a third model with a different activation function. Use the `act1 = "softmax"` this time.
 
 ```{r}
 plan <- drake_plan(
@@ -281,7 +283,7 @@ readd(run_softmax)
 
 # Pick the best model.
 
-With all our model runs in hand, let's aggregate all the results. Define a new `runs` target with the command `bind_rows(run_relu, run_sigmoid, run_softmax)`.
+Let's aggregate all the model runs into a single data frame. Define a new `runs` target with the command `bind_rows(run_relu, run_sigmoid, run_softmax)`.
 
 ```{r}
 plan <- drake_plan(
@@ -310,7 +312,7 @@ It should contain 3 rows, each with a different model run.
 readd(runs)
 ```
 
-Now, let's run the best model and tell `drake` to hold on to the trained model. Below, we use the `target()` function to customize the target. Keras models need a special storage format (<https://books.ropensci.org/drake/plans.html#special-data-formats-for-targets>). Below, write the command `best_model(runs, churn_recipe)`.
+Now, let's run the best model and tell `drake` to hold on to the trained model. Below, we use the `target()` function for extra customization because Keras models need the special `"keras"` storage format (<https://books.ropensci.org/drake/plans.html#special-data-formats-for-targets>). Below, write the command `best_model(runs, churn_recipe)`.
 
 ```{r}
 plan <- drake_plan(
@@ -343,12 +345,12 @@ Now, `drake` has the trained model in the cache.
 readd(model)
 ```
 
-# Recap of the process
+# Recap
 
-Rome was not built in a day, and neither is your `drake` plan. Building up a plan is an iterative, gradual process. We add targets little by little and check them often.
+Rome was not built in a day, and neither is your `drake` plan. Building up a plan is an gradual iterative process.
 
-1. Add targets to the plan.
-2. Check the plan with `outdated(plan)` and `vis_drake_graph(plan)`
+1. Write some targets targets in the plan.
+2. Check the plan with `outdated(plan)` and `vis_drake_graph(plan)`.
 3. Run `make()` to build the new targets.
 4. Check the output with `loadd()` and `readd()`.
 5. Repeat.
@@ -398,7 +400,7 @@ vis_drake_graph(plan)
 make(plan)
 ```
 
-Same story if you change a dataset you declared with `file_in()`.
+Same story if you change a `file_in()` dataset.
 
 # Time savings and reproducibility
 
@@ -412,5 +414,4 @@ outdated(plan)
 make(plan)
 ```
 
-This is tangible evidence of reproducibility. It is tangible evidence that your output is in sync with the code and data you have right now. So if someone else were to run your code, they should get the same results as you. You know that without having to `clean()` everything and run all your targets from scratch. This is how `drake` saves time while increasing your ability to trust the results of your research.
-
+This is tangible evidence of reproducibility. It is tangible evidence that your output is in sync with the code and data you have right now. So if someone else were to run your code, they should get the same results as you. You can be confident without having to rerun everything from scratch. This is how `drake` saves time while increasing your ability to trust your research.
