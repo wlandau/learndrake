@@ -101,27 +101,27 @@ R notebooks in order. Use `save_notebooks()` to save the notebooks and
 supporting files to your
 computer.
 
-| Notebook      | Topic                                                                                 |
-| ------------- | ------------------------------------------------------------------------------------- |
-| `1-churn.Rmd` | Deep learning case study                                                              |
-| `2-setup.Rmd` | Convert the case study to a new [`drake`](https://github.com/ropensci/drake) project. |
-| `3-flow.Rmd`  | Develop, work, and iterate on the project.                                            |
-| `4-plans`     | A deep dive into [`drake` plans](https://books.ropensci.org/drake/plans.html).        |
-| `5-files`     | Custom input and output data files.                                                   |
-| `6-reports`   | Special considerations of `knitr` and R Markdown reports.                             |
-| `7-hpc`       | High-performance computing                                                            |
+| Notebook          | Topic                                                                                 |
+| ----------------- | ------------------------------------------------------------------------------------- |
+| `1-functions.Rmd` | Deep learning case study                                                              |
+| `2-plans.Rmd`     | Convert the case study to a new [`drake`](https://github.com/ropensci/drake) project. |
+| `3-changes.Rmd`   | Develop, work, and iterate on the project.                                            |
+| `4-plans`         | A deep dive into [`drake` plans](https://books.ropensci.org/drake/plans.html).        |
+| `5-files`         | Custom input and output data files.                                                   |
+| `6-reports`       | Special considerations of `knitr` and R Markdown reports.                             |
+| `7-hpc`           | High-performance computing                                                            |
 
 # Apps
 
-Notebooks `3-flow.Rmd` and `4-plans.Rmd` come with supporting Shiny apps
-to conduct the learning
+Notebooks `3-changes.Rmd` and `4-plans.Rmd` come with supporting Shiny
+apps to conduct the learning
 exercises.
 
-| App                                                                       | Notebook      | Deploy locally               | Public URL                                      |
-| ------------------------------------------------------------------------- | ------------- | ---------------------------- | ----------------------------------------------- |
-| Iterate on a [`drake`](https://github.com/ropensci/drake) workflow        | `3-flow.Rmd`  | `launch_app("flow")`         | <http://wlandau.shinyapps.io/learndrakechanges> |
-| Exercises on [`drake` plans](https://books.ropensci.org/drake/plans.html) | `4-plans.Rmd` | `launch_app("plans")`        | <http://wlandau.shinyapps.io/learndrakeplans>   |
-| Visualize [`drake`](https://github.com/ropensci/drake) projects           | `4-plans.Rmd` | `launch_app("drakeplanner")` | <http://wlandau.shinyapps.io/drakeplanner>      |
+| App                                                                       | Notebook        | Deploy locally               | Public URL                                      |
+| ------------------------------------------------------------------------- | --------------- | ---------------------------- | ----------------------------------------------- |
+| Iterate on a [`drake`](https://github.com/ropensci/drake) workflow        | `3-changes.Rmd` | `launch_app("flow")`         | <http://wlandau.shinyapps.io/learndrakechanges> |
+| Exercises on [`drake` plans](https://books.ropensci.org/drake/plans.html) | `4-plans.Rmd`   | `launch_app("plans")`        | <http://wlandau.shinyapps.io/learndrakeplans>   |
+| Visualize [`drake`](https://github.com/ropensci/drake) projects           | `4-plans.Rmd`   | `launch_app("drakeplanner")` | <http://wlandau.shinyapps.io/drakeplanner>      |
 
 # Thanks
 

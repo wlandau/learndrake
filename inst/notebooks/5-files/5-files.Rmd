@@ -41,7 +41,7 @@ plan %>%
   `[[`(1)
 ```
 
-`file_in()` tells `make()` to fingerprint and track `customer_churn.csv`. As we saw in the `3-flow` exercises, `drake` updates the downstream targets when the data file changes.
+`file_in()` tells `make()` to fingerprint and track `customer_churn.csv`. As we saw in the `3-changes` exercises, `drake` updates the downstream targets when the data file changes.
 
 ```{r}
 vis_drake_graph(plan, from = file_store("../data/customer_churn.csv"))

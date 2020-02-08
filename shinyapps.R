@@ -7,10 +7,11 @@ setAccountInfo(
   secret = Sys.getenv("shinyapps_secret")
 )
 message("Deploying to shinyapps.io.")
-for (app in c("learndrakeflow", "learndrakeplans")) {
+for (app in c("learndrakechanges", "learndrakeplans")) {
   message("Deploying ", app, " to shinyapps.io.")
   deployApp(
     appDir = file.path("inst", "tutorials", app),
-    appName = app
+    appName = app,
+    forceUpdate = TRUE
   )
 }
