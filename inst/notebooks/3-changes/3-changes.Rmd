@@ -27,6 +27,6 @@ Navigate to the <https://wlandau.shinyapps.io/learndrakechanges> and complete th
 
 Or use `3-changes.R` or just the R console.
 
-```{r, scratch}
+```{r, paged.print = FALSE}
 
 ```
