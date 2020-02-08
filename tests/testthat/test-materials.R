@@ -10,9 +10,9 @@ test_that("notebooks", {
   save_notebooks(path)
   out <- list.files(path)
   exp <- c(
-    "1-churn",
-    "2-setup",
-    "3-flow",
+    "1-functions",
+    "2-plans",
+    "3-changes",
     "4-plans",
     "5-files",
     "6-reports",
