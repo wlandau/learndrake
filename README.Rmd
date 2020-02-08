@@ -81,7 +81,7 @@ Notebooks `3-flow.Rmd` and `4-plans.Rmd` come with supporting Shiny apps to cond
 
 App | Notebook | Deploy locally | Public URL
 ---|---|---|---
-Iterate on a [`drake`](https://github.com/ropensci/drake) workflow | `3-flow.Rmd` | `launch_app("flow")` | <http://wlandau.shinyapps.io/learndrakeflow>
+Iterate on a [`drake`](https://github.com/ropensci/drake) workflow | `3-flow.Rmd` | `launch_app("flow")` | <http://wlandau.shinyapps.io/learndrakechanges>
 Exercises on [`drake` plans](https://books.ropensci.org/drake/plans.html) |  `4-plans.Rmd` | `launch_app("plans")` | <http://wlandau.shinyapps.io/learndrakeplans>
 Visualize [`drake`](https://github.com/ropensci/drake) projects | `4-plans.Rmd` | `launch_app("drakeplanner")` | <http://wlandau.shinyapps.io/drakeplanner>
 
