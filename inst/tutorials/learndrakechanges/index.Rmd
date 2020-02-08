@@ -1,5 +1,6 @@
 ---
-title: "Change management in drake workflows"
+title: "Dealing with changes in drake workflows"
+subtitle: "You break it, drake fixes it."
 output: learnr::tutorial
 runtime: shiny_prerendered
 ---
@@ -48,7 +49,20 @@ question(
 
 ## Exercise 1
 
-In your working directory (should be `3-changes`) there should be an `R/` folder with 3 scripts.
+Verify that you are in the right working directory.
+
+```r
+basename(getwd()) # Should be "3-changes"
+#> [1] "3-changes"
+```
+
+Set some configuration options.
+
+```r
+source("../config/options.R")
+```
+
+There should be an `R/` folder with 3 scripts.
 
 ```r
 list.files("R")
@@ -190,7 +204,7 @@ question(
   random_answer_order = TRUE,
   answer("A data frame."),
   answer("A recipe."),
-  answer("A Keras model.", correct = TRUE),
+  answer("A trained Keras model.", correct = TRUE),
   answer("A function.")
 )
 ```
