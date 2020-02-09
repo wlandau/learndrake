@@ -5,7 +5,7 @@
 #'   apps on your local machine.
 #' @details For `3-changes.Rmd`, `launch_app("learndrakechanges")` opens
 #'   a collection of exercises for iterating on a `drake` workflow.
-#'   For `4-plans.Rmd`, `launch_app("learndrakeplans")` opens guided exercises
+#'   For `4-plans.Rmd`, `launch_app("learndrakestatic")` opens guided exercises
 #'   on constructing `drake` plans,
 #'   and `launch_app("drakeplanner")` spins up an app
 #'   for visualizing and understanding plans.
@@ -16,11 +16,11 @@
 #' @examples
 #' \dontrun{
 #' launch_app("learndrakechanges")
-#' launch_app("learndrakeplans")
+#' launch_app("learndrakestatic")
 #' launch_app("drakeplanner")
 #' }
 launch_app <- function(
-  app = c("learndrakechanges", "learndrakeplans", "drakeplanner")
+  app = c("learndrakechanges", "learndrakestatic", "drakeplanner")
 ) {
   app <- match.arg(app)
   switch(
@@ -29,8 +29,8 @@ launch_app <- function(
       "learndrakechanges",
       package = "learndrake"
     ),
-    learndrakeplans = learnr::run_tutorial(
-      "learndrakeplans",
+    learndrakestatic = learnr::run_tutorial(
+      "learndrakestatic",
       package = "learndrake"
     ),
     drakeplanner = drakeplanner::drakeplanner(),
@@ -45,7 +45,7 @@ launch_app <- function(
 #'   for an so you can deploy it to Shiny Server.
 #' @details For `3-changes.Rmd`, `save_app("learndrakechanges")` saves
 #'   a collection of exercises for iterating on a `drake` workflow.
-#'   For `4-plans.Rmd`, `save_app("learndrakeplans")` saves guided exercises
+#'   For `4-plans.Rmd`, `save_app("learndrakestatic")` saves guided exercises
 #'   on constructing `drake` plans,
 #'   and `save_app("drakeplanner")` saves an app
 #'   for visualizing and understanding plans.
@@ -57,11 +57,11 @@ launch_app <- function(
 #' @examples
 #' \dontrun{
 #' save_app("learndrakechanges")
-#' save_app("learndrakeplans")
+#' save_app("learndrakestatic")
 #' save_app("drakeplanner")
 #' }
 save_app <- function(
-  app = c("learndrakechanges", "learndrakeplans", "drakeplanner"),
+  app = c("learndrakechanges", "learndrakestatic", "drakeplanner"),
   path = app,
   overwrite = FALSE
 ) {

@@ -25,7 +25,7 @@ test_that("notebooks", {
 })
 
 test_that("apps", {
-  for (app in c("learndrakechanges", "learndrakeplans")) {
+  for (app in c("learndrakechanges", "learndrakestatic")) {
     path <- tempfile()
     save_app(app, path)
     out <- list.files(path)

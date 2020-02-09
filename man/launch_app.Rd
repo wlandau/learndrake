@@ -4,7 +4,7 @@
 \alias{launch_app}
 \title{Launch a supporting Shiny app}
 \usage{
-launch_app(app = c("learndrakechanges", "learndrakeplans", "drakeplanner"))
+launch_app(app = c("learndrakechanges", "learndrakestatic", "drakeplanner"))
 }
 \arguments{
 \item{app}{Character, name of the app to launch. Must be one of
@@ -19,7 +19,7 @@ apps on your local machine.
 \details{
 For \code{3-changes.Rmd}, \code{launch_app("learndrakechanges")} opens
 a collection of exercises for iterating on a \code{drake} workflow.
-For \code{4-plans.Rmd}, \code{launch_app("learndrakeplans")} opens guided exercises
+For \code{4-plans.Rmd}, \code{launch_app("learndrakestatic")} opens guided exercises
 on constructing \code{drake} plans,
 and \code{launch_app("drakeplanner")} spins up an app
 for visualizing and understanding plans.
@@ -27,7 +27,7 @@ for visualizing and understanding plans.
 \examples{
 \dontrun{
 launch_app("learndrakechanges")
-launch_app("learndrakeplans")
+launch_app("learndrakestatic")
 launch_app("drakeplanner")
 }
 }

@@ -5,7 +5,7 @@
 \title{Save the files for a supporting Shiny app}
 \usage{
 save_app(
-  app = c("learndrakechanges", "learndrakeplans", "drakeplanner"),
+  app = c("learndrakechanges", "learndrakestatic", "drakeplanner"),
   path = app,
   overwrite = FALSE
 )
@@ -27,7 +27,7 @@ for an so you can deploy it to Shiny Server.
 \details{
 For \code{3-changes.Rmd}, \code{save_app("learndrakechanges")} saves
 a collection of exercises for iterating on a \code{drake} workflow.
-For \code{4-plans.Rmd}, \code{save_app("learndrakeplans")} saves guided exercises
+For \code{4-plans.Rmd}, \code{save_app("learndrakestatic")} saves guided exercises
 on constructing \code{drake} plans,
 and \code{save_app("drakeplanner")} saves an app
 for visualizing and understanding plans.
@@ -35,7 +35,7 @@ for visualizing and understanding plans.
 \examples{
 \dontrun{
 save_app("learndrakechanges")
-save_app("learndrakeplans")
+save_app("learndrakestatic")
 save_app("drakeplanner")
 }
 }
