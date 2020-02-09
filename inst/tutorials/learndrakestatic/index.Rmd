@@ -850,3 +850,108 @@ drake_plan(
 )
 ```
 
+## Complicated plans
+
+The `map()`, `cross()`, and `combine()` transformations let you chain targets together in intricate ways. Below, let's continue the pipline by mapping over targets we previously defined.
+
+```{r complicated, exercise = TRUE, exercise.lines = 31, paged.print = FALSE}
+fun_run_values <- rlang::syms(c("good_run", "bad_run", "benchmark_run"))
+act_values <- c("relu", "relu", "sigmoid")
+
+drake_plan(
+  churn_data = split_data(file_in("data/customer_churn.csv")),
+  churn_recipe = prepare_recipe(churn_data), 
+  run = target(
+    fun_run(churn_data, churn_recipe, act1 = act),
+    transform = cross(
+      fun_run = !!fun_run_values,
+      act = !!act_values
+    )
+  ),
+  raw_runs = target(
+    bind_rows(run),
+    transform = combine(run, .by = fun_run)
+  ),
+  # Let's post-process these grouped runs.
+  runs = target(
+    post_process(raw_runs),
+    # Write map(raw_runs, .id = fun_run)
+    # to post-process each group of raw runs.
+    transform = # ...
+  ),
+  runs_plot = target(
+    plot_runs(runs, fun_run),
+    # Write map(runs, fun_run, .id = fun_run) to declare a runs_plot target
+    # for each group of runs and its original function.
+    transform = # ...
+  )
+)
+```
+
+Expected [drakeplanner](https://wlandau.shinyapps.io/drakeplanner) output:
+
+```{r}
+fun_run_values <- rlang::syms(c("good_run", "bad_run", "benchmark_run"))
+act_values <- c("relu", "relu", "sigmoid")
+
+expected <- drake_plan(
+  churn_data = split_data(file_in("data/customer_churn.csv")),
+  churn_recipe = prepare_recipe(churn_data), 
+  run = target(
+    fun_run(churn_data, churn_recipe, act1 = act),
+    transform = cross(
+      fun_run = !!fun_run_values,
+      act = !!act_values
+    )
+  ),
+  raw_runs = target(
+    bind_rows(run),
+    transform = combine(run, .by = fun_run)
+  ),
+  runs = target(
+    post_process(raw_runs),
+    transform = map(raw_runs, .id = fun_run)
+  ),
+  runs_plot = target(
+    plot_runs(runs, fun_run),
+    transform = map(runs, fun_run, .id = fun_run)
+  )
+)
+```
+
+```{r}
+dp_graph(expected)
+```
+
+```{r}
+dp_table(expected)
+```
+
+```{r complicated-check}
+fun_run_values <- rlang::syms(c("good_run", "bad_run", "benchmark_run"))
+act_values <- c("relu", "relu", "sigmoid")
+
+drake_plan(
+  churn_data = split_data(file_in("data/customer_churn.csv")),
+  churn_recipe = prepare_recipe(churn_data), 
+  run = target(
+    fun_run(churn_data, churn_recipe, act1 = act),
+    transform = cross(
+      fun_run = !!fun_run_values,
+      act = !!act_values
+    )
+  ),
+  raw_runs = target(
+    bind_rows(run),
+    transform = combine(run, .by = fun_run)
+  ),
+  runs = target(
+    post_process(raw_runs),
+    transform = map(raw_runs, .id = fun_run)
+  ),
+  runs_plot = target(
+    plot_runs(runs, fun_run),
+    transform = map(runs, fun_run, .id = fun_run)
+  )
+)
+```
