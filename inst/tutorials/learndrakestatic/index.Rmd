@@ -1,17 +1,16 @@
 ---
 title: "Static branching"
-subtitle: "Concise shorthand for long plans"
+subtitle: "Short code for long plans"
 output:
   learnr::tutorial:
     allow_skip: false
 runtime: shiny_prerendered
 ---
 
-```{r setup, include=FALSE}
+```{r setup, include = FALSE}
 library(drake)
 library(DT)
 library(learnr)
-library(praise)
 library(styler)
 library(tidyverse)
 library(visNetwork)
@@ -28,9 +27,6 @@ knitr::opts_chunk$set(
   comment = "#>",
   echo = FALSE
 )
-laud <- function() {
-  praise("${Exclamation}! ${Adverb} ${adjective} answer.")
-}
 drake_checker <- function(
   label,
   user_code,
@@ -44,10 +40,13 @@ drake_checker <- function(
   out <- eval(parse(text = user_code))
   exp <- eval(parse(text = check_code))
   ans <- same_plan(out, exp)
-  msg <- ifelse(ans, laud(), "Try again.")
+  msg <- ifelse(ans, random_praise(), "Try again.")
   list(message = msg, correct = ans, location = "append")
 }
-tutorial_options(exercise.checker = drake_checker)
+tutorial_options(
+  exercise.checker = drake_checker,
+  exercise.cap = ""
+)
 safe_deparse <- function (x, collapse = "\n") {
   paste(deparse(x, control = c("keepInteger", "keepNA")), collapse = collapse)
 }
@@ -106,7 +105,7 @@ drake_plan(
 ```{r problem}
 question(
   "Anything wrong with this plan?",
-  correct = laud(),
+  correct = random_praise(),
   incorrect = "Let's talk.",
   allow_retry = TRUE,
   answer("Too much manual typing!", correct = TRUE),
@@ -138,7 +137,7 @@ drake_plan(
 ```{r convenient}
 question(
   "Sound convenient?",
-  correct = laud(),
+  correct = random_praise(),
   incorrect = "Let's talk.",
   allow_retry = TRUE,
   answer("Yes.", correct = TRUE),
@@ -152,7 +151,7 @@ A single `map()` can take multiple grouping variables. Follow the instructions i
 
 Use the [drakeplanner](https://wlandau.shinyapps.io/drakeplanner) app to help you match your plan to the expected results below. When you are ready, click `Submit Answer` at the top right of the text editor.
 
-```{r largermap, exercise = TRUE, exercise.lines = 16, paged.print = FALSE}
+```{r largermap, exercise = TRUE, echo = FALSE, exercise.lines = 16, paged.print = FALSE}
 drake_plan(
   churn_data = split_data(file_in("data/customer_churn.csv")),
   churn_recipe = prepare_recipe(churn_data), 
@@ -164,7 +163,7 @@ drake_plan(
         "elu", "selu", "hard_sigmoid", "linear",
         "softplus", "softsign", "tanh", "exponential"
       ),
-      # Your turn: set units1 equal to c(16, 17, 18, 19, 20, 21, 22, 23).
+      # Your turn: set units equal to c(16, 17, 18, 19, 20, 21, 22, 23) below.
       units = # ...
     )
   )
@@ -289,7 +288,7 @@ drake_plan(
 ```{r concisefail}
 question(
   "Why does units1 cycle between 16 and 32?",
-  correct = laud(),
+  correct = random_praise(),
   incorrect = "Let's talk.",
   allow_retry = TRUE,
   random_answer_order = TRUE,

@@ -1,6 +1,6 @@
 ---
 title: "Static branching"
-subtitle: "Concise shorthand for large plans"
+subtitle: "Short code for long plans"
 output: html_notebook
 ---
 

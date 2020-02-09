@@ -1,13 +1,12 @@
 ---
-title: "Dealing with changes in drake workflows"
-subtitle: "You break it, drake fixes it."
+title: "Changes to workflows"
+subtitle: "And how drake responds"
 output: learnr::tutorial
 runtime: shiny_prerendered
 ---
 
 ```{r setup, include=FALSE}
 library(learnr)
-library(praise)
 options(
   drake_make_menu = FALSE,
   drake_clean_menu = FALSE,
@@ -20,9 +19,6 @@ knitr::opts_chunk$set(
   comment = "#>",
   echo = FALSE
 )
-laud <- function() {
-  praise("${Exclamation}! ${Adverb} ${adjective} answer.")
-}
 ```
 
 ## Instructions
@@ -36,7 +32,7 @@ laud <- function() {
 ```{r q0}
 question(
   "Okay?",
-  correct = laud(),
+  correct = random_praise(),
   incorrect = "Let's talk.",
   allow_retry = TRUE,
   random_answer_order = TRUE,
@@ -80,7 +76,7 @@ source("R/plan.R")
 ```{r q1}
 question(
   "Okay?",
-  correct = laud(),
+  correct = random_praise(),
   incorrect = "Let's talk.",
   allow_retry = TRUE,
   random_answer_order = FALSE,
@@ -119,7 +115,7 @@ cached()
 ```{r q2}
 question(
   "Answer",
-  correct = laud(),
+  correct = random_praise(),
   incorrect = paste(
     "make() is the function that actually runs the workflow.",
     "Creating the plan with drake_plan() does not build any targets."
@@ -159,7 +155,7 @@ make(plan)
 ```{r q3}
 question(
   "Answer",
-  correct = laud(),
+  correct = random_praise(),
   incorrect = "Run `drake::clean()` and try again.",
   allow_retry = TRUE,
   random_answer_order = TRUE,
@@ -176,7 +172,7 @@ When you called [`make(plan)`](https://docs.ropensci.org/drake/reference/make.ht
 ```{r q4}
 question(
   "Answer",
-  correct = laud(),
+  correct = random_praise(),
   incorrect = "Run `drake::clean()` and try again.",
   allow_retry = TRUE,
   random_answer_order = TRUE,
@@ -198,7 +194,7 @@ print(best_model)
 ```{r q5}
 question(
   "Answer",
-  correct = laud(),
+  correct = random_praise(),
   incorrect = "Let's talk.",
   allow_retry = TRUE,
   random_answer_order = TRUE,
@@ -220,7 +216,7 @@ make(plan)
 ```{r q6}
 question(
   "Answer",
-  correct = laud(),
+  correct = random_praise(),
   incorrect = "Let's talk.",
   allow_retry = TRUE,
   random_answer_order = TRUE,
@@ -247,7 +243,7 @@ make(plan)
 ```{r q7}
 question(
   "Answer",
-  correct = laud(),
+  correct = random_praise(),
   incorrect = "Let's talk.",
   allow_retry = TRUE,
   random_answer_order = TRUE,
@@ -272,7 +268,7 @@ make(plan)
 ```{r q8}
 question(
   "Answer",
-  correct = laud(),
+  correct = random_praise(),
   incorrect = "Let's talk.",
   allow_retry = TRUE,
   random_answer_order = TRUE,
@@ -308,7 +304,7 @@ What happens?
 ```{r q9}
 question(
   "Answer",
-  correct = laud(),
+  correct = random_praise(),
   incorrect = "Let's talk.",
   allow_retry = TRUE,
   random_answer_order = TRUE,
@@ -344,7 +340,7 @@ What happens?
 ```{r q10}
 question(
   "Answer",
-  correct = laud(),
+  correct = random_praise(),
   incorrect = "Let's talk.",
   allow_retry = TRUE,
   random_answer_order = TRUE,
@@ -369,7 +365,7 @@ Which targets rebuild, if any?
 ```{r q11}
 question(
   "Answer",
-  correct = laud(),
+  correct = random_praise(),
   incorrect = "Let's talk.",
   allow_retry = TRUE,
   random_answer_order = TRUE,
@@ -405,7 +401,7 @@ What happens?
 ```{r q12}
 question(
   "Answer",
-  correct = laud(),
+  correct = random_praise(),
   incorrect = "Let's talk.",
   allow_retry = TRUE,
   random_answer_order = TRUE,
@@ -442,7 +438,7 @@ What happens?
 ```{r q13}
 question(
   "Answer",
-  correct = laud(),
+  correct = random_praise(),
   incorrect = "Let's talk.",
   allow_retry = TRUE,
   random_answer_order = TRUE,
@@ -468,7 +464,7 @@ What do you see?
 ```{r q14}
 question(
   "Answer",
-  correct = laud(),
+  correct = random_praise(),
   incorrect = "Let's talk.",
   allow_retry = TRUE,
   random_answer_order = TRUE,
@@ -495,7 +491,7 @@ What does it return?
 ```{r q15}
 question(
   "Answer",
-  correct = laud(),
+  correct = random_praise(),
   incorrect = "Let's talk.",
   allow_retry = TRUE,
   random_answer_order = TRUE,

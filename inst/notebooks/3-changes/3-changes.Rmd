@@ -1,5 +1,6 @@
 ---
-title: "Practice the workflow"
+title: "Changes to workflows"
+subtitle: "And how drake responds"
 output: html_notebook
 ---
 
