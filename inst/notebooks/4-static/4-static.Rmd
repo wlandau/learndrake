@@ -1,0 +1,14 @@
+---
+title: "Static branching"
+subtitle: "Concise shorthand for large plans"
+output: html_notebook
+---
+
+Go to <https://wlandau.shinyapps.io/learndrakestatic> and complete the exercises. The app at <https://wlandau.shinyapps.io/drakeplanner> will help you. You can also use this notebook for scratch work.
+
+```{r}
+library(drake)
+# Write your plans here
+# plan <- drake_plan(...)
+# vis_drake_graph(plan)
+```
