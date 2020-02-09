@@ -501,3 +501,352 @@ drake_plan(
   )
 )
 ```
+
+## Data grids
+
+`map()` has a `.data` argument to let you iterate over a custom grid of values. Try it out below. Note: `.data` requires `!!`.
+
+```{r grids, exercise = TRUE, exercise.lines = 15, paged.print = FALSE}
+grid <- tibble::tibble(
+  fun_run = rlang::syms(c("good_run", "bad_run", "benchmark_run")),
+  act_values = c("relu", "relu", "sigmoid"),
+  units_values = c(16, 32, 32)
+)
+
+drake_plan(
+  churn_data = split_data(file_in("data/customer_churn.csv")),
+  churn_recipe = prepare_recipe(churn_data), 
+  run = target(
+    fun_run(churn_data, churn_recipe, act1 = act_values, units = units_values),
+    # Write .data = !!grid inside map() below.
+    transform = map()
+  )
+)
+```
+
+Expected [drakeplanner](https://wlandau.shinyapps.io/drakeplanner) output:
+
+```{r}
+grid <- tibble::tibble(
+  fun_run = rlang::syms(c("good_run", "bad_run", "benchmark_run")),
+  act_values = c("relu", "relu", "sigmoid"),
+  units_values = c(16, 32, 32)
+)
+expected <- drake_plan(
+  churn_data = split_data(file_in("data/customer_churn.csv")),
+  churn_recipe = prepare_recipe(churn_data), 
+  run = target(
+    fun_run(churn_data, churn_recipe, act1 = act_values, units = units_values),
+    transform = map(.data = !!grid)
+  )
+)
+```
+
+```{r}
+dp_graph(expected)
+```
+
+```{r}
+dp_table(expected)
+```
+
+```{r grids-check}
+grid <- tibble::tibble(
+  fun_run = rlang::syms(c("good_run", "bad_run", "benchmark_run")),
+  act_values = c("relu", "relu", "sigmoid"),
+  units_values = c(16, 32, 32)
+)
+drake_plan(
+  churn_data = split_data(file_in("data/customer_churn.csv")),
+  churn_recipe = prepare_recipe(churn_data), 
+  run = target(
+    fun_run(churn_data, churn_recipe, act1 = act_values, units = units_values),
+    transform = map(.data = !!grid)
+  )
+)
+```
+
+## Target names
+
+The names of static branching targets can get quite long. Use the custom `.id` argument of `map()` to exclude the values of `fun_run` from the names. (`.id = FALSE` produces the shortest possible names.)
+
+```{r names, exercise = TRUE, exercise.lines = 17, paged.print = FALSE}
+grid <- tibble::tibble(
+  fun_run = rlang::syms(c("good_run", "bad_run", "benchmark_run")),
+  act_values = c("relu", "relu", "sigmoid"),
+  units_values = c(16, 32, 32)
+)
+
+drake_plan(
+  churn_data = split_data(file_in("data/customer_churn.csv")),
+  churn_recipe = prepare_recipe(churn_data), 
+  run = target(
+    fun_run(churn_data, churn_recipe, act1 = act_values, units = units_values),
+    transform = map(
+      .data = !!grid,
+      # Write .id = c(act_values, unit_values).
+    )
+  )
+)
+```
+
+Expected [drakeplanner](https://wlandau.shinyapps.io/drakeplanner) output:
+
+```{r}
+grid <- tibble::tibble(
+  fun_run = rlang::syms(c("good_run", "bad_run", "benchmark_run")),
+  act_values = c("relu", "relu", "sigmoid"),
+  units_values = c(16, 32, 32)
+)
+expected <- drake_plan(
+  churn_data = split_data(file_in("data/customer_churn.csv")),
+  churn_recipe = prepare_recipe(churn_data), 
+  run = target(
+    fun_run(churn_data, churn_recipe, act1 = act_values, units = units_values),
+    transform = map(.data = !!grid, .id = c(act_values, unit_values))
+  )
+)
+```
+
+```{r}
+dp_graph(expected)
+```
+
+```{r}
+dp_table(expected)
+```
+
+```{r names-check}
+grid <- tibble::tibble(
+  fun_run = rlang::syms(c("good_run", "bad_run", "benchmark_run")),
+  act_values = c("relu", "relu", "sigmoid"),
+  units_values = c(16, 32, 32)
+)
+drake_plan(
+  churn_data = split_data(file_in("data/customer_churn.csv")),
+  churn_recipe = prepare_recipe(churn_data), 
+  run = target(
+    fun_run(churn_data, churn_recipe, act1 = act_values, units = units_values),
+    transform = map(.data = !!grid, .id = c(act_values, unit_values))
+  )
+)
+```
+
+## Cross
+
+The `cross()` transformation defines a target for every combination of grouping variables. Try it out.
+
+```{r cross, exercise = TRUE, exercise.lines = 17, paged.print = FALSE}
+fun_run_values <- rlang::syms(c("good_run", "bad_run", "benchmark_run"))
+act_values <- c("relu", "relu", "sigmoid")
+
+drake_plan(
+  churn_data = split_data(file_in("data/customer_churn.csv")),
+  churn_recipe = prepare_recipe(churn_data), 
+  run = target(
+    fun_run(churn_data, churn_recipe, act1 = act),
+    transform = map( # Replace map() with cross().
+      fun_run = !!fun_run_values,
+      act = !!act_values
+    )
+  )
+)
+```
+
+Expected [drakeplanner](https://wlandau.shinyapps.io/drakeplanner) output:
+
+```{r}
+fun_run_values <- rlang::syms(c("good_run", "bad_run", "benchmark_run"))
+act_values <- c("relu", "relu", "sigmoid")
+expected <- drake_plan(
+  churn_data = split_data(file_in("data/customer_churn.csv")),
+  churn_recipe = prepare_recipe(churn_data), 
+  run = target(
+    fun_run(churn_data, churn_recipe, act1 = act),
+    transform = cross(
+      fun_run = !!fun_run_values,
+      act = !!act_values
+    )
+  )
+)
+```
+
+```{r}
+dp_graph(expected)
+```
+
+```{r}
+dp_table(expected)
+```
+
+```{r cross-check}
+fun_run_values <- rlang::syms(c("good_run", "bad_run", "benchmark_run"))
+act_values = c("relu", "relu", "sigmoid")
+drake_plan(
+  churn_data = split_data(file_in("data/customer_churn.csv")),
+  churn_recipe = prepare_recipe(churn_data), 
+  run = target(
+    fun_run(churn_data, churn_recipe, act1 = act),
+    transform = cross(
+      fun_run = !!fun_run_values,
+      act = !!act_values
+    )
+  )
+)
+```
+
+## Combine
+
+The `combine()` transformation splices together groups of targets from `map()` and `cross()`. Below, let's combine all the runs together with `bind_rows()`.
+
+```{r combine, exercise = TRUE, exercise.lines = 18, paged.print = FALSE}
+fun_run_values <- rlang::syms(c("good_run", "bad_run", "benchmark_run"))
+act_values <- c("relu", "relu", "sigmoid")
+
+drake_plan(
+  churn_data = split_data(file_in("data/customer_churn.csv")),
+  churn_recipe = prepare_recipe(churn_data), 
+  run = target(
+    fun_run(churn_data, churn_recipe, act1 = act),
+    transform = cross(
+      fun_run = !!fun_run_values,
+      act = !!act_values
+    )
+  ),
+  all_runs = target(
+    , # Write bind_rows(run)
+      # Write transform = combine(run)
+  )
+)
+```
+
+Expected [drakeplanner](https://wlandau.shinyapps.io/drakeplanner) output:
+
+```{r}
+fun_run_values <- rlang::syms(c("good_run", "bad_run", "benchmark_run"))
+act_values <- c("relu", "relu", "sigmoid")
+
+expected <- drake_plan(
+  churn_data = split_data(file_in("data/customer_churn.csv")),
+  churn_recipe = prepare_recipe(churn_data), 
+  run = target(
+    fun_run(churn_data, churn_recipe, act1 = act),
+    transform = cross(
+      fun_run = !!fun_run_values,
+      act = !!act_values
+    )
+  ),
+  all_runs = target(
+    bind_rows(run),
+    transform = combine(run)
+  )
+)
+```
+
+```{r}
+dp_graph(expected)
+```
+
+```{r}
+dp_table(expected)
+```
+
+```{r combine-check}
+fun_run_values <- rlang::syms(c("good_run", "bad_run", "benchmark_run"))
+act_values <- c("relu", "relu", "sigmoid")
+
+drake_plan(
+  churn_data = split_data(file_in("data/customer_churn.csv")),
+  churn_recipe = prepare_recipe(churn_data), 
+  run = target(
+    fun_run(churn_data, churn_recipe, act1 = act),
+    transform = cross(
+      fun_run = !!fun_run_values,
+      act = !!act_values
+    )
+  ),
+  all_runs = target(
+    bind_rows(run),
+    transform = combine(run)
+  )
+)
+```
+
+## Combine groups
+
+`combine()` has a `.by` argument that lets you combine multiple groups of targets using grouping variables you previously defined (e.g. `combine(runs, .by = act)` or `combine(runs, .by = c(fun_run, act))`). Below, declare a group of runs for each `fun_run` function.
+
+```{r combinegroups, exercise = TRUE, exercise.lines = 18, paged.print = FALSE}
+fun_run_values <- rlang::syms(c("good_run", "bad_run", "benchmark_run"))
+act_values <- c("relu", "relu", "sigmoid")
+
+drake_plan(
+  churn_data = split_data(file_in("data/customer_churn.csv")),
+  churn_recipe = prepare_recipe(churn_data), 
+  run = target(
+    fun_run(churn_data, churn_recipe, act1 = act),
+    transform = cross(
+      fun_run = !!fun_run_values,
+      act = !!act_values
+    )
+  ),
+  grouped_runs = target(
+    bind_rows(run),
+    # Write .by = fun_run to combine all the runs for each function.
+    transform = combine(run)
+  )
+)
+```
+
+Expected [drakeplanner](https://wlandau.shinyapps.io/drakeplanner) output:
+
+```{r}
+fun_run_values <- rlang::syms(c("good_run", "bad_run", "benchmark_run"))
+act_values <- c("relu", "relu", "sigmoid")
+
+expected <- drake_plan(
+  churn_data = split_data(file_in("data/customer_churn.csv")),
+  churn_recipe = prepare_recipe(churn_data), 
+  run = target(
+    fun_run(churn_data, churn_recipe, act1 = act),
+    transform = cross(
+      fun_run = !!fun_run_values,
+      act = !!act_values
+    )
+  ),
+  grouped_runs = target(
+    bind_rows(run),
+    transform = combine(run, .by = fun_run)
+  )
+)
+```
+
+```{r}
+dp_graph(expected)
+```
+
+```{r}
+dp_table(expected)
+```
+
+```{r combinegroups-check}
+fun_run_values <- rlang::syms(c("good_run", "bad_run", "benchmark_run"))
+act_values <- c("relu", "relu", "sigmoid")
+
+drake_plan(
+  churn_data = split_data(file_in("data/customer_churn.csv")),
+  churn_recipe = prepare_recipe(churn_data), 
+  run = target(
+    fun_run(churn_data, churn_recipe, act1 = act),
+    transform = cross(
+      fun_run = !!fun_run_values,
+      act = !!act_values
+    )
+  ),
+  grouped_runs = target(
+    bind_rows(run),
+    transform = combine(run, .by = fun_run)
+  )
+)
+```
+
