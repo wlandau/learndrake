@@ -265,8 +265,7 @@ drake_plan(
 )
 ```
 
-
-## Concise maps
+## Incorrect concise maps
 
 `units = c(16, 17, 18, 19, 20, 21, 22, 23)` should be equivalent to `units = 16:23`, but we get the wrong answer when we try it in the plan.
 
@@ -300,3 +299,205 @@ question(
 )
 ```
 
+## Correct concise maps
+
+In the plan, use `!!(16:32)` instead of just `16:32`. That way, `drake_plan()` evaluates the expression `16:32` and uses the actual values. The `!!` operator ("bang-bang") comes from [tidy evaluation](https://tidyeval.tidyverse.org/).
+
+As before, use the [drakeplanner](https://wlandau.shinyapps.io/drakeplanner) app to help you match your plan to the expected results below. When you are ready, click `Submit Answer` at the top right of the text editor.
+
+```{r bangbang, exercise = TRUE, exercise.lines = 15, paged.print = FALSE}
+drake_plan(
+  churn_data = split_data(file_in("data/customer_churn.csv")),
+  churn_recipe = prepare_recipe(churn_data), 
+  run = target(
+    test_model(act1 = act, units1 = units, churn_data, churn_recipe),
+    transform = map(
+      act = c(
+        "elu", "selu", "hard_sigmoid", "linear",
+        "softplus", "softsign", "tanh", "exponential"
+      ),
+      # Write !!(16:32) instead of 16:32 below.
+      units = 16:23
+    )
+  )
+)
+```
+
+Expected [drakeplanner](https://wlandau.shinyapps.io/drakeplanner) output:
+
+```{r}
+expected <- drake_plan(
+  churn_data = split_data(file_in("data/customer_churn.csv")),
+  churn_recipe = prepare_recipe(churn_data), 
+  run = target(
+    test_model(act1 = act, units1 = units, churn_data, churn_recipe),
+    transform = map(
+      act = c(
+        "elu", "selu", "hard_sigmoid", "linear",
+        "softplus", "softsign", "tanh", "exponential"
+      ),
+      units = !!(16:23)
+    )
+  )
+)
+```
+
+```{r}
+dp_graph(expected)
+```
+
+```{r}
+dp_table(expected)
+```
+
+```{r bangbang-check}
+drake_plan(
+  churn_data = split_data(file_in("data/customer_churn.csv")),
+  churn_recipe = prepare_recipe(churn_data), 
+  run = target(
+    test_model(act1 = act, units1 = units, churn_data, churn_recipe),
+    transform = map(
+      act = c(
+        "elu", "selu", "hard_sigmoid", "linear",
+        "softplus", "softsign", "tanh", "exponential"
+      ),
+      units = !!(16:23)
+    )
+  )
+)
+```
+
+## External grouping variables
+
+Using `!!`, we can even define grouping variables outside the plan. Try it out!
+
+As before, use the [drakeplanner](https://wlandau.shinyapps.io/drakeplanner) app to help you match your plan to the expected results below. When you are ready, click `Submit Answer` at the top right of the text editor.
+
+```{r external, exercise = TRUE, exercise.lines = 18, paged.print = FALSE}
+act_values <- c(
+  "elu", "selu", "hard_sigmoid", "linear",
+  "softplus", "softsign", "tanh", "exponential"
+)
+
+unit_values <- 16:23
+
+drake_plan(
+  churn_data = split_data(file_in("data/customer_churn.csv")),
+  churn_recipe = prepare_recipe(churn_data), 
+  run = target(
+    test_model(act1 = act, units1 = units, churn_data, churn_recipe),
+    transform = map(
+      act = , # Write !!act_values to the left of the comma.
+      units = # Write !!unit_values
+    )
+  )
+)
+```
+
+Expected [drakeplanner](https://wlandau.shinyapps.io/drakeplanner) output:
+
+```{r}
+act_values <- c(
+  "elu", "selu", "hard_sigmoid", "linear",
+  "softplus", "softsign", "tanh", "exponential"
+)
+
+unit_values <- 16:23
+
+expected <- drake_plan(
+  churn_data = split_data(file_in("data/customer_churn.csv")),
+  churn_recipe = prepare_recipe(churn_data), 
+  run = target(
+    test_model(act1 = act, units1 = units, churn_data, churn_recipe),
+    transform = map(
+      act = !!act_values,
+      units = !!unit_values
+    )
+  )
+)
+```
+
+```{r}
+dp_graph(expected)
+```
+
+```{r}
+dp_table(expected)
+```
+
+```{r external-check}
+act_values <- c(
+  "elu", "selu", "hard_sigmoid", "linear",
+  "softplus", "softsign", "tanh", "exponential"
+)
+
+unit_values <- 16:23
+
+drake_plan(
+  churn_data = split_data(file_in("data/customer_churn.csv")),
+  churn_recipe = prepare_recipe(churn_data), 
+  run = target(
+    test_model(act1 = act, units1 = units, churn_data, churn_recipe),
+    transform = map(
+      act = !!act_values,
+      units = !!unit_values
+    )
+  )
+)
+```
+
+## External symbols
+
+Using the `syms()` function from the `rlang` package, you can even define external *symbol* vectors to map over.
+
+```{r externalsymbols, exercise = TRUE, exercise.lines = 14, paged.print = FALSE}
+function_names <- c("good_run", "bad_run", "benchmark_run")
+
+# Write function_syms <- rlang::syms(function_names) below.
+
+drake_plan(
+  churn_data = split_data(file_in("data/customer_churn.csv")),
+  churn_recipe = prepare_recipe(churn_data), 
+  run = target(
+    fun_run(churn_data, churn_recipe),
+    # Write fun_run = !!function_syms inside map() below.
+    transform = map()
+  )
+)
+```
+
+Expected [drakeplanner](https://wlandau.shinyapps.io/drakeplanner) output:
+
+```{r}
+function_names <- c("good_run", "bad_run", "benchmark_run")
+function_syms <- rlang::syms(function_names)
+expected <- drake_plan(
+  churn_data = split_data(file_in("data/customer_churn.csv")),
+  churn_recipe = prepare_recipe(churn_data), 
+  run = target(
+    fun_run(churn_data, churn_recipe),
+    transform = map(fun_run = !!function_syms)
+  )
+)
+```
+
+```{r}
+dp_graph(expected)
+```
+
+```{r}
+dp_table(expected)
+```
+
+```{r externalsymbols-check}
+function_names <- c("good_run", "bad_run", "benchmark_run")
+function_syms <- rlang::syms(function_names)
+drake_plan(
+  churn_data = split_data(file_in("data/customer_churn.csv")),
+  churn_recipe = prepare_recipe(churn_data), 
+  run = target(
+    fun_run(churn_data, churn_recipe),
+    transform = map(fun_run = !!function_syms)
+  )
+)
+```
