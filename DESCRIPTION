@@ -31,8 +31,7 @@ Authors@R: c(
 SystemRequirements:
   Python (>= 2.7.0),
   TensorFlow (https://www.tensorflow.org/),
-  Keras >= 2.0 (https://keras.io),
-  ZeroMQ >= 3.0.0: libzmq3-dev (deb) or zeromq-devel (rpm)
+  Keras >= 2.0 (https://keras.io)
 Depends:
   R (>= 3.5.0)
 Imports:
@@ -54,7 +53,6 @@ Imports:
   visNetwork,
   yardstick
 Suggests:
-  clustermq (>= 0.8.8),
   prettycode,
   rsconnect,
   shinytest,

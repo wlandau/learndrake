@@ -7,8 +7,7 @@ ENV PYTHON_VENV_PATH $WORKON_HOME/r-tensorflow
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
         libpython3-dev \
-        python3-venv \
-        libzmq3-dev && \
+        python3-venv && \
     rm -rf /var/lib/apt/lists/*
 
 RUN python3 -m venv ${PYTHON_VENV_PATH}
