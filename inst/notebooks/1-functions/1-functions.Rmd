@@ -374,7 +374,12 @@ Try it out.
 
 ```{r}
 best_run <- bind_rows(run_relu, run_sigmoid) %>%
-  filter(accuracy == max(accuracy))
+  top_n(1, accuracy) %>%
+  head(1)
 
+best_run
+```
+
+```{r}
 train_best_model(best_run, churn_recipe = churn_recipe)
 ```

@@ -273,7 +273,8 @@ Define a new `best_run` target with following command:
 ```{r, eval = FALSE}
 # Do not run here.
 bind_rows(run_relu, run_sigmoid, run_softmax) %>%
-  filter(accuracy == max(accuracy))
+  top_n(1, accuracy) %>%
+  head(1)
 ```
 
 Write the command in the plan below. Note: commands do not always need to be strict function calls. They can be arbitrary code chunks too, such as the one above.
@@ -286,7 +287,8 @@ plan <- drake_plan(
   run_sigmoid = test_model(act1 = "sigmoid", churn_data, churn_recipe),
   run_softmax = test_model(act1 = "softmax", churn_data, churn_recipe),
   best_run = bind_rows(run_relu, run_sigmoid, run_softmax) %>%
-    top_n(1, accuracy)
+    top_n(1, accuracy) %>%
+    head(1)
 )
 ```
 
@@ -312,7 +314,8 @@ plan <- drake_plan(
   run_sigmoid = test_model(act1 = "sigmoid", churn_data, churn_recipe),
   run_softmax = test_model(act1 = "softmax", churn_data, churn_recipe),
   best_run = bind_rows(run_relu, run_sigmoid, run_softmax) %>%
-    filter(accuracy == max(accuracy)),
+    top_n(1, accuracy) %>%
+    head(1),
   best_model = target(
     train_best_model(best_run, churn_recipe),
     format = "keras"

@@ -5,7 +5,8 @@ plan <- drake_plan(
   run_sigmoid = test_model(act1 = "sigmoid", churn_data, churn_recipe),
   run_softmax = test_model(act1 = "softmax", churn_data, churn_recipe),
   best_run = rbind(run_relu, run_sigmoid, run_softmax) %>%
-    filter(accuracy == max(accuracy)),
+    top_n(1, accuracy) %>%
+    head(1),
   best_model = target(
     train_best_model(best_run, churn_recipe),
     format = "keras"

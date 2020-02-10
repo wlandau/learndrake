@@ -42,7 +42,8 @@ drake_plan(
   ),
   best_run = target(
     bind_rows(run) %>%
-      filter(accuracy == max(accuracy)),
+      top_n(1, accuracy) %>%
+      head(1),
     transform = combine(run)
   ),
   best_model = target(
@@ -66,7 +67,8 @@ broken_plan <- drake_plan(
   ),
   best_run = target(
     bind_rows(run) %>%
-      filter(accuracy == max(accuracy)),
+      top_n(1, accuracy) %>%
+      head(1),
     transform = combine(run)
   ),
   best_model = target(
@@ -99,7 +101,7 @@ plan <- drake_plan(
     test_model(act1 = act, churn_data, churn_recipe),
     dynamic = map(act) # Dynamic branching
   ),
-  best_run = filter(run, accuracy == max(accuracy)),
+  best_run = head(top_n(run, 1, accuracy), 1),
   best_model = target(
     train_best_model(best_run, churn_recipe),
     format = "keras"
@@ -164,7 +166,7 @@ plan <- drake_plan(
   ),
   # YOUR TURN: dynamically map over the runs to get the accuracy of each one.
   acc = ???,
-  best_run = filter(run, accuracy == max(accuracy)),
+  best_run = head(top_n(run, 1, accuracy), 1),
   best_model = target(
     train_best_model(best_run, churn_recipe),
     format = "keras"
@@ -204,7 +206,7 @@ plan <- drake_plan(
     # Note: we need to explicitly map over act.
     dynamic = map(run, act, .trace = act)
   ),
-  best_run = filter(run, accuracy == max(accuracy)),
+  best_run = head(top_n(run, 1, accuracy), 1),
   best_model = target(
     train_best_model(best_run, churn_recipe),
     format = "keras"
@@ -245,7 +247,7 @@ plan <- drake_plan(
     test_model(act1 = act, units1 = units, churn_data, churn_recipe),
     dynamic = cross(???) # YOUR TURN: apply cross() to both act and units.
   ),
-  best_run = filter(run, accuracy == max(accuracy)),
+  best_run = head(top_n(run, 1, accuracy), 1),
   best_model = target(
     train_best_model(best_run, churn_recipe),
     format = "keras"
@@ -328,7 +330,7 @@ plan <- drake_plan(
   ),
   run_act = run$act1,
   best_run = target(
-    filter(run, accuracy == max(accuracy)),
+    head(top_n(run, 1, accuracy), 1),
     dynamic = group(run, run_act, .by = run_act)
   ),
   best_run_act = best_run$act1,

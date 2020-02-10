@@ -1,6 +1,8 @@
 ---
 title: "External input and output files"
-output: html_notebook
+output:
+  html_document:
+    df_print: paged
 ---
 
 # Do first
@@ -187,7 +189,7 @@ plan <- drake_plan(
     test_model(act1 = act, churn_data, churn_recipe),
     dynamic = map(act)
   ),
-  best_run = filter(run, accuracy == max(accuracy)),
+  best_run = head(top_n(run, 1, accuracy), 1),
   best_model = target(
     train_best_model(best_run, churn_recipe),
     format = "keras"
