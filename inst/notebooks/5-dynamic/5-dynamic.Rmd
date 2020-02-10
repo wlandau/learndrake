@@ -1,0 +1,124 @@
+---
+title: "Dynamic branching"
+output: html_notebook
+---
+
+# Do first
+
+1. Navigate to the `5-dynamic/` folder.
+2. Open `5-dynamic.Rproj` as an RStudio project in a new R session. (Click on `5-dynamic.Rproj` in RStudio's file manager.)
+3. Check that your working directory is correct. It should be `5-dynamic/`.
+
+```{r}
+basename(getwd()) # Should be "5-dynamic"
+```
+
+4. Run the setup chunk below.
+
+```{r, include = FALSE}
+source("../config/options.R")
+```
+
+5. Load the packages and functions.
+
+```{r, message = FALSE}
+source("R/packages.R")
+source("R/functions.R")
+```
+
+# Limitations of static branching
+
+In static branching, the *definition* of each target can depend on the *definitions* other targets.
+
+```{r, paged.print = FALSE}
+drake_plan(
+  churn_data = split_data(file_in("../data/customer_churn.csv")),
+  churn_recipe = prepare_recipe(churn_data),
+  run = target(
+    test_model(act1 = act, churn_data, churn_recipe),
+    transform = map(act = c("relu", "sigmoid", "softmax"))
+  ),
+  best_run = target(
+    bind_rows(run) %>%
+      filter(accuracy == max(accuracy)),
+    transform = combine(run)
+  ),
+  best_model = target(
+    train_best_model(best_run, churn_recipe),
+    format = "keras"
+  )
+)
+```
+
+But what if the *definition* of a target depends on the *values* of other targets? Static branching does not allow this. The plan below is broken.
+
+```{r}
+broken_plan <- drake_plan(
+  churn_data = split_data(file_in("../data/customer_churn.csv")),
+  churn_recipe = prepare_recipe(churn_data),
+  activations = c("relu", "sigmoid", "softmax"), # Target with activation functions
+  run = target(
+    test_model(act1 = act, churn_data, churn_recipe),
+    # Try to use the value of one target in the definitions of others.
+    transform = map(act = activations)
+  ),
+  best_run = target(
+    bind_rows(run) %>%
+      filter(accuracy == max(accuracy)),
+    transform = combine(run)
+  ),
+  best_model = target(
+    train_best_model(best_run, churn_recipe),
+    format = "keras"
+  )
+)
+```
+
+```{r, paged.print = FALSE}
+broken_plan
+```
+
+`test_model()` is only supposed to get a single activation function, not all three.
+
+```{r, error = TRUE}
+make(broken_plan)
+```
+
+# Dynamic branching
+
+In dynamic branching, the *definition* of a target can depend on the *values* of other targets. Let's dynamically create a model run for each activation function.
+
+```{r}
+plan <- drake_plan(
+  churn_data = split_data(file_in("../data/customer_churn.csv")),
+  churn_recipe = prepare_recipe(churn_data),
+  act = c("relu", "sigmoid", "softmax"), # A target with activation functions
+  run = target(
+    test_model(act1 = act, churn_data, churn_recipe),
+    dynamic = map(act) # Dynamic branching
+  ),
+  best_run = filter(run, accuracy == max(accuracy)),
+  best_model = target(
+    train_best_model(best_run, churn_recipe),
+    format = "keras"
+  )
+)
+```
+
+`drake` does not know in advance how many models runs it will perform, so the plan is more compact than it would have been with static branching.
+
+```{r, paged.print = FALSE}
+plan
+```
+
+```{r}
+vis_drake_graph(plan)
+```
+
+Let's run those models.
+
+```{r}
+make(plan)
+```
+
+
