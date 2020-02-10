@@ -1,6 +1,8 @@
 ---
 title: "Dynamic branching"
-output: html_notebook
+output:
+  html_document:
+    df_print: paged
 ---
 
 # Do first
@@ -97,7 +99,9 @@ plan <- drake_plan(
     test_model(act1 = act, churn_data, churn_recipe),
     dynamic = map(act) # Dynamic branching
   ),
-  best_run = filter(run, accuracy == max(accuracy)),
+  best_run = run %>%
+    filter(accuracy == max(accuracy)) %>%
+    head(n = 1),
   best_model = target(
     train_best_model(best_run, churn_recipe),
     format = "keras"
