@@ -9,7 +9,7 @@ output:
 
 1. Navigate to the `1-functions/` folder.
 2. Open `1-functions.Rproj` as an RStudio project in a new R session. (Click on `1-functions.Rproj` in RStudio's file manager.)
-3. Check that your working directory is correct. It should be `1-functions/`.
+3. Check that your working directory is correct. It should be `1-functions/`. Click on the green arrow on the right to run the code chunk.
 
 ```{r}
 basename(getwd()) # Should be "1-functions"
