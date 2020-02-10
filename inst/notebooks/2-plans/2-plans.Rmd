@@ -185,8 +185,8 @@ Your turn: add these targets to the plan.
 plan <- drake_plan(
   churn_data = split_data(file_in("../data/customer_churn.csv")),
   churn_recipe = prepare_recipe(churn_data),
-  run_relu = , # Write the command between the equals sign and comma.
-  run_sigmoid = # Write the command here.
+  run_relu = , # YOUR TURN: write the command between the equals sign and comma.
+  run_sigmoid = # YOUR TURN: write the command here.
 )
 ```
 
@@ -238,7 +238,7 @@ plan <- drake_plan(
   churn_recipe = prepare_recipe(churn_data),
   run_relu = test_model(act1 = "relu", churn_data, churn_recipe),
   run_sigmoid = test_model(act1 = "sigmoid", churn_data, churn_recipe),
-  run_softmax = # Write a new call to test_model() with act1 = "softmax"
+  run_softmax = # YOUR TURN: write a new call to test_model() with act1 = "softmax"
 )
 ```
 
@@ -283,7 +283,7 @@ plan <- drake_plan(
   run_relu = test_model(act1 = "relu", churn_data, churn_recipe),
   run_sigmoid = test_model(act1 = "sigmoid", churn_data, churn_recipe),
   run_softmax = test_model(act1 = "softmax", churn_data, churn_recipe),
-  best_run = # Write the command to get the best model run.
+  best_run = # YOUR TURN: write the command to get the best model run.
 )
 ```
 
@@ -311,8 +311,8 @@ plan <- drake_plan(
   best_run = bind_rows(run_relu, run_sigmoid, run_softmax) %>%
     filter(accuracy == max(accuracy)),
   best_model = target( # We use target() to customize the target.
-    , # Write train_best_model(best_run, churn_recipe) to the left of the comma.
-    format = "keras" # Tell drake to store the target as a Keras model.
+    , # YOUR TURN: write train_best_model(best_run, churn_recipe) to the left of the comma.
+    format = "keras" # Tells drake to store the target as a Keras model.
   )
 )
 ```
