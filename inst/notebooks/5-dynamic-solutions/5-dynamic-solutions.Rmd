@@ -99,9 +99,7 @@ plan <- drake_plan(
     test_model(act1 = act, churn_data, churn_recipe),
     dynamic = map(act) # Dynamic branching
   ),
-  best_run = run %>%
-    filter(accuracy == max(accuracy)) %>%
-    head(n = 1),
+  best_run = top_n(run, 1, accuracy),
   best_model = target(
     train_best_model(best_run, churn_recipe),
     format = "keras"
