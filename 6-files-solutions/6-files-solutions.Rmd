@@ -1,0 +1,240 @@
+---
+title: "External input and output files"
+output: html_notebook
+---
+
+# Do first
+
+1. Navigate to the `6-files-solutions/` folder.
+2. Open `6-files-solutions.Rproj` as an RStudio project in a new R session. (Click on `6-files-solutions.Rproj` in RStudio's file manager.)
+3. Check that your working directory is correct. It should be `6-files-solutions/`.
+
+```{r}
+basename(getwd()) # Should be "6-files-solutions"
+```
+
+4. Run the setup chunk below.
+
+```{r, include = FALSE}
+source("../config/options.R")
+```
+
+5. Load your packages and functions.
+
+```{r, message = FALSE}
+source("R/packages.R")
+source("R/functions.R")
+```
+
+# Reproducible file management
+
+Some targets depend on external files. When an important file changes, we want `make()` to rerun all the affected targets. That is why we wrote `file_in("../data/customer_churn.csv")` in our previous plans. This notebook explores functions `file_in()`, `file_out()`, and `knitr_in()`, and demonstrates how they help keep `drake` workflows up to date.
+
+# Input and output files.
+
+For a moment, let's forget that `drake` can save Keras models (i.e. <https://books.ropensci.org/drake/plans.html#special-data-formats-for-targets>). Let's store all our models as output files and read them back in to compute test accuracy. Our initial plan has problems.
+
+```{r}
+broken_plan <- drake_plan(
+  churn_data = split_data(file_in("../data/customer_churn.csv")),
+  churn_recipe = prepare_recipe(churn_data),
+  model_relu = save_model_hdf5(
+    train_model(act1 = "relu", churn_recipe),
+    "model_relu.h5"
+  ),
+  model_sigmoid = save_model_hdf5(
+    train_model(act1 = "sigmoid", churn_recipe),
+    "model_sigmoid.h5"
+  ),
+  test_relu = test_accuracy(
+    churn_data,
+    churn_recipe,
+    load_model_hdf5("model_relu.h5")
+  ),
+  test_sigmoid = test_accuracy(
+    churn_data,
+    churn_recipe,
+    load_model_hdf5("model_sigmoid.h5")
+  )
+)
+```
+
+Clearly, `test_relu` should depend on `model_relu` and `test_sigmoid` should depend on `model_sigmoid`. However, these dependency relationships are missing from the graph. `drake` misunderstands the workflow and cannot reliably maintain it in its current form.
+
+```{r}
+plot(broken_plan) # Like vis_drake_graph(), but without functions.
+```
+
+Your turn: use `file_in()` and `file_out()` to label the HDF5 models as input and output files. 
+
+```{r}
+plan <- drake_plan(
+  # Hint: here is an existing example of file_in().
+  churn_data = split_data(file_in("../data/customer_churn.csv")),
+  churn_recipe = prepare_recipe(churn_data),
+  model_relu = save_model_hdf5(
+    train_model(act1 = "relu", churn_recipe),
+    file_out("model_relu.h5")
+  ),
+  model_sigmoid = save_model_hdf5(
+    train_model(act1 = "sigmoid", churn_recipe),
+    file_out("model_sigmoid.h5")
+  ),
+  test_relu = test_accuracy(
+    churn_data,
+    churn_recipe,
+    load_model_hdf5(file_in("model_relu.h5"))
+  ),
+  test_sigmoid = test_accuracy(
+    churn_data,
+    churn_recipe,
+    load_model_hdf5(file_in("model_sigmoid.h5"))
+  )
+)
+```
+
+Now, the `test_*` targets should be directly downstream of the `model_*` targets.
+
+```{r}
+plot(plan)
+```
+
+Let's run that plan.
+
+```{r}
+make(plan)
+```
+
+Now, suppose one a model file gets corrupted.
+
+```{r}
+writeLines("bad model", "model_relu.h5") # Oh no!
+```
+
+`file_in()` and `file_out()` save us. The target that produced the file and all downstream targets are affected.
+
+```{r}
+outdated(plan)
+```
+
+```{r}
+vis_drake_graph(plan)
+```
+
+`make(plan)` runs only the affected targets.
+
+```{r}
+make(plan)
+```
+
+# Limitations of file_in() and friends
+
+Except for dynamic branching, `drake_plan()` is all about symbols and expressions. To figure out dependency relationships, `drake` scans the plan without running any of its commands. In other words, it needs to understand your `file_in()` statements without having to run the code.
+
+```{r}
+good_plan <- drake_plan(
+  churn_data = split_data(file_in("../data/customer_churn.csv")) # Literal path
+)
+
+vis_drake_graph(good_plan)
+```
+
+You must supply *literal strings* to `file_in()` and friends. No variables allowed.
+
+```{r}
+path <- "../data/customer_churn.csv"
+
+broken_plan <- drake_plan(
+  churn_data = split_data(file_in(path)) # No variables allowed!
+)
+
+vis_drake_graph(broken_plan)
+```
+
+Also, `file_in()` and friends must literally wrap around the strings you supply. Pipe operators like `magrittr`'s `%>%` are not allowed.
+
+```{r}
+broken_plan <- drake_plan(
+  churn_data = "../data/customer_churn.csv" %>%
+    file_in() %>% # drake's static code analyzer thinks file_in() is empty.
+    split_data()
+)
+
+vis_drake_graph(broken_plan)
+```
+
+In addition, `file_out()` is incompatible with dynamic branching. And if you use `file_in("your_file")` for a dynamic target, then all the sub-targets will depend on "your_file".
+
+# Literate programming
+
+R Markdown and `knitr` are not designed for the intense computation that `drake` workflows face. They are not pipeline tools, and they should do as little work as possible. However, they are useful components of `drake` pipelines, especially when they communicate and annotate hard-won results from previous targets. To connect an R Markdown or `knitr` report to `drake`, there are three steps.
+
+1. In the plan, use `knitr_in()` to mark the source file of your report (the `*.Rmd` or `*.Rnw` file). 
+2. In the plan, use `file_out()` to mark the rendered output (the `*.html` or `*.pdf` file).
+3. In the active code chunks of the report itself, use `drake`'s `loadd()` and `readd()` functions to explicitly mark targets that the report depends on. Not only does this tell `drake` which targets the report depends on, it also allows you to run the report by itself without calling `make()`.
+
+# Your turn: drake + R Markdown
+
+1. In the R Markdown file `results.Rmd`, write an active code chunk with `readd(best_model)`. That tells `drake` that the report depends on `results.Rmd`
+2. In the plan below, use `knitr_in()` and `file_out()` to mark the input and output files to `rmarkdown::render()`, respectively.
+
+```{r}
+plan <- drake_plan(
+  churn_data = split_data(file_in("../data/customer_churn.csv")),
+  churn_recipe = prepare_recipe(churn_data),
+  act = c("relu", "sigmoid", "softmax"),
+  run = target(
+    test_model(act1 = act, churn_data, churn_recipe),
+    dynamic = map(act)
+  ),
+  best_run = filter(run, accuracy == max(accuracy)),
+  best_model = target(
+    train_best_model(best_run, churn_recipe),
+    format = "keras"
+  ),
+  report_step = render(
+    knitr_in("results.Rmd"),
+    output_file = file_out("results.html"),
+    quiet = TRUE
+  )
+)
+```
+
+Thanks to `knitr_in()` and friends, the `report_step` target should depend on `run`, `best_model`, `"results.Rmd"`, and `"results.html"`.
+
+```{r}
+deps_target(report_step, plan)
+```
+
+```{r}
+vis_drake_graph(plan)
+```
+
+Let's run the workflow.
+
+```{r}
+make(plan)
+```
+
+Everything should be up to date now.
+
+```{r}
+outdated(plan)
+```
+
+Open `results.html` and look at the output. You should see quick summaries of hard-won targets.
+
+# Your turn: edit the R Markdown report
+
+Now, open `results.Rmd` in RStudio and add any comments you want. If you like, click the "Knit" button in RStudio to re-render the report. Afterwards, the `report_step` target should be outdated.
+
+```{r}
+outdated(plan)
+```
+
+When you are finished editing the report, rerun `make(plan)` to bring it up to date in the workflow.
+
+```{r}
+make(plan)
+```
+

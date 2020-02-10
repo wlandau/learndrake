@@ -10,5 +10,6 @@ options(
 
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  paged.print = FALSE
 )

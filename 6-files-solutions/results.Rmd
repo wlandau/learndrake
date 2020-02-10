@@ -1,0 +1,25 @@
+---
+title: "Literate programming in drake"
+output: html_document
+---
+
+```{r setup, include = FALSE}
+library(drake) # Very important to load drake itself.
+```
+
+## Model runs
+
+This active code chunk summarizes all our model runs. The `loadd()` statement tells `drake` to rerun this report whenever the `run` target changes.
+
+```{r}
+loadd(run)
+run
+```
+
+## Your turn
+
+Write a new code chunk with `readd(best_model)`. That way, `drake` will rerun this report whenever `best_model` changes.
+
+```{r}
+readd(best_model)
+```
