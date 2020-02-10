@@ -4,6 +4,7 @@ subtitle: "Short code for long plans"
 output:
   learnr::tutorial:
     allow_skip: false
+    df_print: default
 runtime: shiny_prerendered
 ---
 
