@@ -873,11 +873,16 @@ drake_cache()$get_value(history$hash[1])
 
 ## More highlights
 
-* [Efficient data formats](https://books.ropensci.org/drake/plans.html#special-data-formats-for-targets)
-* [History and data recovery](https://books.ropensci.org/drake/walkthrough.html#history-and-provenance)
-* [Dynamic branching](https://books.ropensci.org/drake/dynamic.html)
 * [High-performance computing](https://books.ropensci.org/drake/hpc.html)
-* [Memory management options](https://books.ropensci.org/drake/memory.html)
+* [Efficient data formats](https://books.ropensci.org/drake/plans.html#special-data-formats-for-targets)
+* [Dynamic branching](https://books.ropensci.org/drake/dynamic.html)
+* [Memory management](https://books.ropensci.org/drake/memory.html)
+
+```{r, eval = FALSE}
+# Run targets in parallel on a cluster:
+options(clustermq.scheduler = "slurm")
+make(plan, parallelism = "clustermq", jobs = 64)
+```
 
 ---
 

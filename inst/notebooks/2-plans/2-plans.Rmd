@@ -3,7 +3,7 @@ title: "Build up a drake plan"
 output: html_notebook
 ---
 
-# Do first
+# Instructions
 
 1. Navigate to the `2-plans/` folder.
 2. Open `2-plans.Rproj` as an RStudio project in a new R session. (Click on `2-plans.Rproj` in RStudio's file manager.)
@@ -18,6 +18,8 @@ basename(getwd()) # Should be "2-plans"
 ```{r, include = FALSE}
 source("../config/options.R")
 ```
+
+5. Read this notebook and run the code chunks along the way. Look for comments labeled "YOUR TURN". These are places where you will need to write code.
 
 # About
 
