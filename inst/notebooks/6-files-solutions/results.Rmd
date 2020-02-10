@@ -11,7 +11,7 @@ library(drake) # Very important to load drake itself.
 
 This active code chunk summarizes all our model runs. The `loadd()` statement tells `drake` to rerun this report whenever the `run` target changes.
 
-```{r}
+```{r some_active_chunk}
 loadd(run)
 run
 ```
@@ -20,6 +20,6 @@ run
 
 Write a new code chunk with `readd(best_model)`. That way, `drake` will rerun this report whenever `best_model` changes.
 
-```{r}
+```{r another_active_chunk}
 readd(best_model)
 ```

@@ -102,7 +102,7 @@ plan
 #> 3 run_relu    test_model(act1 = "relu", churn_data, churn_recipe)       … <NA>  
 #> 4 run_sigmoid test_model(act1 = "sigmoid", churn_data, churn_recipe)    … <NA>  
 #> 5 run_softmax test_model(act1 = "softmax", churn_data, churn_recipe)    … <NA>  
-#> 6 best_run    rbind(run_relu, run_sigmoid, run_softmax) %>% filter(accur… <NA>  
+#> 6 best_run    rbind(run_relu, run_sigmoid, run_softmax) %>% top_n(1, acc… <NA>  
 #> 7 best_model  train_best_model(best_run, churn_recipe)                  … keras
 ```
 
@@ -287,7 +287,8 @@ Open `R/plan.R` and change the command of `best_run`: replace `rbind()` with the
 plan <- drake_plan(
   # Keep other targets the same...
   best_run = bind_rows(run_relu, run_sigmoid, run_softmax) %>% # use bind_rows()
-    filter(accuracy == max(accuracy)),
+    top_n(1, accuracy) %>%
+    head(1),
   # Keep other targets the same...
 )
 ```
