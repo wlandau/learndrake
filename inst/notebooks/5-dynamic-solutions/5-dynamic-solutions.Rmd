@@ -3,14 +3,14 @@ title: "Dynamic branching"
 output: html_notebook
 ---
 
-# Instructions
+# Do first
 
-1. Navigate to the `5-dynamic/` folder.
-2. Open `5-dynamic.Rproj` as an RStudio project in a new R session. (Click on `5-dynamic.Rproj` in RStudio's file manager.)
-3. Check that your working directory is correct. It should be `5-dynamic/`.
+1. Navigate to the `5-dynamic-solutions/` folder.
+2. Open `5-dynamic-solutions.Rproj` as an RStudio project in a new R session. (Click on `5-dynamic-solutions.Rproj` in RStudio's file manager.)
+3. Check that your working directory is correct. It should be `5-dynamic-solutions/`.
 
 ```{r}
-basename(getwd()) # Should be "5-dynamic"
+basename(getwd()) # Should be "5-dynamic-solutions"
 ```
 
 4. Run the setup chunk below.
@@ -25,8 +25,6 @@ source("../config/options.R")
 source("R/packages.R")
 source("R/functions.R")
 ```
-
-6. Read this notebook and run the code chunks along the way. Look for comments labeled "YOUR TURN". These are places where you will need to write code.
 
 # Limitations of static branching
 
@@ -160,10 +158,12 @@ plan <- drake_plan(
   act = c("relu", "sigmoid", "softmax"),
   run = target(
     test_model(act1 = act, churn_data, churn_recipe),
-    dynamic = map(act)
+    dynamic = map(act) 
   ),
-  # YOUR TURN: dynamically map over the runs to get the accuracy of each one.
-  acc = ???,
+  acc = target(
+    run$accuracy,
+    dynamic = map(run)
+  ),
   best_run = filter(run, accuracy == max(accuracy)),
   best_model = target(
     train_best_model(best_run, churn_recipe),
@@ -199,8 +199,7 @@ plan <- drake_plan(
   ),
   acc = target(
     run$accuracy,
-    # The .trace argument labels each accuracy value
-    # with the corresponding activation function.
+    # Label each accuracy value with the corresponding activation function.
     # Note: we need to explicitly map over act.
     dynamic = map(run, act, .trace = act)
   ),
@@ -243,7 +242,7 @@ plan <- drake_plan(
   run = target(
     # Using different layer sizes.
     test_model(act1 = act, units1 = units, churn_data, churn_recipe),
-    dynamic = cross(???) # YOUR TURN: apply cross() to both act and units.
+    dynamic = cross(act, units) # Your turn: cross() over both act and units.
   ),
   best_run = filter(run, accuracy == max(accuracy)),
   best_model = target(
@@ -282,9 +281,7 @@ plan <- drake_plan(
   run_act = run$act1, # Needed for .by in group() below.
   grouped_runs = target(
     run,
-    # YOUR TURN: Use group() to get the best run for each activation function.
-    # Hint: use apply group() to both run and run_act, and supply run_act to .by.
-    dynamic = ???
+    dynamic = group(run, run_act, .by = run_act)
   )
 )
 ```
