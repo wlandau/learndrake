@@ -167,4 +167,74 @@ In addition, `file_out()` is incompatible with dynamic branching. And if you use
 
 # Literate programming
 
-R Markdown and `knitr` are not designed for the long, intense, complicated computation that `drake` workflows face. However, they are useful for summarizing the results of upstream targets. That is why `drake` has a special `knitr_in()` function 
+R Markdown and `knitr` are not designed for the intense computation that `drake` workflows face. They are not pipeline tools, and they should do as little work as possible. However, they are useful components of `drake` pipelines, especially when they communicate and annotate hard-won results from previous targets. To connect an R Markdown or `knitr` report to `drake`, there are three steps.
+
+1. In the plan, use `knitr_in()` to mark the source file of your report (the `*.Rmd` or `*.Rnw` file). 
+2. In the plan, use `file_out()` to mark the rendered output (the `*.html` or `*.pdf` file).
+3. In the active code chunks of the report itself, use `drake`'s `loadd()` and `readd()` functions to explicitly mark targets that the report depends on. Not only does this tell `drake` which targets the report depends on, it also allows you to run the report by itself without calling `make()`.
+
+# Your turn: drake + R Markdown
+
+1. In the R Markdown file `results.Rmd`, write an active code chunk with `readd(best_model)`. That tells `drake` that the report depends on `results.Rmd`
+2. In the plan below, use `knitr_in()` and `file_out()` to mark the input and output files to `rmarkdown::render()`, respectively.
+
+```{r}
+plan <- drake_plan(
+  churn_data = split_data(file_in("../data/customer_churn.csv")),
+  churn_recipe = prepare_recipe(churn_data),
+  act = c("relu", "sigmoid", "softmax"),
+  run = target(
+    test_model(act1 = act, churn_data, churn_recipe),
+    dynamic = map(act)
+  ),
+  best_run = filter(run, accuracy == max(accuracy)),
+  best_model = target(
+    train_best_model(best_run, churn_recipe),
+    format = "keras"
+  ),
+  report_step = render(
+    knitr_in("results.Rmd"),
+    output_file = file_out("results.html"),
+    quiet = TRUE
+  )
+)
+```
+
+Thanks to `knitr_in()` and friends, the `report_step` target should depend on `run`, `best_model`, `"results.Rmd"`, and `"results.html"`.
+
+```{r}
+deps_target(report_step, plan)
+```
+
+```{r}
+vis_drake_graph(plan)
+```
+
+Let's run the workflow.
+
+```{r}
+make(plan)
+```
+
+Everything should be up to date now.
+
+```{r}
+outdated(plan)
+```
+
+Open `results.html` and look at the output. You should see quick summaries of hard-won targets.
+
+# Your turn: edit the R Markdown report
+
+Now, open `results.Rmd` in RStudio and add any comments you want. If you like, click the "Knit" button in RStudio to re-render the report. Afterwards, the `report_step` target should be outdated.
+
+```{r}
+outdated(plan)
+```
+
+When you are finished editing the report, rerun `make(plan)` to bring it up to date in the workflow.
+
+```{r}
+make(plan)
+```
+

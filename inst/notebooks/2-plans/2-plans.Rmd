@@ -19,7 +19,7 @@ basename(getwd()) # Should be "2-plans"
 source("../config/options.R")
 ```
 
-5. Read this notebook and run the code chunks along the way. Look for comments labeled "YOUR TURN". These are places where you will need to write code.
+5. Read the notebook below and run the code chunks along the way. Look out for comments with "YOUR TURN". Those are places where you will need to write code. Feel free to peek at `2-plans-solutions/2-plans-solutions.Rmd` if you get stuck.
 
 # About
 

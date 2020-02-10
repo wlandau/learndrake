@@ -26,7 +26,7 @@ source("R/packages.R")
 source("R/functions.R")
 ```
 
-6. Read this notebook and run the code chunks along the way. Look for comments labeled "YOUR TURN". These are places where you will need to write code.
+6. Read the notebook below and run the code chunks along the way. Look out for comments with "YOUR TURN". Those are places where you will need to write code. Feel free to peek at `5-dynamic-solutions/5-dynamic-solutions.Rmd` if you get stuck.
 
 # Limitations of static branching
 
