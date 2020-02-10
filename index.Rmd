@@ -63,7 +63,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r, include = FALSE}
+```{r, include = FALSE, message = FALSE}
 options(
   warnPartialMatchArgs = FALSE,
   drake_clean_menu = FALSE,
@@ -85,6 +85,10 @@ purrr::walk(
     suppressMessages(suppressWarnings(library(pkg, character.only = TRUE)))
   }
 )
+drake:::r_make_message(force = TRUE)
+if (file.exists(".drake")) {
+  drake_cache()$unlock()
+}
 clean(destroy = TRUE)
 ```
 
@@ -110,7 +114,9 @@ clean(destroy = TRUE)
 4. Frequent changes to code and data.
 
 <img src = "./images/sisyphus.svg" align="left" style="border: none; box-shadow: none; height: 375px; text-align: center;">
-<div style="font-size: 0.5em; text-align: center"><a href="https://openclipart.org/detail/275842/sisyphus-overcoming-silhouette">https://openclipart.org/detail/275842/sisyphus-overcoming-silhouette</a></div>
+<br>
+
+* <https://openclipart.org/detail/275842/sisyphus-overcoming-silhouette>
 
 ---
 
@@ -161,7 +167,7 @@ clean(destroy = TRUE)
 
 ## Example drake workflow
 
-- Use deep learning to predict which customers will cancel their telecom subscriptions.
+- Find the model that best predicts which customers will cancel their telecom subscriptions.
 - [IBM Watson Telco Customer Churn dataset](https://www.ibm.com/communities/analytics/watson-analytics-blog/predictive-insights-in-the-telco-customer-churn-data-set/).
 - Workflow principles generalize to the life sciences.
 
@@ -189,11 +195,6 @@ R/
 └── 05-plot.R
 data/
 └── customer_churn.csv
-output/
-├── model_relu.h5
-├── model_sigmoid.h5
-├── confusion_matrix.rds
-└── metrics_plot.png
 ```
 
 ---
@@ -220,8 +221,13 @@ add_things(c(3, 4), c(5, 6))
 ## Functions in a drake workflow
 
 ```{r, eval = FALSE}
-prepare_recipe <- function(data) {
-  data %>%
+split_data <- function(churn_file) {
+  read_csv(churn_file, col_types = cols()) %>%
+    initial_split(prop = 0.3)
+}
+
+prepare_recipe <- function(churn_data) {
+  churn_data %>%
     training() %>%
     recipe(Churn ~ .) %>%
     step_rm(customerID) %>%
@@ -241,22 +247,25 @@ prepare_recipe <- function(data) {
 ## Functions in a drake workflow
 
 ```{r, eval = FALSE}
-define_model <- function(rec, units1, units2, act1, act2, act3) {
+define_model <- function(churn_recipe, units1, units2, act1, act2, act3) {
   # ...
 }
 
-train_model <- function(
-  rec,
-  units1 = 16,
-  units2 = 16,
-  act1 = "relu",
-  act2 = "relu",
-  act3 = "sigmoid"
-) {
+train_model <- function(churn_recipe, units1, units2, act1, act2, act3) {
   # ...
 }
 
-# more functions...
+test_accuracy <- function(churn_data, churn_recipe, model) {
+  # ...
+}
+
+test_model <- function(churn_data, churn_recipe, units1, units2, act1, act2, act3) {
+  # ...
+}
+
+train_best_model <- function(best_run, churn_recipe) {
+  # ...
+}
 ```
 
 ---
@@ -285,8 +294,13 @@ library(rsample)
 library(recipes)
 library(yardstick)
 
-prepare_recipe <- function(data) {
-  data %>%
+split_data <- function(churn_file) {
+  read_csv(churn_file, col_types = cols()) %>%
+    initial_split(prop = 0.3)
+}
+
+prepare_recipe <- function(churn_data) {
+  churn_data %>%
     training() %>%
     recipe(Churn ~ .) %>%
     step_rm(customerID) %>%
@@ -300,9 +314,9 @@ prepare_recipe <- function(data) {
     prep()
 }
 
-define_model <- function(rec, units1, units2, act1, act2, act3) {
+define_model <- function(churn_recipe, units1, units2, act1, act2, act3) {
   input_shape <- ncol(
-    juice(rec, all_predictors(), composition = "matrix")
+    juice(churn_recipe, all_predictors(), composition = "matrix")
   )
   keras_model_sequential() %>%
     layer_dense(
@@ -326,21 +340,14 @@ define_model <- function(rec, units1, units2, act1, act2, act3) {
 }
 
 train_model <- function(
-  rec,
+  churn_recipe,
   units1 = 16,
   units2 = 16,
   act1 = "relu",
   act2 = "relu",
   act3 = "sigmoid"
 ) {
-  model <- define_model(
-    rec = rec,
-    units1 = units1,
-    units2 = units2,
-    act1 = act1,
-    act2 = act2,
-    act3 = act3
-  )
+  model <- define_model(churn_recipe, units1, units2, act1, act2, act3)
   compile(
     model,
     optimizer = "adam",
@@ -348,11 +355,11 @@ train_model <- function(
     metrics = c("accuracy")
   )
   x_train_tbl <- juice(
-    rec,
+    churn_recipe,
     all_predictors(),
     composition = "matrix"
   )
-  y_train_vec <- juice(rec, all_outcomes()) %>%
+  y_train_vec <- juice(churn_recipe, all_outcomes()) %>%
     pull()
   fit(
     object = model,
@@ -366,8 +373,8 @@ train_model <- function(
   model
 }
 
-confusion_matrix <- function(data, rec, model) {
-  testing_data <- bake(rec, testing(data))
+test_accuracy <- function(churn_data, churn_recipe, model) {
+  testing_data <- bake(churn_recipe, testing(churn_data))
   x_test_tbl <- testing_data %>%
     select(-Churn) %>%
     as.matrix()
@@ -391,19 +398,42 @@ confusion_matrix <- function(data, rec, model) {
     class_prob = yhat_keras_prob_vec
   )
   estimates_keras_tbl %>%
-    conf_mat(truth, estimate)
+    conf_mat(truth, estimate) %>%
+    summary() %>%
+    filter(.metric == "accuracy") %>%
+    pull(.estimate)
 }
 
-compare_models <- function(...) {
-  name <- match.call()[-1] %>%
-    as.character()
-  df <- map_df(list(...), summary) %>%
-    filter(.metric %in% c("accuracy", "sens", "spec")) %>%
-    mutate(name = rep(name, each = n() / length(name))) %>%
-    rename(metric = .metric, estimate = .estimate)
-  ggplot(df) +
-    geom_line(aes(x = metric, y = estimate, color = name, group = name)) +
-    theme_gray(24)
+test_model <- function(
+  churn_data,
+  churn_recipe,
+  units1 = 16,
+  units2 = 16,
+  act1 = "relu",
+  act2 = "relu",
+  act3 = "sigmoid"
+) {
+  model <- train_model(churn_recipe, units1, units2, act1, act2, act3)
+  accuracy <- test_accuracy(churn_data, churn_recipe, model)
+  tibble(
+    accuracy = accuracy,
+    units1 = units1,
+    units2 = units2,
+    act1 = act1,
+    act2 = act2,
+    act3 = act3
+  )
+}
+
+train_best_model <- function(best_run, churn_recipe) {
+  train_model(
+    churn_recipe,
+    best_run$units1,
+    best_run$units2,
+    best_run$act1,
+    best_run$act2,
+    best_run$act3
+  )
 }
 ```
 
@@ -416,12 +446,8 @@ compare_models <- function(...) {
 ```{r}
 # R/plan.R
 plan <- drake_plan(
-  rec = prepare_recipe(data), # Use your functions. #<<
-  data = read_csv(
-    file_in("data/customer_churn.csv"),
-    col_types = cols()
-  ) %>%
-    initial_split(prop = 0.3)
+  churn_recipe = prepare_recipe(churn_data),
+  churn_data = split_data(file_in("data/customer_churn.csv"))
 )
 ```
 
@@ -447,9 +473,14 @@ source("R/plan.R")
 vis_drake_graph(plan)
 ```
 
+```{r, echo = FALSE}
+vis_drake_graph(plan, main = "", file = "images/graph1.png", navigationButtons = FALSE)
+```
+
 <center>
-<img src = "./images/graph1.png" style="border: none; box-shadow: none; height: 300px">
+<img src="images/graph1.png", height = "450px" align="middle" style="border: none; box-shadow: none; text-align: center;">
 </center>
+
 
 ---
 
@@ -467,14 +498,15 @@ make(plan)
 
 ---
 
-## Exploratory analysis
+## Check the targets for problems
 
-* Did your targets come out okay?
+- `loadd()` and `readd()` get targets from the cache.
 
 ```{r}
-loadd(data) # From drake's cache.
+ncol(training(readd(churn_data)))
 
-print(data)
+loadd(churn_recipe)
+ncol(juice(churn_recipe))
 ```
 
 ---
@@ -486,20 +518,10 @@ print(data)
 ```{r}
 # R/plan.R
 plan <- drake_plan(
-  rec = prepare_recipe(data), 
-  data = read_csv(
-    file_in("data/customer_churn.csv"),
-    col_types = cols()
-  ) %>%
-    initial_split(prop = 0.3),
-  model_relu = target( #<<
-    train_model(rec, act1 = "relu"), #<<
-    format = "keras" #<<
-  ), #<<
-  model_sigmoid = target( #<<
-    train_model(rec, act1 = "sigmoid"), #<<
-    format = "keras" #<<
-  ) #<<
+  churn_recipe = prepare_recipe(churn_data), 
+  churn_data = split_data(file_in("data/customer_churn.csv")),
+  run_relu = test_model(act1 = "relu", churn_data, churn_recipe), #<<
+  run_sigmoid = test_model(act1 = "sigmoid", churn_data, churn_recipe) #<<
 )
 ```
 
@@ -525,15 +547,17 @@ outdated(plan)
 vis_drake_graph(plan)
 ```
 
+```{r, echo = FALSE}
+vis_drake_graph(plan, main = "", file = "images/graph2.png", navigationButtons = FALSE)
+```
+
 <center>
-<img src = "./images/graph2.png" style="border: none; box-shadow: none; height: 400px">
+<img src="images/graph2.png", height = "550px" align="middle" style="border: none; box-shadow: none; text-align: center;">
 </center>
 
 ---
 
 ## drake skips up-to-date targets.
-
-* The dataset and recipe are up to date, so `drake` skips them and focuses on the models.
 
 ```{r, eval = FALSE}
 source("R/packages.R")
@@ -547,10 +571,47 @@ make(plan)
 
 ---
 
-## Did the models turn out okay?
+## Inspect the newest targets.
 
 ```{r}
-readd(model_relu)
+readd(run_relu)
+
+readd(run_sigmoid)
+```
+
+---
+
+## Find the best model
+
+```{r}
+plan <- drake_plan(
+  churn_recipe = prepare_recipe(churn_data), 
+  churn_data = split_data(file_in("data/customer_churn.csv")),
+  run_relu = test_model(act1 = "relu", churn_data, churn_recipe),
+  run_sigmoid = test_model(act1 = "sigmoid", churn_data, churn_recipe),
+  best_run = bind_rows(run_relu, run_sigmoid) %>% #<<
+    filter(accuracy == max(accuracy)), #<<
+  best_model = target( #<<
+    train_best_model(best_run, churn_recipe), #<<
+    format = "keras" #<<
+  ) #<<
+)
+```
+
+---
+
+## Find the best model
+
+```{r}
+make(plan)
+```
+
+---
+
+## Find the best model
+
+```{r}
+readd(best_model)
 ```
 
 ---
@@ -560,24 +621,17 @@ readd(model_relu)
 ```{r}
 # R/plan.R
 plan <- drake_plan(
-  rec = prepare_recipe(data), 
-  data = read_csv(
-    file_in("data/customer_churn.csv"),
-    col_types = cols()
-  ) %>%
-    initial_split(prop = 0.3),
-  model_relu = target(
-    train_model(rec, act1 = "relu"),
+  churn_recipe = prepare_recipe(churn_data), 
+  churn_data = split_data(file_in("data/customer_churn.csv")),
+  run_relu = test_model(act1 = "relu", churn_data, churn_recipe),
+  run_sigmoid = test_model(act1 = "sigmoid", churn_data, churn_recipe),
+  run_softmax = test_model(act1 = "softmax", churn_data, churn_recipe), #<<
+  best_run = bind_rows(run_relu, run_sigmoid, run_softmax) %>% #<<
+    filter(accuracy == max(accuracy)),
+  best_model = target(
+    train_best_model(best_run, churn_recipe),
     format = "keras"
-  ),
-  model_sigmoid = target(
-    train_model(rec, act1 = "sigmoid"),
-    format = "keras"
-  ),
-  model_softmax = target( #<<
-    train_model(rec, act1 = "softmax"), #<<
-    format = "keras" #<<
-  ) #<<
+  )
 )
 ```
 
@@ -603,13 +657,20 @@ outdated(plan)
 vis_drake_graph(plan)
 ```
 
+```{r, echo = FALSE}
+vis_drake_graph(plan, main = "", file = "images/graph3.png", navigationButtons = FALSE)
+```
+
 <center>
-<img src = "./images/graph3.png" style="border: none; box-shadow: none; height: 400px">
+<img src="images/graph3.png", height = "550px" align="middle" style="border: none; box-shadow: none; text-align: center;">
 </center>
 
 ---
 
-## Skipping up-to-date models saves time.
+## New best model?
+
+- Only if the new run beats the old runs.
+- Otherwise, `drake` does not bother to retrain the best model.
 
 ```{r, eval = FALSE}
 source("R/packages.R")
@@ -617,7 +678,13 @@ source("R/functions.R")
 source("R/plan.R")
 ```
 
-```{r}
+```{r, eval = FALSE}
+make(plan)
+#> target run_softmax
+#> target best_run
+```
+
+```{r, echo = FALSE, message = FALSE}
 make(plan)
 ```
 
@@ -626,9 +693,9 @@ make(plan)
 ## What if we need to change a function?
 
 ```{r}
-define_model <- function(rec, units1, units2, act1, act2, act3) {
+define_model <- function(churn_recipe, units1, units2, act1, act2, act3) {
   input_shape <- ncol(
-    juice(rec, all_predictors(), composition = "matrix")
+    juice(churn_recipe, all_predictors(), composition = "matrix")
   )
   keras_model_sequential() %>%
     layer_dense(
@@ -637,7 +704,7 @@ define_model <- function(rec, units1, units2, act1, act2, act3) {
       activation = act1,
       input_shape = input_shape
     ) %>%
-    layer_dropout(rate = 0.2) %>% # changed #<<
+    layer_dropout(rate = 0.2) %>% # previously 0.1 #<<
     layer_dense(
       units = units2,
       kernel_initializer = "uniform",
@@ -661,8 +728,12 @@ source("R/functions.R")
 vis_drake_graph(plan)
 ```
 
+```{r, echo = FALSE}
+vis_drake_graph(plan, main = "", file = "images/graph4.png", navigationButtons = FALSE)
+```
+
 <center>
-<img src = "./images/graph4.png" style="border: none; box-shadow: none; height: 400px">
+<img src="images/graph4.png", height = "550px" align="middle" style="border: none; box-shadow: none; text-align: center;">
 </center>
 
 ---
@@ -681,7 +752,38 @@ make(plan)
 
 ---
 
-## Similar story if the data file changes.
+## Undo the change.
+
+```{r}
+define_model <- function(churn_recipe, units1, units2, act1, act2, act3) {
+  input_shape <- ncol(
+    juice(churn_recipe, all_predictors(), composition = "matrix")
+  )
+  keras_model_sequential() %>%
+    layer_dense(
+      units = units1,
+      kernel_initializer = "uniform",
+      activation = act1,
+      input_shape = input_shape
+    ) %>%
+    layer_dropout(rate = 0.1) %>% # Changed back to 0.1. #<<
+    layer_dense(
+      units = units2,
+      kernel_initializer = "uniform",
+      activation = act2
+    ) %>%
+    layer_dropout(rate = 0.1) %>%
+    layer_dense(
+      units = 1,
+      kernel_initializer = "uniform",
+      activation = act3
+    )
+}
+```
+
+---
+
+## Undo the change.
 
 ```{r, eval = FALSE}
 source("R/packages.R")
@@ -689,15 +791,32 @@ source("R/functions.R")
 source("R/plan.R")
 ```
 
-```{r, eval = FALSE}
-make(plan)
-#> target data
-#> target rec
-#> target model_relu
-#> target model_sigmoid
-#> target model_softmax
+* Recover old targets instead of building new ones.
+
+```{r}
+make(plan, recover = TRUE)
 ```
 
+---
+
+## Similar story if the data file changes.
+
+```{r, eval = FALSE}
+source("R/packages.R")
+source("R/functions.R")
+source("R/plan.R") # Requires file_in() in the plan.
+```
+
+```{r, eval = FALSE}
+make(plan)
+#> target churn_data
+#> target churn_recipe
+#> target run_relu
+#> target run_sigmoid
+#> target run_softmax
+#> target best_run
+#> target best_model
+```
 
 ---
 
@@ -723,19 +842,47 @@ outdated(plan)
 vis_drake_graph(plan)
 ```
 
+```{r, echo = FALSE}
+vis_drake_graph(plan, main = "", file = "images/graph5.png", navigationButtons = FALSE)
+```
+
 <center>
-<img src = "./images/graph5.png" style="border: none; box-shadow: none; height: 400px">
+<img src="images/graph5.png", height = "550px" align="middle" style="border: none; box-shadow: none; text-align: center;">
 </center>
+
+---
+
+## History of past model runs
+
+```{r}
+history <- drake_history() %>%
+  select(target, act1, exists, hash) %>%
+  filter(!is.na(act1)) %>%
+  print()
+```
+
+---
+
+## Recover an old model run.
+
+```{r}
+drake_cache()$get_value(history$hash[1])
+```
 
 ---
 
 ## More highlights
 
-* [Efficient data formats](https://books.ropensci.org/drake/plans.html#special-data-formats-for-targets)
-* [History and data recovery](https://books.ropensci.org/drake/walkthrough.html#history-and-provenance)
-* [Dynamic branching](https://books.ropensci.org/drake/dynamic.html)
 * [High-performance computing](https://books.ropensci.org/drake/hpc.html)
-* [Memory management options](https://books.ropensci.org/drake/memory.html)
+* [Efficient data formats](https://books.ropensci.org/drake/plans.html#special-data-formats-for-targets)
+* [Dynamic branching](https://books.ropensci.org/drake/dynamic.html)
+* [Memory management](https://books.ropensci.org/drake/memory.html)
+
+```{r, eval = FALSE}
+# Run targets in parallel on a cluster:
+options(clustermq.scheduler = "slurm")
+make(plan, parallelism = "clustermq", jobs = 64)
+```
 
 ---
 
