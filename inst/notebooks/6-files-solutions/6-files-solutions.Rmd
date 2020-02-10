@@ -5,12 +5,12 @@ output: html_notebook
 
 # Do first
 
-1. Navigate to the `6-files/` folder.
-2. Open `6-files.Rproj` as an RStudio project in a new R session. (Click on `6-files.Rproj` in RStudio's file manager.)
-3. Check that your working directory is correct. It should be `6-files/`.
+1. Navigate to the `6-files-solutions/` folder.
+2. Open `6-files-solutions.Rproj` as an RStudio project in a new R session. (Click on `6-files-solutions.Rproj` in RStudio's file manager.)
+3. Check that your working directory is correct. It should be `6-files-solutions/`.
 
 ```{r}
-basename(getwd()) # Should be "6-files"
+basename(getwd()) # Should be "6-files-solutions"
 ```
 
 4. Run the setup chunk below.
@@ -25,8 +25,6 @@ source("../config/options.R")
 source("R/packages.R")
 source("R/functions.R")
 ```
-
-6. Read the notebook below and run the code chunks along the way. Look out for comments with "YOUR TURN". Those are places where you will need to write code. Check `6-files-solutions/6-files-solutions.Rmd` if you get stuck.
 
 # Reproducible file management
 
@@ -76,23 +74,21 @@ plan <- drake_plan(
   churn_recipe = prepare_recipe(churn_data),
   model_relu = save_model_hdf5(
     train_model(act1 = "relu", churn_recipe),
-    "model_relu.h5" # YOUR TURN: put "model_relu.h5" inside file_out().
+    file_out("model_relu.h5")
   ),
   model_sigmoid = save_model_hdf5(
     train_model(act1 = "sigmoid", churn_recipe),
-    "model_sigmoid.h5" # YOUR TURN: put "model_sigmoid.h5" inside file_out().
+    file_out("model_sigmoid.h5")
   ),
   test_relu = test_accuracy(
     churn_data,
     churn_recipe,
-    # YOUR TURN: put the file name inside file_in().
-    load_model_hdf5("model_relu.h5")
+    load_model_hdf5(file_in("model_relu.h5"))
   ),
   test_sigmoid = test_accuracy(
     churn_data,
     churn_recipe,
-    # YOUR TURN: put the file name inside file_in().
-    load_model_hdf5("model_sigmoid.h5")
+    load_model_hdf5(file_in("model_sigmoid.h5"))
   )
 )
 ```
