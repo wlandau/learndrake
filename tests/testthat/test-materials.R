@@ -10,13 +10,12 @@ test_that("notebooks", {
   save_notebooks(path)
   out <- list.files(path)
   exp <- c(
-    "1-churn",
-    "2-setup",
-    "3-flow",
-    "4-plans",
-    "5-files",
-    "6-reports",
-    "7-hpc",
+    "1-functions",
+    "2-plans",
+    "3-changes",
+    "4-static",
+    "5-dynamic",
+    "6-files",
     "config",
     "data",
     "README.md"
@@ -25,7 +24,7 @@ test_that("notebooks", {
 })
 
 test_that("apps", {
-  for (app in c("learndrakeflow", "learndrakeplans")) {
+  for (app in c("learndrakechanges", "learndrakestatic")) {
     path <- tempfile()
     save_app(app, path)
     out <- list.files(path)
@@ -43,7 +42,7 @@ test_that("save_app() idempotence (#19)", {
   dir <- tempfile()
   dir.create(dir)
   withr::local_dir(dir)
-  path <- "learndrakeflow"
+  path <- "learndrakechanges"
   dir.create(path)
   expect_error(
     save_app(app = path, path = path, overwrite = FALSE),

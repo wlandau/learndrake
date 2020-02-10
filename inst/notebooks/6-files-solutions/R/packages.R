@@ -1,0 +1,7 @@
+library(drake)
+library(keras)
+library(rmarkdown)
+library(recipes)
+library(rsample)
+library(tidyverse)
+library(yardstick)

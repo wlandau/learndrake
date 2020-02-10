@@ -1,0 +1,503 @@
+---
+title: "Changes to workflows"
+subtitle: "And how drake responds"
+output: learnr::tutorial
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+options(
+  drake_make_menu = FALSE,
+  drake_clean_menu = FALSE,
+  warnPartialMatchArgs = FALSE,
+  crayon.enabled = FALSE,
+  readr.show_progress = FALSE
+)
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  echo = FALSE
+)
+```
+
+## Instructions
+
+1. Download the HTML notebooks and supporting files with [`learndrake::save_notebooks()`](https://github.com/wlandau/learndrake).
+2. Open [3-changes/3-changes.Rmd](https://github.com/wlandau/learndrake/blob/master/inst/notebooks/3-changes/3-changes.Rmd) in a fresh R session.
+3. Make sure your working directory is `3-changes/`.
+4. Step through these exercises in order. Unless otherwise indicated, run the code chunks in your R console. Check the answers as you go along.
+5. If something breaks along the way, you restart your R session and get a fresh copy of the notebooks and supporting files ([`learndrake::save_notebooks()`](https://github.com/wlandau/learndrake)).
+
+```{r instructions}
+question(
+  "Okay?",
+  correct = random_praise(),
+  incorrect = "Let's talk.",
+  allow_retry = TRUE,
+  random_answer_order = TRUE,
+  answer("Yes", correct = TRUE),
+  answer("No"),
+  answer("My computations run too fast to ever need drake."),
+  answer("I have waited my whole life for this question.")
+)
+```
+
+## Source the scripts
+
+Verify that you are in the right working directory.
+
+```r
+basename(getwd()) # Should be "3-changes"
+#> [1] "3-changes"
+```
+
+Set some configuration options.
+
+```r
+source("../config/options.R")
+```
+
+There should be an `R/` folder with 3 scripts.
+
+```r
+list.files("R")
+#> [1] "functions.R" "packages.R"  "plan.R"
+```
+
+Run them to get your R session ready for [`drake`](https://docs.ropensci.org/drake).
+
+```r
+source("R/packages.R")
+source("R/functions.R")
+source("R/plan.R")
+```
+
+```{r source-the-scripts}
+question(
+  "Okay?",
+  correct = random_praise(),
+  incorrect = "Let's talk.",
+  allow_retry = TRUE,
+  random_answer_order = FALSE,
+  answer("Yes", correct = TRUE),
+  answer("No"),
+  answer("Why?"),
+  answer("No seriously, why? I need to understand this before we move on.")
+)
+```
+
+## Plan
+
+You now have a [plan](https://books.ropensci.org/drake/plans.html).
+
+```r
+print(plan)
+plan
+#> # A tibble: 7 x 3
+#>   target      command                                                     format
+#>   <chr>       <expr>                                                      <chr> 
+#> 1 churn_reci… prepare_recipe(churn_data)                                … <NA>  
+#> 2 churn_data  split_data(file_in("../data/customer_churn.csv"))         … <NA>  
+#> 3 run_relu    test_model(act1 = "relu", churn_data, churn_recipe)       … <NA>  
+#> 4 run_sigmoid test_model(act1 = "sigmoid", churn_data, churn_recipe)    … <NA>  
+#> 5 run_softmax test_model(act1 = "softmax", churn_data, churn_recipe)    … <NA>  
+#> 6 best_run    rbind(run_relu, run_sigmoid, run_softmax) %>% filter(accur… <NA>  
+#> 7 best_model  train_best_model(best_run, churn_recipe)                  … keras
+```
+
+Did creating the [plan](https://books.ropensci.org/drake/plans.html) actually run the workflow? Hint: [`cached()`](https://docs.ropensci.org/drake/reference/cached.html).
+
+```r
+cached()
+```
+
+```{r plan}
+question(
+  "Answer",
+  correct = random_praise(),
+  incorrect = paste(
+    "make() is the function that actually runs the workflow.",
+    "Creating the plan with drake_plan() does not build any targets."
+  ),
+  allow_retry = TRUE,
+  random_answer_order = TRUE,
+  answer("Yes"),
+  answer("No", correct = TRUE)
+)
+```
+
+## First target
+
+Let's look at the row order of the [plan](https://books.ropensci.org/drake/plans.html).
+
+```r
+print(plan)
+plan
+#> # A tibble: 7 x 3
+#>   target      command                                                     format
+#>   <chr>       <expr>                                                      <chr> 
+#> 1 churn_reci… prepare_recipe(churn_data)                                … <NA>  
+#> 2 churn_data  split_data(file_in("data/customer_churn.csv"))            … <NA>  
+#> 3 run_relu    test_model(act1 = "relu", churn_data, churn_recipe)       … <NA>  
+#> 4 run_sigmoid test_model(act1 = "sigmoid", churn_data, churn_recipe)    … <NA>  
+#> 5 run_softmax test_model(act1 = "softmax", churn_data, churn_recipe)    … <NA>  
+#> 6 best_run    bind_rows(run_relu, run_sigmoid, run_softmax) %>% filter(a… <NA>  
+#> 7 best_model  train_best_model(best_run, churn_recipe)                  … keras
+```
+
+When you call [`make(plan)`](https://docs.ropensci.org/drake/reference/make.html) in your R console, which target runs *first*? Why?
+
+```r
+make(plan)
+```
+
+```{r first-target}
+question(
+  "Answer",
+  correct = random_praise(),
+  incorrect = "Run `drake::clean()` and try again.",
+  allow_retry = TRUE,
+  random_answer_order = TRUE,
+  answer("`churn_data`, because it is in the first row."),
+  answer("`churn_data`, because the other targets depend on it.", correct = TRUE),
+  answer("`churn_recipe`, because the other targets depend on it.")
+)
+```
+
+## Last target
+
+When you called [`make(plan)`](https://docs.ropensci.org/drake/reference/make.html) in the previous exercise, which target ran *last*? Why?
+
+```{r last-target}
+question(
+  "Answer",
+  correct = random_praise(),
+  incorrect = "Run `drake::clean()` and try again.",
+  allow_retry = TRUE,
+  random_answer_order = TRUE,
+  answer("`best_model`, because it depends on the results of the other targets.", correct = TRUE),
+  answer("`best_model`, because it is listed last in the plan."),
+  answer("`churn_recipe`, because it is listed second.")
+)
+```
+
+## loadd()
+
+Load `best_model` from the hidden `.drake/` cache and print it out. What do you see?
+
+```r
+loadd(best_model) # See also readd().
+print(best_model)
+```
+
+```{r loadd}
+question(
+  "Answer",
+  correct = random_praise(),
+  incorrect = "Let's talk.",
+  allow_retry = TRUE,
+  random_answer_order = TRUE,
+  answer("A data frame."),
+  answer("A recipe."),
+  answer("A trained Keras model.", correct = TRUE),
+  answer("A function.")
+)
+```
+
+## Repeated make()
+
+Run [`make(plan)`](https://docs.ropensci.org/drake/reference/make.html) again. What happens?
+
+```r
+make(plan)
+```
+
+```{r repeated-make}
+question(
+  "Answer",
+  correct = random_praise(),
+  incorrect = "Let's talk.",
+  allow_retry = TRUE,
+  random_answer_order = TRUE,
+  answer("`drake` builds nothing because all the targets are already up to date.", correct = TRUE),
+  answer("`drake` refits the best model."),
+  answer("All the targets rebuild."),
+  answer("What is a target? Either that was not explained or I forgot.")
+)
+```
+
+
+## Restart R
+
+Restart your R session, load the supporting scripts with `source()`, and then run `make(plan)` again. Which targets rebuild, if any?
+
+```r
+# Restart R. (Look under "Session" in RStudio's top menu bar.)
+source("R/packages.R")
+source("R/functions.R")
+source("R/plan.R")
+make(plan)
+```
+
+```{r restart-r}
+question(
+  "Answer",
+  correct = random_praise(),
+  incorrect = "Let's talk.",
+  allow_retry = TRUE,
+  random_answer_order = TRUE,
+  answer("All of them."),
+  answer("`drake` fits the model all over again."),
+  answer("I get a confusing error message."),
+  answer("None. The targets are all in storage (a hidden `.drake/` folder) and still up to date.", correct = TRUE)
+)
+```
+
+## Data change
+
+Delete the last line (row) inside `../data/customer_churn.csv` and run [`make(plan)`](https://docs.ropensci.org/drake/reference/make.html) again. Which targets rebuild? Why?
+
+```r
+# Open ../data/customer_churn.csv in the RStudio IDE ("View File").
+# Delete the last record.
+# Save the file.
+make(plan)
+```
+
+```{r data-change}
+question(
+  "Answer",
+  correct = random_praise(),
+  incorrect = "Let's talk.",
+  allow_retry = TRUE,
+  random_answer_order = TRUE,
+  answer("Nothing, because `drake` only tracks functions and commands."),
+  answer("Everything, because all the targets are downstream of a data file we declared with `file_in()` in the plan.", correct = TRUE),
+  answer("Everything, because `drake` always indiscriminately runs everything.")
+)
+```
+
+## Command change
+
+Open `R/plan.R` and change the command of `best_run`: replace `rbind()` with the more preferable `bind_rows()`. Save `R/plan.R` to disk.
+
+```r
+# R/plan.R
+plan <- drake_plan(
+  # Keep other targets the same...
+  best_run = bind_rows(run_relu, run_sigmoid, run_softmax) %>% # use bind_rows()
+    filter(accuracy == max(accuracy)),
+  # Keep other targets the same...
+)
+```
+
+Then, run `source("R/plan.R")` and then `make(plan)`.
+
+```r
+source("R/plan.R")
+make(plan)
+```
+
+What happens?
+
+```{r command-change}
+question(
+  "Answer",
+  correct = random_praise(),
+  incorrect = "Let's talk.",
+  allow_retry = TRUE,
+  random_answer_order = TRUE,
+  answer("`drake` rebuilds `best_run` because its command changed. It skips `best_model` the same because the value of `best_run` is the same as last time.", correct = TRUE),
+  answer("`drake` rebuilds `best_run` because its command changed. Then it rebuilds `best_model` because it is downstream of `best_run`."),
+  answer("Everything, because the plan changed.")
+)
+```
+
+
+## Function change
+
+Open `R/functions.R` for editing (in the `3-changes/` folder). In `define_model()`, change the dropout rate of the first dropout layer from `0.1` to `0.2`. Save the file but **do not run it or `source()` it into your R session**.
+
+```r
+define_model <- function(churn_recipe, units1, units2, act1, act2, act3) {
+  # keep the same...
+  layer_dropout(rate = 0.2) %>% # previously 0.1
+  # keep the same...
+}
+```
+
+Then, run `make(plan)`.
+
+```r
+# Edit and save R/functions.R,
+# but do not source("R/functions.R").
+make(plan)
+```
+
+What happens?
+
+```{r function-change}
+question(
+  "Answer",
+  correct = random_praise(),
+  incorrect = "Let's talk.",
+  allow_retry = TRUE,
+  random_answer_order = TRUE,
+  answer("All my targets rebuild."),
+  answer("I changed `define_models()` in `R/functions.R`, so several targets rebuild: `run_relu`, the other model runs, `best_run`, and possibly `best_model`."),
+  answer("Nothing. My R session still has the old version of `define_model()` in memory.", correct = TRUE)
+)
+```
+
+## Reload functions
+
+Now, run `source("R/functions.R")` before you run [`make(plan)`](https://docs.ropensci.org/drake/reference/make.html) again.
+
+```r
+# Edit and save R/functions.R.
+source("R/functions.R")
+make(plan)
+```
+
+Which targets rebuild, if any?
+
+```{r reload-functions}
+question(
+  "Answer",
+  correct = random_praise(),
+  incorrect = "Let's talk.",
+  allow_retry = TRUE,
+  random_answer_order = TRUE,
+  answer("None, because `define_model()` is an inner function not directly called in the plan."),
+  answer("`run_relu`, `run_sigmoid`, `run_softmax`, `best_run`, and possibly `best_model`. Reason: our R session has a new version of `define_model()`, which affects all the aforementioned targets in some way.", correct = TRUE),
+  answer("`run_relu`, `run_sigmoid`, `run_softmax`, `best_run`, and possibly `best_model`. Reason: `functions.R` changed, and `drake` always tracks changes to script files."),
+  answer("All of them.")
+)
+```
+
+## Undo change
+
+Undo the change you made to `define_model()` in the previous exercise. Then, save `R/functions.R` to disk. Both dropout rates should now be `0.1` again.
+
+```r
+define_model <- function(churn_recipe, units1, units2, act1, act2, act3) {
+  # keep the same...
+  layer_dropout(rate = 0.2) %>% # previously 0.1
+  # keep the same...
+}
+```
+
+Source the functions and run `make(plan, recover = TRUE)`.
+
+```r
+# Edit and save R/functions.R,
+source("R/functions.R")
+make(plan, recover = TRUE)
+```
+
+What happens?
+
+```{r undo-change}
+question(
+  "Answer",
+  correct = random_praise(),
+  incorrect = "Let's talk.",
+  allow_retry = TRUE,
+  random_answer_order = TRUE,
+  answer("All my targets rebuild."),
+  answer("Nothing."),
+  answer("`drake` recovers the model runs and downstream targets from the cache instead of actually running models. It can do this because the cache has targets that were originally built with the current version of `define_model()` and other dependencies.", correct = TRUE),
+  answer("`drake` recovers the model runs and downstream targets from the cache instead of actually running models. It can do this whenever the cache has historical targets.")
+)
+```
+
+## Trivial changes
+
+Add a comment to `define_model()`. Also, add new line breaks around the argument list.
+
+```r
+define_model <- function( # new line break
+  churn_recipe, units1, units2, act1, act2, act3 # new line break
+) {
+  # Write a comment anywhere in the body.
+  # Keep the rest the same...
+}
+```
+
+Then, load the functions again and run `make(plan)`.
+
+```r
+# Edit and save R/functions.R,
+source("R/functions.R")
+make(plan)
+```
+
+What happens?
+
+```{r trivial-changes}
+question(
+  "Answer",
+  correct = random_praise(),
+  incorrect = "Let's talk.",
+  allow_retry = TRUE,
+  random_answer_order = TRUE,
+  answer("All my targets rebuild."),
+  answer("Nothing, because `drake` does not care about changes to functions."),
+  answer("Nothing, because `drake` ignores changes to whitespace and comments when it tracks code.", correct = TRUE),
+  answer("`define_model()` changed, so several targets rebuild: `run_relu`, the other model runs, `best_run`, and possibly `best_model`.")
+)
+```
+
+## History
+
+View the history of all your past targets.
+
+```r
+history <- drake_history()
+print(history)
+View(history)
+```
+
+What do you see?
+
+```{r history}
+question(
+  "Answer",
+  correct = random_praise(),
+  incorrect = "Let's talk.",
+  allow_retry = TRUE,
+  random_answer_order = TRUE,
+  answer("A data frame with nothing useful."),
+  answer("A Keras model."),
+  answer("A data frame with information on all the past runs of all my targets.", correct = TRUE)
+)
+```
+
+## Historical target
+
+Run the following.
+
+```r
+drake_history() %>%
+  filter(target == "run_relu") %>%
+  filter(built == min(built)) %>%
+  pull(hash) %>%
+  drake_cache()$get_value(.)
+```
+
+What does it return?
+
+```{r historical-target}
+question(
+  "Answer",
+  correct = random_praise(),
+  incorrect = "Let's talk.",
+  allow_retry = TRUE,
+  random_answer_order = TRUE,
+  answer("The most current value of `run_relu`."),
+  answer("The most current value of `best_run`."),
+  answer("The oldest historical value of `run_relu`.", correct = TRUE),
+  answer("The oldest historical value of `run_softmax`.")
+)
+```
