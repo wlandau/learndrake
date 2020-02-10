@@ -1,0 +1,366 @@
+---
+title: "Dynamic branching"
+output:
+  html_document:
+    df_print: paged
+---
+
+# Do first
+
+1. Navigate to the `5-dynamic-solutions/` folder.
+2. Open `5-dynamic-solutions.Rproj` as an RStudio project in a new R session. (Click on `5-dynamic-solutions.Rproj` in RStudio's file manager.)
+3. Check that your working directory is correct. It should be `5-dynamic-solutions/`.
+
+```{r}
+basename(getwd()) # Should be "5-dynamic-solutions"
+```
+
+4. Run the setup chunk below.
+
+```{r, include = FALSE}
+source("../config/options.R")
+```
+
+5. Load the packages and functions.
+
+```{r, message = FALSE}
+source("R/packages.R")
+source("R/functions.R")
+```
+
+# Limitations of static branching
+
+In static branching, the *definition* of each target can depend on the *definitions* other targets.
+
+```{r, paged.print = FALSE}
+drake_plan(
+  churn_data = split_data(file_in("../data/customer_churn.csv")),
+  churn_recipe = prepare_recipe(churn_data),
+  run = target(
+    test_model(act1 = act, churn_data, churn_recipe),
+    transform = map(act = c("relu", "sigmoid", "softmax"))
+  ),
+  best_run = target(
+    bind_rows(run) %>%
+      top_n(1, accuracy) %>%
+      head(1),
+    transform = combine(run)
+  ),
+  best_model = target(
+    train_best_model(best_run, churn_recipe),
+    format = "keras"
+  )
+)
+```
+
+But what if the *definition* of a target depends on the *values* of other targets? Static branching does not allow this. The plan below is broken.
+
+```{r}
+broken_plan <- drake_plan(
+  churn_data = split_data(file_in("../data/customer_churn.csv")),
+  churn_recipe = prepare_recipe(churn_data),
+  activations = c("relu", "sigmoid", "softmax"), # Target with activation functions
+  run = target(
+    test_model(act1 = act, churn_data, churn_recipe),
+    # Try to use the value of one target in the definitions of others.
+    transform = map(act = activations)
+  ),
+  best_run = target(
+    bind_rows(run) %>%
+      top_n(1, accuracy) %>%
+      head(1),
+    transform = combine(run)
+  ),
+  best_model = target(
+    train_best_model(best_run, churn_recipe),
+    format = "keras"
+  )
+)
+```
+
+```{r, paged.print = FALSE}
+broken_plan
+```
+
+`test_model()` is only supposed to get a single activation function, not all three.
+
+```{r, error = TRUE}
+make(broken_plan)
+```
+
+# Dynamic branching
+
+In dynamic branching, the *definition* of a target can depend on the *values* of other targets. Let's dynamically create a model run for each activation function.
+
+```{r}
+plan <- drake_plan(
+  churn_data = split_data(file_in("../data/customer_churn.csv")),
+  churn_recipe = prepare_recipe(churn_data),
+  act = c("relu", "sigmoid", "softmax"), # A target with activation functions
+  run = target(
+    test_model(act1 = act, churn_data, churn_recipe),
+    dynamic = map(act) # Dynamic branching
+  ),
+  best_run = head(top_n(run, 1, accuracy), 1),
+  best_model = target(
+    train_best_model(best_run, churn_recipe),
+    format = "keras"
+  )
+)
+```
+
+`drake` does not know in advance how many models runs it will perform, so the plan is more compact than it would have been with static branching.
+
+```{r, paged.print = FALSE}
+plan
+```
+
+```{r}
+vis_drake_graph(plan)
+```
+
+Let's run those models.
+
+```{r}
+make(plan)
+```
+
+Each model run is now a *dynamic sub-target*.
+
+```{r}
+run_names <- subtargets(run)
+run_names
+```
+
+```{r}
+readd(run_names[1], character_only = TRUE)
+```
+
+A full dynamic target is a "vector" of sub-targets. `drake`'s vector semantics come from the `vctrs` R package, which generalizes the concept of a vector to data frames as well as ordinary atomic vectors. That means our `run` target is automatically a data frame.
+
+```{r}
+readd(run)
+```
+
+The command of `best_run` already assumed this.
+
+```{r}
+plan %>%
+  filter(target == "best_run") %>%
+  pull(command) %>%
+  `[[`(1)
+```
+
+# Your turn
+
+Define a new dynamic target with the accuracy of each model run.
+
+```{r}
+plan <- drake_plan(
+  churn_data = split_data(file_in("../data/customer_churn.csv")),
+  churn_recipe = prepare_recipe(churn_data),
+  act = c("relu", "sigmoid", "softmax"),
+  run = target(
+    test_model(act1 = act, churn_data, churn_recipe),
+    dynamic = map(act) 
+  ),
+  acc = target(
+    run$accuracy,
+    dynamic = map(run)
+  ),
+  best_run = head(top_n(run, 1, accuracy), 1),
+  best_model = target(
+    train_best_model(best_run, churn_recipe),
+    format = "keras"
+  )
+)
+```
+
+Run the plan.
+
+```{r}
+make(plan)
+```
+
+The result should be a numeric vector of length 3.
+
+```{r}
+readd(acc)
+```
+
+# The trace
+
+How do you know which `acc` value belongs to which model? Use the `.trace` argument of `map()`.
+
+```{r}
+plan <- drake_plan(
+  churn_data = split_data(file_in("../data/customer_churn.csv")),
+  churn_recipe = prepare_recipe(churn_data),
+  act = c("relu", "sigmoid", "softmax"),
+  run = target(
+    test_model(act1 = act, churn_data, churn_recipe),
+    dynamic = map(act)
+  ),
+  acc = target(
+    run$accuracy,
+    # Label each accuracy value with the corresponding activation function.
+    # Note: we need to explicitly map over act.
+    dynamic = map(run, act, .trace = act)
+  ),
+  best_run = head(top_n(run, 1, accuracy), 1),
+  best_model = target(
+    train_best_model(best_run, churn_recipe),
+    format = "keras"
+  )
+)
+```
+
+Run the plan.
+
+```{r}
+make(plan)
+```
+
+`readd()` still shows the same result.
+
+```{r}
+readd(acc)
+```
+
+But each element now has a trace.
+
+```{r}
+read_trace("act", acc)
+```
+
+# Dynamic cross
+
+The dynamic `cross()` is similar to the static one. Below, create a model run for each combination of `act` and `units`.
+
+```{r}
+plan <- drake_plan(
+  churn_data = split_data(file_in("../data/customer_churn.csv")),
+  churn_recipe = prepare_recipe(churn_data),
+  act = c("relu", "sigmoid", "softmax"),
+  units = c(16, 32), # New target with the size of the first layer.
+  run = target(
+    # Using different layer sizes.
+    test_model(act1 = act, units1 = units, churn_data, churn_recipe),
+    dynamic = cross(act, units) # Your turn: cross() over both act and units.
+  ),
+  best_run = head(top_n(run, 1, accuracy), 1),
+  best_model = target(
+    train_best_model(best_run, churn_recipe),
+    format = "keras"
+  )
+)
+```
+
+We should have six model runs now.
+
+```{r}
+make(plan)
+```
+
+Our dynamic target should have six rows, one for each combination of `act1` and `units1`.
+
+```{r}
+readd(run)
+```
+
+# Dynamic group
+
+`group()` can chop up dynamic and static targets into groups. It is a mechanism for both splitting and aggregation. Using the `.by` argument of `group()`, we can group the runs by each activation function. Note: `.by` needs to be the same length as the target being grouped. Complete the plan below.
+
+```{r}
+plan <- drake_plan(
+  churn_data = split_data(file_in("../data/customer_churn.csv")),
+  churn_recipe = prepare_recipe(churn_data),
+  act = c("relu", "sigmoid", "softmax"),
+  units = c(16, 32),
+  run = target(
+    test_model(act1 = act, units1 = units, churn_data, churn_recipe),
+    dynamic = cross(act, units)
+  ),
+  run_act = run$act1, # Needed for .by in group() below.
+  grouped_runs = target(
+    run,
+    dynamic = group(run, run_act, .by = run_act)
+  )
+)
+```
+
+Run the workflow.
+
+```{r}
+make(plan)
+```
+
+Notice now that we have three `best_run` sub-targets, each with the two rows for a given value of `act1`.
+
+```{r}
+grouped_runs_names <- subtargets(grouped_runs)
+grouped_runs_names
+```
+
+```{r}
+readd(grouped_runs_names[1], character_only = TRUE)
+```
+
+```{r}
+readd(grouped_runs_names[2], character_only = TRUE)
+```
+
+```{r}
+readd(grouped_runs_names[3], character_only = TRUE)
+```
+
+A downstream `map()` lets us train the best model for each activation function.
+
+```{r}
+plan <- drake_plan(
+  churn_data = split_data(file_in("../data/customer_churn.csv")),
+  churn_recipe = prepare_recipe(churn_data),
+  act = c("relu", "sigmoid", "softmax"),
+  units = c(16, 32),
+  run = target(
+    test_model(act1 = act, units1 = units, churn_data, churn_recipe),
+    dynamic = cross(act, units)
+  ),
+  run_act = run$act1,
+  best_run = target(
+    head(top_n(run, 1, accuracy), 1),
+    dynamic = group(run, run_act, .by = run_act)
+  ),
+  best_run_act = best_run$act1,
+  best_model = target(
+    train_best_model(best_run, churn_recipe),
+    format = "keras",
+    dynamic = map(best_run, best_run_act, .trace = best_run_act)
+  )
+)
+```
+
+Let's run those models.
+
+```{r}
+make(plan)
+```
+
+Our `best_run` target has three rows because we filtered `run` after grouping it by activation function.
+
+```{r}
+readd(best_run)
+```
+
+Thanks to the trace, we know which `best_model` sub-target has which activation function.
+
+```{r}
+read_trace("best_run_act", best_model)
+```
+
+`best_model` itself is a dynamic target, a list of three trained Keras models.
+
+```{r}
+readd(best_model)
+```

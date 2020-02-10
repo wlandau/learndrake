@@ -1,5 +1,10 @@
-prepare_recipe <- function(data) {
-  data %>%
+split_data <- function(churn_file) {
+  read_csv(churn_file, col_types = cols()) %>%
+    initial_split(prop = 0.3)
+}
+
+prepare_recipe <- function(churn_data) {
+  churn_data %>%
     training() %>%
     recipe(Churn ~ .) %>%
     step_rm(customerID) %>%
@@ -13,9 +18,9 @@ prepare_recipe <- function(data) {
     prep()
 }
 
-define_model <- function(rec, units1, units2, act1, act2, act3) {
+define_model <- function(churn_recipe, units1, units2, act1, act2, act3) {
   input_shape <- ncol(
-    juice(rec, all_predictors(), composition = "matrix")
+    juice(churn_recipe, all_predictors(), composition = "matrix")
   )
   keras_model_sequential() %>%
     layer_dense(
@@ -39,21 +44,14 @@ define_model <- function(rec, units1, units2, act1, act2, act3) {
 }
 
 train_model <- function(
-  rec,
+  churn_recipe,
   units1 = 16,
   units2 = 16,
   act1 = "relu",
   act2 = "relu",
   act3 = "sigmoid"
 ) {
-  model <- define_model(
-    rec = rec,
-    units1 = units1,
-    units2 = units2,
-    act1 = act1,
-    act2 = act2,
-    act3 = act3
-  )
+  model <- define_model(churn_recipe, units1, units2, act1, act2, act3)
   compile(
     model,
     optimizer = "adam",
@@ -61,11 +59,11 @@ train_model <- function(
     metrics = c("accuracy")
   )
   x_train_tbl <- juice(
-    rec,
+    churn_recipe,
     all_predictors(),
     composition = "matrix"
   )
-  y_train_vec <- juice(rec, all_outcomes()) %>%
+  y_train_vec <- juice(churn_recipe, all_outcomes()) %>%
     pull()
   fit(
     object = model,
@@ -79,8 +77,8 @@ train_model <- function(
   model
 }
 
-confusion_matrix <- function(data, rec, model) {
-  testing_data <- bake(rec, testing(data))
+test_accuracy <- function(churn_data, churn_recipe, model) {
+  testing_data <- bake(churn_recipe, testing(churn_data))
   x_test_tbl <- testing_data %>%
     select(-Churn) %>%
     as.matrix()
@@ -104,17 +102,40 @@ confusion_matrix <- function(data, rec, model) {
     class_prob = yhat_keras_prob_vec
   )
   estimates_keras_tbl %>%
-    conf_mat(truth, estimate)
+    conf_mat(truth, estimate) %>%
+    summary() %>%
+    filter(.metric == "accuracy") %>%
+    pull(.estimate)
 }
 
-compare_models <- function(...) {
-  name <- match.call()[-1] %>%
-    as.character()
-  df <- map_df(list(...), summary) %>%
-    filter(.metric %in% c("accuracy", "sens", "spec")) %>%
-    mutate(name = rep(name, each = n() / length(name))) %>%
-    rename(metric = .metric, estimate = .estimate)
-  ggplot(df) +
-    geom_line(aes(x = metric, y = estimate, color = name, group = name)) +
-    theme_gray(16)
+test_model <- function(
+  churn_data,
+  churn_recipe,
+  units1 = 16,
+  units2 = 16,
+  act1 = "relu",
+  act2 = "relu",
+  act3 = "sigmoid"
+) {
+  model <- train_model(churn_recipe, units1, units2, act1, act2, act3)
+  accuracy <- test_accuracy(churn_data, churn_recipe, model)
+  tibble(
+    accuracy = accuracy,
+    units1 = units1,
+    units2 = units2,
+    act1 = act1,
+    act2 = act2,
+    act3 = act3
+  )
+}
+
+train_best_model <- function(best_run, churn_recipe) {
+  train_model(
+    churn_recipe,
+    best_run$units1,
+    best_run$units2,
+    best_run$act1,
+    best_run$act2,
+    best_run$act3
+  )
 }

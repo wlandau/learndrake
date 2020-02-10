@@ -29,7 +29,7 @@ knitr::opts_chunk$set(
 4. Step through these exercises in order. Unless otherwise indicated, run the code chunks in your R console. Check the answers as you go along.
 5. If something breaks along the way, you restart your R session and get a fresh copy of the notebooks and supporting files ([`learndrake::save_notebooks()`](https://github.com/wlandau/learndrake)).
 
-```{r q0}
+```{r instructions}
 question(
   "Okay?",
   correct = random_praise(),
@@ -43,7 +43,7 @@ question(
 )
 ```
 
-## Exercise 1
+## Source the scripts
 
 Verify that you are in the right working directory.
 
@@ -73,7 +73,7 @@ source("R/functions.R")
 source("R/plan.R")
 ```
 
-```{r q1}
+```{r source-the-scripts}
 question(
   "Okay?",
   correct = random_praise(),
@@ -87,7 +87,7 @@ question(
 )
 ```
 
-## Exercise 2
+## Plan
 
 You now have a [plan](https://books.ropensci.org/drake/plans.html).
 
@@ -112,7 +112,7 @@ Did creating the [plan](https://books.ropensci.org/drake/plans.html) actually ru
 cached()
 ```
 
-```{r q2}
+```{r plan}
 question(
   "Answer",
   correct = random_praise(),
@@ -127,7 +127,7 @@ question(
 )
 ```
 
-## Exercise 3
+## First target
 
 Let's look at the row order of the [plan](https://books.ropensci.org/drake/plans.html).
 
@@ -152,7 +152,7 @@ When you call [`make(plan)`](https://docs.ropensci.org/drake/reference/make.html
 make(plan)
 ```
 
-```{r q3}
+```{r first-target}
 question(
   "Answer",
   correct = random_praise(),
@@ -165,11 +165,11 @@ question(
 )
 ```
 
-## Exercise 4
+## Last target
 
 When you called [`make(plan)`](https://docs.ropensci.org/drake/reference/make.html) in the previous exercise, which target ran *last*? Why?
 
-```{r q4}
+```{r last-target}
 question(
   "Answer",
   correct = random_praise(),
@@ -182,16 +182,16 @@ question(
 )
 ```
 
-## Exercise 5
+## loadd()
 
 Load `best_model` from the hidden `.drake/` cache and print it out. What do you see?
 
 ```r
-loadd(best_model)
+loadd(best_model) # See also readd().
 print(best_model)
 ```
 
-```{r q5}
+```{r loadd}
 question(
   "Answer",
   correct = random_praise(),
@@ -205,7 +205,7 @@ question(
 )
 ```
 
-## Exercise 6
+## Repeated make()
 
 Run [`make(plan)`](https://docs.ropensci.org/drake/reference/make.html) again. What happens?
 
@@ -213,7 +213,7 @@ Run [`make(plan)`](https://docs.ropensci.org/drake/reference/make.html) again. W
 make(plan)
 ```
 
-```{r q6}
+```{r repeated-make}
 question(
   "Answer",
   correct = random_praise(),
@@ -228,7 +228,7 @@ question(
 ```
 
 
-## Exercise 7
+## Restart R
 
 Restart your R session, load the supporting scripts with `source()`, and then run `make(plan)` again. Which targets rebuild, if any?
 
@@ -240,7 +240,7 @@ source("R/plan.R")
 make(plan)
 ```
 
-```{r q7}
+```{r restart-r}
 question(
   "Answer",
   correct = random_praise(),
@@ -254,7 +254,7 @@ question(
 )
 ```
 
-## Exercise 8
+## Data change
 
 Delete the last line (row) inside `../data/customer_churn.csv` and run [`make(plan)`](https://docs.ropensci.org/drake/reference/make.html) again. Which targets rebuild? Why?
 
@@ -265,7 +265,7 @@ Delete the last line (row) inside `../data/customer_churn.csv` and run [`make(pl
 make(plan)
 ```
 
-```{r q8}
+```{r data-change}
 question(
   "Answer",
   correct = random_praise(),
@@ -278,7 +278,7 @@ question(
 )
 ```
 
-## Exercise 9
+## Command change
 
 Open `R/plan.R` and change the command of `best_run`: replace `rbind()` with the more preferable `bind_rows()`. Save `R/plan.R` to disk.
 
@@ -301,7 +301,7 @@ make(plan)
 
 What happens?
 
-```{r q9}
+```{r command-change}
 question(
   "Answer",
   correct = random_praise(),
@@ -315,7 +315,7 @@ question(
 ```
 
 
-## Exercise 10
+## Function change
 
 Open `R/functions.R` for editing (in the `3-changes/` folder). In `define_model()`, change the dropout rate of the first dropout layer from `0.1` to `0.2`. Save the file but **do not run it or `source()` it into your R session**.
 
@@ -337,7 +337,7 @@ make(plan)
 
 What happens?
 
-```{r q10}
+```{r function-change}
 question(
   "Answer",
   correct = random_praise(),
@@ -350,7 +350,7 @@ question(
 )
 ```
 
-## Exercise 11
+## Reload functions
 
 Now, run `source("R/functions.R")` before you run [`make(plan)`](https://docs.ropensci.org/drake/reference/make.html) again.
 
@@ -362,7 +362,7 @@ make(plan)
 
 Which targets rebuild, if any?
 
-```{r q11}
+```{r reload-functions}
 question(
   "Answer",
   correct = random_praise(),
@@ -376,7 +376,7 @@ question(
 )
 ```
 
-## Exercise 12
+## Undo change
 
 Undo the change you made to `define_model()` in the previous exercise. Then, save `R/functions.R` to disk. Both dropout rates should now be `0.1` again.
 
@@ -398,7 +398,7 @@ make(plan, recover = TRUE)
 
 What happens?
 
-```{r q12}
+```{r undo-change}
 question(
   "Answer",
   correct = random_praise(),
@@ -412,7 +412,7 @@ question(
 )
 ```
 
-## Exercise 13
+## Trivial changes
 
 Add a comment to `define_model()`. Also, add new line breaks around the argument list.
 
@@ -435,7 +435,7 @@ make(plan)
 
 What happens?
 
-```{r q13}
+```{r trivial-changes}
 question(
   "Answer",
   correct = random_praise(),
@@ -449,7 +449,7 @@ question(
 )
 ```
 
-## Exercise 14
+## History
 
 View the history of all your past targets.
 
@@ -461,7 +461,7 @@ View(history)
 
 What do you see?
 
-```{r q14}
+```{r history}
 question(
   "Answer",
   correct = random_praise(),
@@ -474,7 +474,7 @@ question(
 )
 ```
 
-## Exercise 15
+## Historical target
 
 Run the following.
 
@@ -488,7 +488,7 @@ drake_history() %>%
 
 What does it return?
 
-```{r q15}
+```{r historical-target}
 question(
   "Answer",
   correct = random_praise(),

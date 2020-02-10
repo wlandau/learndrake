@@ -333,8 +333,8 @@ source("R/plan.R")
 
 ```r
 make(plan)
-#&gt; target churn_data
-#&gt; target churn_recipe
+#&gt; ▶ target churn_data
+#&gt; ▶ target churn_recipe
 ```
 
 ---
@@ -416,8 +416,8 @@ source("R/plan.R")
 
 ```r
 make(plan)
-#&gt; target run_relu
-#&gt; target run_sigmoid
+#&gt; ▶ target run_relu
+#&gt; ▶ target run_sigmoid
 ```
 
 ---
@@ -430,13 +430,13 @@ readd(run_relu)
 #&gt; # A tibble: 1 x 6
 #&gt;   accuracy units1 units2 act1  act2  act3   
 #&gt;      &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;  
-#&gt; 1    0.800     16     16 relu  relu  sigmoid
+#&gt; 1    0.801     16     16 relu  relu  sigmoid
 
 readd(run_sigmoid)
 #&gt; # A tibble: 1 x 6
 #&gt;   accuracy units1 units2 act1    act2  act3   
 #&gt;      &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;  
-#&gt; 1    0.800     16     16 sigmoid relu  sigmoid
+#&gt; 1    0.802     16     16 sigmoid relu  sigmoid
 ```
 
 ---
@@ -466,8 +466,8 @@ plan &lt;- drake_plan(
 
 ```r
 make(plan)
-#&gt; target best_run
-#&gt; target best_model
+#&gt; ▶ target best_run
+#&gt; ▶ target best_model
 ```
 
 ---
@@ -636,11 +636,11 @@ source("R/plan.R")
 
 ```r
 make(plan)
-#&gt; target run_relu
-#&gt; target run_softmax
-#&gt; target run_sigmoid
-#&gt; target best_run
-#&gt; target best_model
+#&gt; ▶ target run_relu
+#&gt; ▶ target run_softmax
+#&gt; ▶ target run_sigmoid
+#&gt; ▶ target best_run
+#&gt; ▶ target best_model
 ```
 
 ---
@@ -691,11 +691,11 @@ source("R/plan.R")
 
 ```r
 make(plan, recover = TRUE)
-#&gt; recover run_relu
-#&gt; recover run_softmax
-#&gt; recover run_sigmoid
-#&gt; recover best_run
-#&gt; recover best_model
+#&gt; ✓ recover run_relu
+#&gt; ✓ recover run_softmax
+#&gt; ✓ recover run_sigmoid
+#&gt; ✓ recover best_run
+#&gt; ✓ recover best_model
 ```
 
 ---
@@ -735,7 +735,7 @@ source("R/plan.R")
 
 ```r
 make(plan)
-#&gt; All targets are already up to date.
+#&gt; ✓ All targets are already up to date.
 
 outdated(plan)
 #&gt; character(0)
@@ -769,12 +769,12 @@ history &lt;- drake_history() %&gt;%
 #&gt; # A tibble: 6 x 4
 #&gt;   target      act1    exists hash            
 #&gt;   &lt;chr&gt;       &lt;chr&gt;   &lt;lgl&gt;  &lt;chr&gt;           
-#&gt; 1 run_relu    relu    TRUE   4f847dcf0f5cb276
-#&gt; 2 run_relu    relu    TRUE   5dbb3622b0e5d170
-#&gt; 3 run_sigmoid sigmoid TRUE   c35dc93ec40ffe4a
-#&gt; 4 run_sigmoid sigmoid TRUE   9c3cd39da58076f7
-#&gt; 5 run_softmax softmax TRUE   cbf1b2a51669eea7
-#&gt; 6 run_softmax softmax TRUE   970ad08949b3dbdd
+#&gt; 1 run_relu    relu    TRUE   9e3e97fdee2e2629
+#&gt; 2 run_relu    relu    TRUE   fbc97af3378e33e4
+#&gt; 3 run_sigmoid sigmoid TRUE   d3467df3f1cc9cae
+#&gt; 4 run_sigmoid sigmoid TRUE   924e53320c500e9b
+#&gt; 5 run_softmax softmax TRUE   a76e948282303ad3
+#&gt; 6 run_softmax softmax TRUE   a76e948282303ad3
 ```
 
 ---
@@ -787,18 +787,24 @@ drake_cache()$get_value(history$hash[1])
 #&gt; # A tibble: 1 x 6
 #&gt;   accuracy units1 units2 act1  act2  act3   
 #&gt;      &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;  
-#&gt; 1    0.800     16     16 relu  relu  sigmoid
+#&gt; 1    0.801     16     16 relu  relu  sigmoid
 ```
 
 ---
 
 ## More highlights
 
-* [Efficient data formats](https://books.ropensci.org/drake/plans.html#special-data-formats-for-targets)
-* [History and data recovery](https://books.ropensci.org/drake/walkthrough.html#history-and-provenance)
-* [Dynamic branching](https://books.ropensci.org/drake/dynamic.html)
 * [High-performance computing](https://books.ropensci.org/drake/hpc.html)
-* [Memory management options](https://books.ropensci.org/drake/memory.html)
+* [Efficient data formats](https://books.ropensci.org/drake/plans.html#special-data-formats-for-targets)
+* [Dynamic branching](https://books.ropensci.org/drake/dynamic.html)
+* [Memory management](https://books.ropensci.org/drake/memory.html)
+
+
+```r
+# Run targets in parallel on a cluster:
+options(clustermq.scheduler = "slurm")
+make(plan, parallelism = "clustermq", jobs = 64)
+```
 
 ---
 

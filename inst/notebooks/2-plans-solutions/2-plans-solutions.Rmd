@@ -1,16 +1,18 @@
 ---
-title: "Build up a drake plan"
-output: html_notebook
+title: 'Solutions: build up a drake plan'
+output:
+  html_document:
+    df_print: paged
 ---
 
-# Instructions
+# Do first
 
-1. Navigate to the `2-plans/` folder.
-2. Open `2-plans.Rproj` as an RStudio project in a new R session. (Click on `2-plans.Rproj` in RStudio's file manager.)
-3. Check that your working directory is correct. It should be `2-plans/`.
+1. Navigate to the `2-plans-solutions/` folder.
+2. Open `2-plans-solutions.Rproj` as an RStudio project in a new R session. (Click on `2-plans-solutions.Rproj` in RStudio's file manager.)
+3. Check that your working directory is correct. It should be `2-plans-solutions/`.
 
 ```{r}
-basename(getwd()) # Should be "2-plans"
+basename(getwd()) # Should be "2-plans-solutions"
 ```
 
 4. Run the setup code chunk below. (Click on the green arrow on the right.)
@@ -18,8 +20,6 @@ basename(getwd()) # Should be "2-plans"
 ```{r, include = FALSE}
 source("../config/options.R")
 ```
-
-5. Read the notebook below and run the code chunks along the way. Look out for comments with "YOUR TURN". Those are places where you will need to write code. Feel free to peek at `2-plans-solutions/2-plans-solutions.Rmd` if you get stuck.
 
 # About
 
@@ -187,8 +187,8 @@ Your turn: add these targets to the plan.
 plan <- drake_plan(
   churn_data = split_data(file_in("../data/customer_churn.csv")),
   churn_recipe = prepare_recipe(churn_data),
-  run_relu = , # YOUR TURN: write the command between the equals sign and comma.
-  run_sigmoid = # YOUR TURN: write the command here.
+  run_relu = test_model(act1 = "relu", churn_data, churn_recipe),
+  run_sigmoid = test_model(act1 = "sigmoid", churn_data, churn_recipe)
 )
 ```
 
@@ -240,7 +240,7 @@ plan <- drake_plan(
   churn_recipe = prepare_recipe(churn_data),
   run_relu = test_model(act1 = "relu", churn_data, churn_recipe),
   run_sigmoid = test_model(act1 = "sigmoid", churn_data, churn_recipe),
-  run_softmax = # YOUR TURN: write a new call to test_model() with act1 = "softmax"
+  run_softmax = test_model(act1 = "softmax", churn_data, churn_recipe)
 )
 ```
 
@@ -286,7 +286,9 @@ plan <- drake_plan(
   run_relu = test_model(act1 = "relu", churn_data, churn_recipe),
   run_sigmoid = test_model(act1 = "sigmoid", churn_data, churn_recipe),
   run_softmax = test_model(act1 = "softmax", churn_data, churn_recipe),
-  best_run = # YOUR TURN: write the command to get the best model run.
+  best_run = bind_rows(run_relu, run_sigmoid, run_softmax) %>%
+    top_n(1, accuracy) %>%
+    head(1)
 )
 ```
 
@@ -312,10 +314,11 @@ plan <- drake_plan(
   run_sigmoid = test_model(act1 = "sigmoid", churn_data, churn_recipe),
   run_softmax = test_model(act1 = "softmax", churn_data, churn_recipe),
   best_run = bind_rows(run_relu, run_sigmoid, run_softmax) %>%
-    top_n(1, accuracy),
-  best_model = target( # We use target() to customize the target.
-    , # YOUR TURN: write train_best_model(best_run, churn_recipe) to the left of the comma.
-    format = "keras" # Tells drake to store the target as a Keras model.
+    top_n(1, accuracy) %>%
+    head(1),
+  best_model = target(
+    train_best_model(best_run, churn_recipe),
+    format = "keras"
   )
 )
 ```
