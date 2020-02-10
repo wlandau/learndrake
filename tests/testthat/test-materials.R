@@ -13,7 +13,7 @@ test_that("notebooks", {
     "1-functions",
     "2-plans",
     "3-changes",
-    "4-plans",
+    "4-static",
     "5-files",
     "6-reports",
     "7-hpc",
