@@ -1,4 +1,4 @@
-FROM rocker/binder:3.6.0
+FROM rocker/binder:3.6.2
 LABEL maintainer='Will Landau'
 USER root
 
@@ -28,13 +28,13 @@ RUN ln -s ${PYTHON_VENV_PATH}/bin/pip /usr/local/bin/pip && \
 ## install as user to avoid venv issues later
 USER ${NB_USER}
 RUN pip3 install \
-    h5py==2.9.0 \
-    pyyaml==3.13 \
-    requests==2.21.0 \
-    Pillow==5.4.1 \
-    tensorflow==1.12.0 \
-    tensorflow-probability==0.5.0 \
-    keras==2.2.4 \
+    h5py==2.10.0 \
+    pyyaml==5.3 \
+    requests==2.22.0 \
+    Pillow==7.0.0 \
+    tensorflow==2.1.0 \
+    tensorflow-probability==0.9.0 \
+    keras==2.3.1 \
     --no-cache-dir
 
 USER root
