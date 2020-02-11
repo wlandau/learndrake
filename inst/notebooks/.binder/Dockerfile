@@ -24,7 +24,7 @@ RUN echo "PATH=${PATH}" >> /usr/local/lib/R/etc/Renviron && \
 RUN ln -s ${PYTHON_VENV_PATH}/bin/pip /usr/local/bin/pip && \
     ln -s ${PYTHON_VENV_PATH}/bin/virtualenv /usr/local/bin/virtualenv
 
-## install as user to avoid venv issues later
+## Install as user to avoid venv issues later.
 USER ${NB_USER}
 RUN pip3 install \
     h5py==2.10.0 \
