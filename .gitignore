@@ -37,3 +37,4 @@ README.html
 vignettes/*.html
 vignettes/*.md
 vignettes/*_files
+rsconnect
