@@ -1,8 +1,6 @@
 ---
-title: "The functions of the customer churn workflow"
-output:
-  html_document:
-    df_print: paged
+title: "Custom functions for the customer churn workflow"
+output: html_document
 ---
 
 # Do first

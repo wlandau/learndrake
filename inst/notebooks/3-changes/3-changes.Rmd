@@ -1,9 +1,7 @@
 ---
 title: "Changes to workflows"
-subtitle: And how drake responds
-output:
-  html_document:
-    df_print: paged
+subtitle: "And how drake responds"
+output: html_document
 ---
 
 # Do first

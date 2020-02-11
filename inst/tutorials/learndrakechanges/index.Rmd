@@ -256,7 +256,7 @@ question(
 
 ## Data change
 
-Delete the last line (row) inside `../data/customer_churn.csv` and run [`make(plan)`](https://docs.ropensci.org/drake/reference/make.html) again. Which targets rebuild? Why?
+Delete the last line (row) inside `../data/customer_churn.csv` and run [`make(plan)`](https://docs.ropensci.org/drake/reference/make.html) again. (Go back up a level in RStudio's file viewer, then navigate to the `data` folder, and then edit the CSV file in RStudio.) Which targets rebuild? Why?
 
 ```r
 # Open ../data/customer_churn.csv in the RStudio IDE ("View File").
@@ -280,7 +280,7 @@ question(
 
 ## Command change
 
-Open `R/plan.R` and change the command of `best_run`: replace `rbind()` with the more preferable `bind_rows()`. Save `R/plan.R` to disk.
+Open the `R/plan.R` script file in `3-plans/` and change the command of `best_run`: replace `rbind()` with the more preferable `bind_rows()`. Save `R/plan.R` to disk.
 
 ```r
 # R/plan.R
@@ -384,7 +384,7 @@ Undo the change you made to `define_model()` in the previous exercise. Then, sav
 ```r
 define_model <- function(churn_recipe, units1, units2, act1, act2, act3) {
   # keep the same...
-  layer_dropout(rate = 0.2) %>% # previously 0.1
+  layer_dropout(rate = 0.1) %>% # changed back to 0.1
   # keep the same...
 }
 ```

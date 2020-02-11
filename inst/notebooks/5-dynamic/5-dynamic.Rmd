@@ -30,7 +30,7 @@ source("R/functions.R")
 
 # Limitations of static branching
 
-In static branching, the *definition* of each target can depend on the *definitions* other targets.
+In static branching, the *definition* of each target can depend on the *names* other targets.
 
 ```{r, paged.print = FALSE}
 drake_plan(
@@ -109,7 +109,7 @@ plan <- drake_plan(
 )
 ```
 
-`drake` does not know in advance how many models runs it will perform, so the plan is more compact than it would have been with static branching.
+`drake` does not know in advance how many or what kind of models it will run, so the plan is more compact than its static equivalent.
 
 ```{r, paged.print = FALSE}
 plan
@@ -164,7 +164,8 @@ plan <- drake_plan(
     test_model(act1 = act, churn_data, churn_recipe),
     dynamic = map(act)
   ),
-  # YOUR TURN: dynamically map over the runs to get the accuracy of each one.
+  # YOUR TURN: dynamically map over the runs
+  # to get the accuracy of each one (e.g. run$accuracy).
   acc = ???,
   best_run = head(top_n(run, 1, accuracy), 1),
   best_model = target(

@@ -1,8 +1,6 @@
 ---
-title: "External input and output files"
-output:
-  html_document:
-    df_print: paged
+title: "External files and R Markdown"
+output: html_document
 ---
 
 # Do first
@@ -34,7 +32,7 @@ Some targets depend on external files. When an important file changes, we want `
 
 # Input and output files.
 
-For a moment, let's forget that `drake` can save Keras models (i.e. <https://books.ropensci.org/drake/plans.html#special-data-formats-for-targets>). Let's store all our models as output files and read them back in to compute test accuracy. Our initial plan has problems.
+For a moment, let's forget that `drake` can save Keras models as targets (i.e. <https://books.ropensci.org/drake/plans.html#special-data-formats-for-targets>). Let's store all our models as external output files and then read them back in to compute test accuracy. Our initial plan has problems.
 
 ```{r}
 broken_plan <- drake_plan(
@@ -64,14 +62,14 @@ broken_plan <- drake_plan(
 Clearly, `test_relu` should depend on `model_relu` and `test_sigmoid` should depend on `model_sigmoid`. However, these dependency relationships are missing from the graph. `drake` misunderstands the workflow and cannot reliably maintain it in its current form.
 
 ```{r}
-plot(broken_plan) # Like vis_drake_graph(), but without functions.
+# Like vis_drake_graph(), but without functions or target status colors.
+plot(broken_plan)
 ```
 
 Your turn: use `file_in()` and `file_out()` to label the HDF5 models as input and output files. 
 
 ```{r}
 plan <- drake_plan(
-  # Hint: here is an existing example of file_in().
   churn_data = split_data(file_in("../data/customer_churn.csv")),
   churn_recipe = prepare_recipe(churn_data),
   model_relu = save_model_hdf5(
@@ -107,13 +105,13 @@ Let's run that plan.
 make(plan)
 ```
 
-Now, suppose one a model file gets corrupted.
+Now, suppose a model file gets corrupted.
 
 ```{r}
-writeLines("bad model", "model_relu.h5") # Oh no!
+writeLines("garbage", "model_relu.h5") # Oh no!
 ```
 
-`file_in()` and `file_out()` save us. The target that produced the file and all downstream targets are affected.
+`file_in()` and `file_out()` save us. The target that produced the file and all downstream targets are no longer valid.
 
 ```{r}
 outdated(plan)
@@ -150,7 +148,7 @@ broken_plan <- drake_plan(
   churn_data = split_data(file_in(path)) # No variables allowed!
 )
 
-vis_drake_graph(broken_plan)
+vis_drake_graph(broken_plan) # The file is missing!
 ```
 
 Also, `file_in()` and friends must literally wrap around the strings you supply. Pipe operators like `magrittr`'s `%>%` are not allowed.
@@ -162,7 +160,7 @@ broken_plan <- drake_plan(
     split_data()
 )
 
-vis_drake_graph(broken_plan)
+vis_drake_graph(broken_plan) # The file is missing!
 ```
 
 In addition, `file_out()` is incompatible with dynamic branching. And if you use `file_in("your_file")` for a dynamic target, then all the sub-targets will depend on "your_file".

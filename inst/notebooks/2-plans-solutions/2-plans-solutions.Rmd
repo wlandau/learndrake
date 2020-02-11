@@ -1,8 +1,6 @@
 ---
-title: 'Solutions: build up a drake plan'
-output:
-  html_document:
-    df_print: paged
+title: "Solutions: build up a drake plan"
+output: html_document
 ---
 
 # Do first

@@ -1,9 +1,7 @@
 ---
 title: "Static branching"
-subtitle: Short code for long plans
-output:
-  html_document:
-    df_print: paged
+subtitle: "Short code for long plans"
+output: html_document
 ---
 
 Go to <https://wlandau.shinyapps.io/learndrakestatic> and complete the exercises. The app at <https://wlandau.shinyapps.io/drakeplanner> will help you. You can also use this notebook for scratch work. For more information on static branching, visit <https://books.ropensci.org/drake/static.html>.

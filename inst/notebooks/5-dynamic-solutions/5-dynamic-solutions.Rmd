@@ -1,8 +1,6 @@
 ---
 title: "Dynamic branching"
-output:
-  html_document:
-    df_print: paged
+output: html_document
 ---
 
 # Do first
@@ -30,7 +28,7 @@ source("R/functions.R")
 
 # Limitations of static branching
 
-In static branching, the *definition* of each target can depend on the *definitions* other targets.
+In static branching, the *definition* of each target can depend on the *names* other targets.
 
 ```{r, paged.print = FALSE}
 drake_plan(
@@ -109,7 +107,7 @@ plan <- drake_plan(
 )
 ```
 
-`drake` does not know in advance how many models runs it will perform, so the plan is more compact than it would have been with static branching.
+`drake` does not know in advance how many or what kind of models it will run, so the plan is more compact than its static equivalent.
 
 ```{r, paged.print = FALSE}
 plan
