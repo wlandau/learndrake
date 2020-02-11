@@ -101,27 +101,26 @@ R notebooks in order. Use `save_notebooks()` to save the notebooks and
 supporting files to your
 computer.
 
-| Notebook          | Topic                                                                                 |
-| ----------------- | ------------------------------------------------------------------------------------- |
-| `1-functions.Rmd` | Deep learning case study                                                              |
-| `2-plans.Rmd`     | Convert the case study to a new [`drake`](https://github.com/ropensci/drake) project. |
-| `3-changes.Rmd`   | Develop, work, and iterate on the project.                                            |
-| `4-plans`         | A deep dive into [`drake` plans](https://books.ropensci.org/drake/plans.html).        |
-| `5-files`         | Custom input and output data files.                                                   |
-| `6-reports`       | Special considerations of `knitr` and R Markdown reports.                             |
-| `7-hpc`           | High-performance computing                                                            |
+| Notebook          | Topic                                                                                      |
+| ----------------- | ------------------------------------------------------------------------------------------ |
+| `1-functions.Rmd` | Establish R functions the motivating example.                                              |
+| `2-plans.Rmd`     | Build up a [`drake`](https://github.com/ropensci/drake) plan.                              |
+| `3-changes.Rmd`   | Experience how [`drake`](https://github.com/ropensci/drake) responds to changes.           |
+| `4-static`        | A tutorial of [static branching](https://books.ropensci.org/drake/static.html).            |
+| `5-dynamic`       | A tutorial of [dynamic branching](https://books.ropensci.org/drake/dynamic.html).          |
+| `6-files`         | [`drake`](https://github.com/ropensci/drake) workflows with external files and R Markdown. |
 
 # Apps
 
-Notebooks `3-changes.Rmd` and `4-plans.Rmd` come with supporting Shiny
+Notebooks `3-changes.Rmd` and `4-static.Rmd` come with supporting Shiny
 apps to conduct the learning
 exercises.
 
-| App                                                                       | Notebook        | Deploy locally               | Public URL                                      |
-| ------------------------------------------------------------------------- | --------------- | ---------------------------- | ----------------------------------------------- |
-| Iterate on a [`drake`](https://github.com/ropensci/drake) workflow        | `3-changes.Rmd` | `launch_app("flow")`         | <http://wlandau.shinyapps.io/learndrakechanges> |
-| Exercises on [`drake` plans](https://books.ropensci.org/drake/plans.html) | `4-plans.Rmd`   | `launch_app("plans")`        | <http://wlandau.shinyapps.io/learndrakestatic>  |
-| Visualize [`drake`](https://github.com/ropensci/drake) projects           | `4-plans.Rmd`   | `launch_app("drakeplanner")` | <http://wlandau.shinyapps.io/drakeplanner>      |
+| App                                                                       | Notebook        | Deploy locally                    | Public URL                                      |
+| ------------------------------------------------------------------------- | --------------- | --------------------------------- | ----------------------------------------------- |
+| Iterate on a [`drake`](https://github.com/ropensci/drake) workflow        | `3-changes.Rmd` | `launch_app("learndrakechanges")` | <http://wlandau.shinyapps.io/learndrakechanges> |
+| Exercises on [`drake` plans](https://books.ropensci.org/drake/plans.html) | `4-static.Rmd`  | `launch_app("learndrakestatic")`  | <http://wlandau.shinyapps.io/learndrakestatic>  |
+| Visualize [`drake`](https://github.com/ropensci/drake) projects           | `4-static.Rmd`  | `launch_app("drakeplanner")`      | <http://wlandau.shinyapps.io/drakeplanner>      |
 
 # Thanks
 
