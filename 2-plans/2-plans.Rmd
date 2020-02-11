@@ -181,7 +181,7 @@ The other has a sigmoid activation function:
 run_sigmoid <- test_model(act1 = "sigmoid", churn_data, churn_recipe)
 ```
 
-Your turn: add these targets to the plan.
+Your turn: add these commands to the new targets to the plan.
 
 ```{r}
 plan <- drake_plan(
@@ -210,7 +210,7 @@ So `make()` skips the data and just runs the models. Run `make()` below and igno
 make(plan) # slow
 ```
 
-Those models took a long time to run, right? That is why `make()` tries to keep them up to date.
+Those models took a long time to run, right? That is why `make()` skips them if they are up to date.
 
 ```{r}
 outdated(plan)
@@ -220,7 +220,7 @@ outdated(plan)
 make(plan) # fast
 ```
 
-Now, check your model runs. Each should be a data frame with the accuracy and features of a model.
+Now is a good time to check your model runs. Each should be a data frame with the accuracy and features of a model.
 
 ```{r, paged.print = FALSE}
 readd(run_relu)
@@ -273,7 +273,8 @@ Define a new `best_run` target with following command:
 ```{r, eval = FALSE}
 # Do not run here.
 bind_rows(run_relu, run_sigmoid, run_softmax) %>%
-  filter(accuracy == max(accuracy))
+  top_n(1, accuracy) %>%
+  head(1)
 ```
 
 Write the command in the plan below. Note: commands do not always need to be strict function calls. They can be arbitrary code chunks too, such as the one above.
@@ -289,19 +290,19 @@ plan <- drake_plan(
 )
 ```
 
-The next `make()` should just build `runs` and be quick.
+The next `make()` should just build `best_run` and be quick.
 
 ```{r}
 make(plan)
 ```
 
-It should contain one row with the accuracy and features of the best model.
+`best_run` should contain one row with the accuracy and features of the best model.
 
 ```{r}
 readd(best_run)
 ```
 
-Now, let's train the best model and hold on it this time. Below, we use the `target()` function for extra customization because Keras models need the special `"keras"` storage format (<https://books.ropensci.org/drake/plans.html#special-data-formats-for-targets>). Below, write the command `train_best_model(best_run, churn_recipe)`.
+Now, let's train the best model and hold on to the trained model object. Below, we use `drake`'s `target()` function for extra customization because Keras models need the special `"keras"` storage format (<https://books.ropensci.org/drake/plans.html#special-data-formats-for-targets>). Below, write the command `train_best_model(best_run, churn_recipe)`.
 
 ```{r}
 plan <- drake_plan(
@@ -311,7 +312,8 @@ plan <- drake_plan(
   run_sigmoid = test_model(act1 = "sigmoid", churn_data, churn_recipe),
   run_softmax = test_model(act1 = "softmax", churn_data, churn_recipe),
   best_run = bind_rows(run_relu, run_sigmoid, run_softmax) %>%
-    filter(accuracy == max(accuracy)),
+    top_n(1, accuracy) %>%
+    head(1),
   best_model = target( # We use target() to customize the target.
     , # YOUR TURN: write train_best_model(best_run, churn_recipe) to the left of the comma.
     format = "keras" # Tells drake to store the target as a Keras model.
@@ -325,7 +327,7 @@ Train the model.
 make(plan)
 ```
 
-The actual trained model is now in the cache.
+The actual trained model is now in `drake`'s cache.
 
 ```{r}
 readd(best_model)
@@ -333,7 +335,7 @@ readd(best_model)
 
 # Recap
 
-Rome was not built in a day, and neither is any `drake` plan. Building up a plan is an gradual iterative process.
+Rome was not built in a day, and neither is a `drake` plan. Building up a plan is an gradual, iterative process.
 
 1. Write some targets targets in the plan.
 2. Check the plan with `outdated(plan)` and `vis_drake_graph(plan)`.

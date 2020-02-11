@@ -1,6 +1,6 @@
 ---
 title: "Dynamic branching"
-output: html_notebook
+output: html_document
 ---
 
 # Do first
@@ -28,7 +28,7 @@ source("R/functions.R")
 
 # Limitations of static branching
 
-In static branching, the *definition* of each target can depend on the *definitions* other targets.
+In static branching, the *definition* of each target can depend on the *names* other targets.
 
 ```{r, paged.print = FALSE}
 drake_plan(
@@ -40,7 +40,8 @@ drake_plan(
   ),
   best_run = target(
     bind_rows(run) %>%
-      filter(accuracy == max(accuracy)),
+      top_n(1, accuracy) %>%
+      head(1),
     transform = combine(run)
   ),
   best_model = target(
@@ -64,7 +65,8 @@ broken_plan <- drake_plan(
   ),
   best_run = target(
     bind_rows(run) %>%
-      filter(accuracy == max(accuracy)),
+      top_n(1, accuracy) %>%
+      head(1),
     transform = combine(run)
   ),
   best_model = target(
@@ -97,7 +99,7 @@ plan <- drake_plan(
     test_model(act1 = act, churn_data, churn_recipe),
     dynamic = map(act) # Dynamic branching
   ),
-  best_run = filter(run, accuracy == max(accuracy)),
+  best_run = head(top_n(run, 1, accuracy), 1),
   best_model = target(
     train_best_model(best_run, churn_recipe),
     format = "keras"
@@ -105,7 +107,7 @@ plan <- drake_plan(
 )
 ```
 
-`drake` does not know in advance how many models runs it will perform, so the plan is more compact than it would have been with static branching.
+`drake` does not know in advance how many or what kind of models it will run, so the plan is more compact than its static equivalent.
 
 ```{r, paged.print = FALSE}
 plan
@@ -164,7 +166,7 @@ plan <- drake_plan(
     run$accuracy,
     dynamic = map(run)
   ),
-  best_run = filter(run, accuracy == max(accuracy)),
+  best_run = head(top_n(run, 1, accuracy), 1),
   best_model = target(
     train_best_model(best_run, churn_recipe),
     format = "keras"
@@ -203,7 +205,7 @@ plan <- drake_plan(
     # Note: we need to explicitly map over act.
     dynamic = map(run, act, .trace = act)
   ),
-  best_run = filter(run, accuracy == max(accuracy)),
+  best_run = head(top_n(run, 1, accuracy), 1),
   best_model = target(
     train_best_model(best_run, churn_recipe),
     format = "keras"
@@ -244,7 +246,7 @@ plan <- drake_plan(
     test_model(act1 = act, units1 = units, churn_data, churn_recipe),
     dynamic = cross(act, units) # Your turn: cross() over both act and units.
   ),
-  best_run = filter(run, accuracy == max(accuracy)),
+  best_run = head(top_n(run, 1, accuracy), 1),
   best_model = target(
     train_best_model(best_run, churn_recipe),
     format = "keras"
@@ -325,7 +327,7 @@ plan <- drake_plan(
   ),
   run_act = run$act1,
   best_run = target(
-    filter(run, accuracy == max(accuracy)),
+    head(top_n(run, 1, accuracy), 1),
     dynamic = group(run, run_act, .by = run_act)
   ),
   best_run_act = best_run$act1,

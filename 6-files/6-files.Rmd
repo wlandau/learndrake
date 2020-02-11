@@ -1,9 +1,9 @@
 ---
-title: "External input and output files"
+title: "External files and R Markdown"
 output: html_notebook
 ---
 
-# Do first
+# Instructions
 
 1. Navigate to the `6-files/` folder.
 2. Open `6-files.Rproj` as an RStudio project in a new R session. (Click on `6-files.Rproj` in RStudio's file manager.)
@@ -34,7 +34,7 @@ Some targets depend on external files. When an important file changes, we want `
 
 # Input and output files.
 
-For a moment, let's forget that `drake` can save Keras models (i.e. <https://books.ropensci.org/drake/plans.html#special-data-formats-for-targets>). Let's store all our models as output files and read them back in to compute test accuracy. Our initial plan has problems.
+For a moment, let's forget that `drake` can save Keras models as targets (i.e. <https://books.ropensci.org/drake/plans.html#special-data-formats-for-targets>). Let's store all our models as external output files and then read them back in to compute test accuracy. Our initial plan has problems.
 
 ```{r}
 broken_plan <- drake_plan(
@@ -64,7 +64,8 @@ broken_plan <- drake_plan(
 Clearly, `test_relu` should depend on `model_relu` and `test_sigmoid` should depend on `model_sigmoid`. However, these dependency relationships are missing from the graph. `drake` misunderstands the workflow and cannot reliably maintain it in its current form.
 
 ```{r}
-plot(broken_plan) # Like vis_drake_graph(), but without functions.
+# Like vis_drake_graph(), but without functions or target status colors.
+plot(broken_plan)
 ```
 
 Your turn: use `file_in()` and `file_out()` to label the HDF5 models as input and output files. 
@@ -109,13 +110,13 @@ Let's run that plan.
 make(plan)
 ```
 
-Now, suppose one a model file gets corrupted.
+Now, suppose a model file gets corrupted.
 
 ```{r}
-writeLines("bad model", "model_relu.h5") # Oh no!
+writeLines("garbage", "model_relu.h5") # Oh no!
 ```
 
-`file_in()` and `file_out()` save us. The target that produced the file and all downstream targets are affected.
+`file_in()` and `file_out()` save us. The target that produced the file and all downstream targets are no longer valid.
 
 ```{r}
 outdated(plan)
@@ -191,7 +192,7 @@ plan <- drake_plan(
     test_model(act1 = act, churn_data, churn_recipe),
     dynamic = map(act)
   ),
-  best_run = filter(run, accuracy == max(accuracy)),
+  best_run = head(top_n(run, 1, accuracy), 1),
   best_model = target(
     train_best_model(best_run, churn_recipe),
     format = "keras"
