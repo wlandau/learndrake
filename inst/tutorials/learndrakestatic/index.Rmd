@@ -442,7 +442,7 @@ drake_plan(
 
 ## External grouping variables
 
-Using `!!`, we can even define grouping variables outside the plan.
+Using `!!`, we can even supply grouping variables from outside the plan.
 
 ```{r}
 act_values <- c(
@@ -722,7 +722,7 @@ drake_plan(
 
 ## Target names
 
-The names of static branching targets can get quite long. The custom `.id` argument of `map()` to exclude the values of `fun_run` from the names, e.g. `.id = act_values` or `.id = c(act_values, unit_values)`. (Set `.id = FALSE` for even shorter names.)
+The names of static branching targets can get quite long. The custom `.id` argument of `map()` to exclude the values of `fun_run` from the names, e.g. `.id = act_values` or `.id = c(act_values, unit_values)`. (`.id = FALSE` shortens the names even more.)
 
 ```{r}
 grid <- tibble::tibble(
@@ -730,6 +730,7 @@ grid <- tibble::tibble(
   act_values = c("relu", "relu", "sigmoid"),
   units_values = c(16, 32, 32)
 )
+
 expected <- drake_plan(
   churn_data = split_data(file_in("data/customer_churn.csv")),
   churn_recipe = prepare_recipe(churn_data), 
@@ -748,7 +749,7 @@ dp_table(expected)
 dp_graph(expected)
 ```
 
-Create the above plan.
+Create the above plan. Use `act_values` and `unit_values` to construct target names.
 
 ```{r names, exercise = TRUE, exercise.lines = 17, paged.print = FALSE}
 grid <- tibble::tibble(
@@ -784,6 +785,7 @@ grid <- tibble::tibble(
   act_values = c("relu", "relu", "sigmoid"),
   units_values = c(16, 32, 32)
 )
+
 drake_plan(
   churn_data = split_data(file_in("data/customer_churn.csv")),
   churn_recipe = prepare_recipe(churn_data), 
@@ -902,7 +904,7 @@ drake_plan(
 
 ## Combine
 
-The `combine()` transformation splices together groups of targets from `map()` and `cross()`. Let's combine all the runs together with `bind_rows()`.
+The `combine()` transformation splices together targets generated from previous calls to `map()` and `cross()`. Let's combine all the runs together with `bind_rows()`.
 
 ```{r}
 fun_run_values <- rlang::syms(c("good_run", "bad_run", "benchmark_run"))
@@ -933,7 +935,7 @@ dp_table(expected)
 dp_graph(expected)
 ```
 
-Create the above plan.
+Create the above plan using `combine()`.
 
 ```{r combine, exercise = TRUE, exercise.lines = 18, paged.print = FALSE}
 fun_run_values <- rlang::syms(c("good_run", "bad_run", "benchmark_run"))
@@ -1039,7 +1041,7 @@ dp_table(expected)
 dp_graph(expected)
 ```
 
-Create the above plan. Declare a group of runs for each `fun_run` function.
+Create the above plan. Using `combine()` with the `.by` argument, declare a group of runs for each `fun_run` function.
 
 ```{r combinegroups, exercise = TRUE, exercise.lines = 18, paged.print = FALSE}
 fun_run_values <- rlang::syms(c("good_run", "bad_run", "benchmark_run"))
@@ -1153,7 +1155,7 @@ dp_table(expected)
 dp_graph(expected)
 ```
 
-Create the above plan. Use `.id = fun_run` to shorten the names of the downstream targets.
+Follow the comments below to create the above plan. Use `.id = fun_run` to shorten the names of the downstream targets.
 
 ```{r complicated, exercise = TRUE, exercise.lines = 31, paged.print = FALSE}
 fun_run_values <- rlang::syms(c("good_run", "bad_run", "benchmark_run"))
