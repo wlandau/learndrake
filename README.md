@@ -4,7 +4,7 @@ status](https://travis-ci.org/wlandau/learndrake.svg?branch=master)](https://tra
 [![Codecov test
 coverage](https://codecov.io/gh/wlandau/learndrake/branch/master/graph/badge.svg)](https://codecov.io/gh/wlandau/learndrake?branch=master)
 [![Launch RStudio
-Cloud](https://img.shields.io/badge/RStudio-Cloud-blue)](https://rstudio.cloud/project/627076L)
+Cloud](https://img.shields.io/badge/RStudio-Cloud-red)](https://rstudio.cloud/project/627076L)
 [![Launch RStudio
 Binder](http://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/wlandau/learndrake/binder?urlpath=rstudio)
 
