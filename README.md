@@ -42,6 +42,8 @@ keras::install_keras()
 
 ## RStudio Cloud
 
+**Note: the RStudio Cloud project is currently not working due to <https://github.com/rstudio/rstudio/issues/6049>**. Sorry for the inconvenience.
+
 1.  Sign up for [RStudio Cloud](https://rstudio.cloud).
 2.  Navigate to <https://rstudio.cloud/project/627076L> to open a new
     copy of the workshop.
