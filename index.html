@@ -430,13 +430,13 @@ readd(run_relu)
 #&gt; # A tibble: 1 x 6
 #&gt;   accuracy units1 units2 act1  act2  act3   
 #&gt;      &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;  
-#&gt; 1    0.801     16     16 relu  relu  sigmoid
+#&gt; 1    0.802     16     16 relu  relu  sigmoid
 
 readd(run_sigmoid)
 #&gt; # A tibble: 1 x 6
 #&gt;   accuracy units1 units2 act1    act2  act3   
 #&gt;      &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;  
-#&gt; 1    0.802     16     16 sigmoid relu  sigmoid
+#&gt; 1    0.798     16     16 sigmoid relu  sigmoid
 ```
 
 ---
@@ -451,7 +451,8 @@ plan &lt;- drake_plan(
   run_relu = test_model(act1 = "relu", churn_data, churn_recipe),
   run_sigmoid = test_model(act1 = "sigmoid", churn_data, churn_recipe),
 * best_run = bind_rows(run_relu, run_sigmoid) %&gt;%
-*   filter(accuracy == max(accuracy)),
+*   top_n(1, accuracy) %&gt;%
+*   head(1),
 * best_model = target(
 *   train_best_model(best_run, churn_recipe),
 *   format = "keras"
@@ -511,7 +512,8 @@ plan &lt;- drake_plan(
   run_sigmoid = test_model(act1 = "sigmoid", churn_data, churn_recipe),
 * run_softmax = test_model(act1 = "softmax", churn_data, churn_recipe),
 * best_run = bind_rows(run_relu, run_sigmoid, run_softmax) %&gt;%
-    filter(accuracy == max(accuracy)),
+    top_n(1, accuracy) %&gt;%
+    head(1),
   best_model = target(
     train_best_model(best_run, churn_recipe),
     format = "keras"
@@ -769,12 +771,12 @@ history &lt;- drake_history() %&gt;%
 #&gt; # A tibble: 6 x 4
 #&gt;   target      act1    exists hash            
 #&gt;   &lt;chr&gt;       &lt;chr&gt;   &lt;lgl&gt;  &lt;chr&gt;           
-#&gt; 1 run_relu    relu    TRUE   9e3e97fdee2e2629
-#&gt; 2 run_relu    relu    TRUE   fbc97af3378e33e4
-#&gt; 3 run_sigmoid sigmoid TRUE   d3467df3f1cc9cae
-#&gt; 4 run_sigmoid sigmoid TRUE   924e53320c500e9b
-#&gt; 5 run_softmax softmax TRUE   a76e948282303ad3
-#&gt; 6 run_softmax softmax TRUE   a76e948282303ad3
+#&gt; 1 run_relu    relu    TRUE   da1eda6deb0d5b98
+#&gt; 2 run_relu    relu    TRUE   1ad475f23401ba58
+#&gt; 3 run_sigmoid sigmoid TRUE   cb5674a3f0a26228
+#&gt; 4 run_sigmoid sigmoid TRUE   9c3cd39da58076f7
+#&gt; 5 run_softmax softmax TRUE   64e2f17b7a6b62a5
+#&gt; 6 run_softmax softmax TRUE   229e1eb3a023d291
 ```
 
 ---
@@ -787,7 +789,7 @@ drake_cache()$get_value(history$hash[1])
 #&gt; # A tibble: 1 x 6
 #&gt;   accuracy units1 units2 act1  act2  act3   
 #&gt;      &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;  
-#&gt; 1    0.801     16     16 relu  relu  sigmoid
+#&gt; 1    0.802     16     16 relu  relu  sigmoid
 ```
 
 ---
@@ -920,6 +922,23 @@ remotes::install_github("wlandau/learndrake")
 &lt;/td&gt;
 &lt;/tr&gt;
 &lt;/table&gt;
+
+---
+
+## The workshop
+
+1. Sign up for a free account at &lt;https://rstudio.cloud&gt;.
+2. Log into &lt;https://rstudio.cloud/project/627076&gt;.
+3. Work through the R notebooks in order.
+
+Topic | Notebook
+---|---
+Custom functions | [`1-functions/1-functions.Rmd`](https://github.com/wlandau/learndrake/blob/master/inst/notebooks/1-functions/1-functions.Rmd)
+`drake` plans | [`2-plans/2-plans.Rmd`](https://github.com/wlandau/learndrake/blob/master/inst/notebooks/2-plans/2-plans.Rmd)
+Changing workflows | [`3-changes/3-changes.Rmd`](https://github.com/wlandau/learndrake/blob/master/inst/notebooks/3-changes/3-changes.Rmd)
+Static branching | [`4-static/4-static.Rmd`](https://github.com/wlandau/learndrake/blob/master/inst/notebooks/4-static/4-static.Rmd)
+Dynamic branching | [`5-dynamic/5-dynamic.Rmd`](https://github.com/wlandau/learndrake/blob/master/inst/notebooks/5-dynamic/5-dynamic.Rmd)
+Files and R Markdown | [`6-files/6-files.Rmd`](https://github.com/wlandau/learndrake/blob/master/inst/notebooks/6-files/6-files.Rmd)
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
