@@ -4,7 +4,7 @@ status](https://travis-ci.org/wlandau/learndrake.svg?branch=master)](https://tra
 [![Codecov test
 coverage](https://codecov.io/gh/wlandau/learndrake/branch/master/graph/badge.svg)](https://codecov.io/gh/wlandau/learndrake?branch=master)
 [![Launch RStudio
-Cloud](https://img.shields.io/badge/RStudio-Cloud-red)](https://rstudio.cloud/project/627076L)
+Cloud](https://img.shields.io/badge/RStudio-Cloud-blue)](https://rstudio.cloud/project/627076L)
 [![Launch RStudio
 Binder](http://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/wlandau/learndrake/binder?urlpath=rstudio)
 
@@ -34,15 +34,20 @@ To obtain the workshop materials, install the
 ``` r
 install.packages("remotes")
 remotes::install_github("wlandau/learndrake")
-tensorflow::install_tensorflow()
 keras::install_keras()
+# Check if the installation succeeded.
+tensorflow::tf_config()
 ```
+
+If you are using RStudio version 1.2.5003 and encounter [this fatal
+error](https://github.com/rstudio/rstudio/issues/6049), consider
+downgrading TensorFlow to version 1.13.1. Note: `install_keras()`
+silently tries to upgrade TensorFlow to version \>= 2, so you will need
+to run it with `tensorflow = "1.13.1`.
 
 # Usage
 
 ## RStudio Cloud
-
-**Note: the RStudio Cloud project is currently not working due to <https://github.com/rstudio/rstudio/issues/6049>**. Sorry for the inconvenience.
 
 1.  Sign up for [RStudio Cloud](https://rstudio.cloud).
 2.  Navigate to <https://rstudio.cloud/project/627076L> to open a new

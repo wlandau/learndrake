@@ -18,9 +18,12 @@ To obtain the workshop materials, install the [`learndrake`](https://github.com/
 ```{r, eval = FALSE}
 install.packages("remotes")
 remotes::install_github("wlandau/learndrake")
-tensorflow::install_tensorflow()
 keras::install_keras()
+# Check if the installation succeeded.
+tensorflow::tf_config()
 ```
+
+If you are using RStudio version 1.2.5003 and encounter [this fatal error](https://github.com/rstudio/rstudio/issues/6049), consider downgrading TensorFlow to version 1.13.1. Note: `install_keras()` silently tries to upgrade TensorFlow to version >= 2, so you will need to run it with `tensorflow = "1.13.1`.
 
 # Usage
 
