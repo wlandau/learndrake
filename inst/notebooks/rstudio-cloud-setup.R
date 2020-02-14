@@ -6,16 +6,11 @@ setwd("/cloud/project")
 reticulate::install_miniconda("miniconda")
 Sys.setenv(WORKON_HOME = "virtualenvs")
 reticulate::virtualenv_create("r-reticulate", python = "miniconda/bin/python")
-tensorflow::install_tensorflow(
-  method = "virtualenv",
-  conda = "miniconda/bin/conda",
-  envname = "r-reticulate",
-  restart_session = FALSE
-)
 keras::install_keras(
   method = "virtualenv",
   conda = "miniconda/bin/conda",
   envname = "r-reticulate",
+  tensorflow = "1.13.1",
   restart_session = FALSE
 )
 line <- "WORKON_HOME=/cloud/project/virtualenvs"
