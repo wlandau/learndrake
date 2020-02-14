@@ -1,6 +1,6 @@
 
 [![Launch RStudio
-Cloud](https://img.shields.io/badge/RStudio-Cloud-blue)](https://rstudio.cloud/project/627076L)
+Cloud](https://img.shields.io/badge/RStudio-Cloud-blue)](https://rstudio.cloud/project/627076)
 [![Launch RStudio
 Binder](http://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/wlandau/learndrake/binder?urlpath=rstudio)
 [![Travis build
@@ -50,7 +50,7 @@ to run it with `tensorflow = "1.13.1`.
 ## RStudio Cloud
 
 1.  Sign up for [RStudio Cloud](https://rstudio.cloud).
-2.  Navigate to <https://rstudio.cloud/project/627076L> to open a new
+2.  Navigate to <https://rstudio.cloud/project/627076> to open a new
     copy of the workshop.
 3.  Optional: save a permanent copy so you can come back to it later.
     Look for the red “temporary copy” text at the top and click the

@@ -2,7 +2,7 @@
 output: github_document
 ---
 
-[![Launch RStudio Cloud](https://img.shields.io/badge/RStudio-Cloud-blue)](https://rstudio.cloud/project/627076L)
+[![Launch RStudio Cloud](https://img.shields.io/badge/RStudio-Cloud-blue)](https://rstudio.cloud/project/627076)
 [![Launch RStudio Binder](http://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/wlandau/learndrake/binder?urlpath=rstudio)
 [![Travis build status](https://travis-ci.org/wlandau/learndrake.svg?branch=master)](https://travis-ci.org/wlandau/learndrake)
 [![Codecov test coverage](https://codecov.io/gh/wlandau/learndrake/branch/master/graph/badge.svg)](https://codecov.io/gh/wlandau/learndrake?branch=master)
@@ -30,7 +30,7 @@ If you are using RStudio version 1.2.5003 and encounter [this fatal error](https
 ## RStudio Cloud
 
 1. Sign up for [RStudio Cloud](https://rstudio.cloud). 
-2. Navigate to <https://rstudio.cloud/project/627076L> to open a new copy of the workshop.
+2. Navigate to <https://rstudio.cloud/project/627076> to open a new copy of the workshop.
 3. Optional: save a permanent copy so you can come back to it later. Look for the red "temporary copy" text at the top and click the "save a permanent copy"  option next to it.
 
 ## Binder
