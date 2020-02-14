@@ -47,7 +47,7 @@ to run it with `tensorflow = "1.13.1`.
 
 # Usage
 
-## RStudio Cloud
+## RStudio Cloud (pre-built)
 
 1.  Sign up for [RStudio Cloud](https://rstudio.cloud).
 2.  Navigate to <https://rstudio.cloud/project/627076> to open a new
@@ -55,6 +55,13 @@ to run it with `tensorflow = "1.13.1`.
 3.  Optional: save a permanent copy so you can come back to it later.
     Look for the red “temporary copy” text at the top and click the
     “save a permanent copy” option next to it.
+
+## RStudio Cloud (custom)
+
+Alternatively, can create a fresh blank RStudio Cloud project and run
+[this
+script](https://github.com/wlandau/learndrake/blob/master/inst/notebooks/rstudio-cloud-setup.R)
+to set it up for the workshop.
 
 ## Binder
 
