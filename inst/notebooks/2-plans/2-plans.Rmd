@@ -433,7 +433,7 @@ This is tangible evidence of reproducibility. It is tangible evidence that your 
 
 Rome was not built in a day, and neither is a `drake` plan. Building up a plan is an gradual, iterative process.
 
-1. Write some targets targets in the plan.
+1. Add or change some targets targets in the plan.
 2. Check the plan with `outdated(plan)` and `vis_drake_graph(plan)`.
 3. Run `make()` to build the new targets.
 4. Check the output with `loadd()` and `readd()`.
