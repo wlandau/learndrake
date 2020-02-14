@@ -1,1 +1,14 @@
-Welcome to the `drake` workshop! To get started, navigate to `1-functions/` in the "Files" pane and click on `1-functions.Rproj`. Then, open the `1-functions.Rmd` notebook. As you read along, it is helpful to run the code chunks by clicking the green arrows at the upper right-hand corner of each chunk. When you are done, continue on to the notebook in the other folders.
+## The `learndrake` workshop
+
+1. Sign up for a free account at <https://rstudio.cloud>.
+2. Log into <https://rstudio.cloud/project/627076>.
+3. Work through the R notebooks in order.
+
+Topic | Notebook
+---|---
+Custom functions | `1-functions/1-functions.Rmd`
+`drake` plans | `2-plans/2-plans.Rmd`
+Changing workflows | `3-changes/3-changes.Rmd`
+Static branching | `4-static/4-static.Rmd`
+Dynamic branching | `5-dynamic/5-dynamic.Rmd`
+Files and R Markdown | `6-files/6-files.Rmd`

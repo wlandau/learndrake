@@ -67,7 +67,7 @@ Check if TensorFlow is installed. The code below should display the TensorFlow v
 
 ```{r, message = FALSE}
 library(tensorflow)
-tf_version()
+tf_config()
 ```
 
 # `split_data()`

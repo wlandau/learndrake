@@ -333,16 +333,6 @@ The actual trained model is now in `drake`'s cache.
 readd(best_model)
 ```
 
-# Recap
-
-Rome was not built in a day, and neither is a `drake` plan. Building up a plan is an gradual, iterative process.
-
-1. Write some targets targets in the plan.
-2. Check the plan with `outdated(plan)` and `vis_drake_graph(plan)`.
-3. Run `make()` to build the new targets.
-4. Check the output with `loadd()` and `readd()`.
-5. Repeat.
-
 # Changes
 
 What if a function changes?
@@ -438,3 +428,13 @@ make(plan)
 ```
 
 This is tangible evidence of reproducibility. It is tangible evidence that your output is in sync with the code and data you have right now. So if someone else were to run your code, they should get the same results as you. You can be confident without having to rerun everything from scratch. This is how `drake` saves time while increasing your ability to trust your research.
+
+# Recap
+
+Rome was not built in a day, and neither is a `drake` plan. Building up a plan is an gradual, iterative process.
+
+1. Add or change some targets targets in the plan.
+2. Check the plan with `outdated(plan)` and `vis_drake_graph(plan)`.
+3. Run `make()` to build the new targets.
+4. Check the output with `loadd()` and `readd()`.
+5. Repeat.
