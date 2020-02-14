@@ -998,6 +998,8 @@ remotes::install_github("wlandau/learndrake")
 </tr>
 </table>
 
+---
+
 ## The workshop
 
 1. Sign up for a free account at <https://rstudio.cloud>.
