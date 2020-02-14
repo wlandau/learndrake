@@ -118,26 +118,27 @@ R notebooks in order. Use `save_notebooks()` to save the notebooks and
 supporting files to your
 computer.
 
-| Notebook          | Topic                                                                                      |
-| ----------------- | ------------------------------------------------------------------------------------------ |
-| `1-functions.Rmd` | Establish R functions the motivating example.                                              |
-| `2-plans.Rmd`     | Build up a [`drake`](https://github.com/ropensci/drake) plan.                              |
-| `3-changes.Rmd`   | Experience how [`drake`](https://github.com/ropensci/drake) responds to changes.           |
-| `4-static`        | A tutorial of [static branching](https://books.ropensci.org/drake/static.html).            |
-| `5-dynamic`       | A tutorial of [dynamic branching](https://books.ropensci.org/drake/dynamic.html).          |
-| `6-files`         | [`drake`](https://github.com/ropensci/drake) workflows with external files and R Markdown. |
+| Topic                | Notebook                                                                                                                      |
+| -------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| Custom functions     | [`1-functions/1-functions.Rmd`](https://github.com/wlandau/learndrake/blob/master/inst/notebooks/1-functions/1-functions.Rmd) |
+| `drake` plans        | [`2-plans/2-plans.Rmd`](https://github.com/wlandau/learndrake/blob/master/inst/notebooks/2-plans/2-plans.Rmd)                 |
+| Changing workflows   | [`3-changes/3-changes.Rmd`](https://github.com/wlandau/learndrake/blob/master/inst/notebooks/3-changes/3-changes.Rmd)         |
+| Static branching     | [`4-static/4-static.Rmd`](https://github.com/wlandau/learndrake/blob/master/inst/notebooks/4-static/4-static.Rmd)             |
+| Dynamic branching    | [`5-dynamic/5-dynamic.Rmd`](https://github.com/wlandau/learndrake/blob/master/inst/notebooks/5-dynamic/5-dynamic.Rmd)         |
+| Files and R Markdown | [`6-files/6-files.Rmd`](https://github.com/wlandau/learndrake/blob/master/inst/notebooks/6-files/6-files.Rmd)                 |
 
 # Apps
 
 Notebooks `3-changes.Rmd` and `4-static.Rmd` come with supporting Shiny
-apps to conduct the learning
-exercises.
+apps to conduct the learning exercises. Use `launch_app()` to run any of
+these apps
+locally.
 
-| App                                                                       | Notebook        | Deploy locally                    | Public URL                                      |
-| ------------------------------------------------------------------------- | --------------- | --------------------------------- | ----------------------------------------------- |
-| Iterate on a [`drake`](https://github.com/ropensci/drake) workflow        | `3-changes.Rmd` | `launch_app("learndrakechanges")` | <http://wlandau.shinyapps.io/learndrakechanges> |
-| Exercises on [`drake` plans](https://books.ropensci.org/drake/plans.html) | `4-static.Rmd`  | `launch_app("learndrakestatic")`  | <http://wlandau.shinyapps.io/learndrakestatic>  |
-| Visualize [`drake`](https://github.com/ropensci/drake) projects           | `4-static.Rmd`  | `launch_app("drakeplanner")`      | <http://wlandau.shinyapps.io/drakeplanner>      |
+| App                                             | Notebook                                                                                                              |
+| ----------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| <http://wlandau.shinyapps.io/learndrakechanges> | [`3-changes/3-changes.Rmd`](https://github.com/wlandau/learndrake/blob/master/inst/notebooks/3-changes/3-changes.Rmd) |
+| <http://wlandau.shinyapps.io/learndrakestatic>  | [`4-static/4-static.Rmd`](https://github.com/wlandau/learndrake/blob/master/inst/notebooks/4-static/4-static.Rmd)     |
+| <http://wlandau.shinyapps.io/drakeplanner>      | [`4-static/4-static.Rmd`](https://github.com/wlandau/learndrake/blob/master/inst/notebooks/4-static/4-static.Rmd)     |
 
 # Thanks
 
