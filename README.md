@@ -58,10 +58,13 @@ to run it with `tensorflow = "1.13.1`.
 
 ## RStudio Cloud (custom)
 
-Alternatively, can create a fresh blank RStudio Cloud project and run
-[this
-script](https://github.com/wlandau/learndrake/blob/master/inst/notebooks/rstudio-cloud-setup.R)
-to set it up for the workshop.
+This approach takes a bit longer to set up than the pre-built project.
+
+1.  Sign up for [RStudio Cloud](https://rstudio.cloud).
+2.  Create a fresh new project.
+3.  Run [this setup
+    script](https://github.com/wlandau/learndrake/blob/master/inst/notebooks/rstudio-cloud-setup.R)
+    to install the dependencies and download the materials.
 
 ## Binder
 
