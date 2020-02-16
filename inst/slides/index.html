@@ -132,8 +132,15 @@ background-size: contain;
 &lt;img src = "./images/R.png" align="middle" style="border: none; box-shadow: none; text-align: center; height: 200px"&gt;
 &lt;/center&gt;
 
-1. Respects the way R works.
-2. Pushes you to write better code.
+.large[
+* Respects the way R works.
+* Better code, i.e. functions.
+* Time savings allow for an incremental development strategy:
+    1. Change a couple things.
+    2. Run the workflow.
+    3. Inspect results.
+    4. *Repeat often*.
+]
 
 ---
 
@@ -355,9 +362,18 @@ ncol(juice(churn_recipe))
 
 ---
 
-## Keep building up the plan.
+## Build up the plan *gradually*.
 
-* Continue on and fit some models.
+.large[
+1. Add a couple targets.
+2. Build targets with `make(plan)`.
+3. Inspect targets with `loadd()` and `readd()`.
+4. *Repeat often*. Not as time-consuming as you might think!
+]
+
+---
+
+## Add some model runs.
 
 
 ```r
@@ -430,13 +446,13 @@ readd(run_relu)
 #&gt; # A tibble: 1 x 6
 #&gt;   accuracy units1 units2 act1  act2  act3   
 #&gt;      &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;  
-#&gt; 1    0.802     16     16 relu  relu  sigmoid
+#&gt; 1    0.800     16     16 relu  relu  sigmoid
 
 readd(run_sigmoid)
 #&gt; # A tibble: 1 x 6
 #&gt;   accuracy units1 units2 act1    act2  act3   
 #&gt;      &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;  
-#&gt; 1    0.798     16     16 sigmoid relu  sigmoid
+#&gt; 1    0.801     16     16 sigmoid relu  sigmoid
 ```
 
 ---
@@ -771,12 +787,12 @@ history &lt;- drake_history() %&gt;%
 #&gt; # A tibble: 6 x 4
 #&gt;   target      act1    exists hash            
 #&gt;   &lt;chr&gt;       &lt;chr&gt;   &lt;lgl&gt;  &lt;chr&gt;           
-#&gt; 1 run_relu    relu    TRUE   da1eda6deb0d5b98
-#&gt; 2 run_relu    relu    TRUE   1ad475f23401ba58
-#&gt; 3 run_sigmoid sigmoid TRUE   cb5674a3f0a26228
-#&gt; 4 run_sigmoid sigmoid TRUE   9c3cd39da58076f7
-#&gt; 5 run_softmax softmax TRUE   64e2f17b7a6b62a5
-#&gt; 6 run_softmax softmax TRUE   229e1eb3a023d291
+#&gt; 1 run_relu    relu    TRUE   1715e93d0906bc90
+#&gt; 2 run_relu    relu    TRUE   df7e172040a1b499
+#&gt; 3 run_sigmoid sigmoid TRUE   9c3cd39da58076f7
+#&gt; 4 run_sigmoid sigmoid TRUE   4caf7e6253cf58fe
+#&gt; 5 run_softmax softmax TRUE   49f938ec53dbc662
+#&gt; 6 run_softmax softmax TRUE   3307c4e416567a9f
 ```
 
 ---
@@ -789,7 +805,7 @@ drake_cache()$get_value(history$hash[1])
 #&gt; # A tibble: 1 x 6
 #&gt;   accuracy units1 units2 act1  act2  act3   
 #&gt;      &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;  
-#&gt; 1    0.802     16     16 relu  relu  sigmoid
+#&gt; 1    0.800     16     16 relu  relu  sigmoid
 ```
 
 ---

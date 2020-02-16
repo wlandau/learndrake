@@ -160,8 +160,15 @@ clean(destroy = TRUE)
 <img src = "./images/R.png" align="middle" style="border: none; box-shadow: none; text-align: center; height: 200px">
 </center>
 
-1. Respects the way R works.
-2. Pushes you to write better code.
+.large[
+* Respects the way R works.
+* Better code, i.e. functions.
+* Time savings allow for an incremental development strategy:
+    1. Change a couple things.
+    2. Run the workflow.
+    3. Inspect results.
+    4. *Repeat often*.
+]
 
 ---
 
@@ -511,9 +518,18 @@ ncol(juice(churn_recipe))
 
 ---
 
-## Keep building up the plan.
+## Build up the plan *gradually*.
 
-* Continue on and fit some models.
+.large[
+1. Add a couple targets.
+2. Build targets with `make(plan)`.
+3. Inspect targets with `loadd()` and `readd()`.
+4. *Repeat often*. Not as time-consuming as you might think!
+]
+
+---
+
+## Add some model runs.
 
 ```{r}
 # R/plan.R
