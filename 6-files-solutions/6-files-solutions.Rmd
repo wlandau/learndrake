@@ -165,6 +165,38 @@ vis_drake_graph(broken_plan) # The file is missing!
 
 In addition, `file_out()` is incompatible with dynamic branching. And if you use `file_in("your_file")` for a dynamic target, then all the sub-targets will depend on "your_file".
 
+# Dynamic files
+
+To overcome the limitations of `file_in()` and friends, `drake` supports dynamic files (in version 7.11.0 and up). With dynamic files, `drake` can watch local files without knowing them in advance. This is a more flexible alternative to `file_out()` and `file_in()`, and it is fully compatible with dynamic branching. To use dynamic files, there are three rules:
+
+1. Set format = "file" in target() within drake_plan().
+2. Return the paths to local files from the target.
+3. To link targets together in dependency relationships, reference target names and not literal character strings.
+
+Here is an example of a plan that uses dynamic files. Notice the usage of `format = "file"` below.
+
+```{r}
+plan <- drake_plan(
+  data_file = target(
+    "../data/customer_churn.csv",
+    # Replaces file_in() in this case.
+    # Could also be used to replace file_out().
+    format = "file"
+  ),
+  churn_data = split_data(data_file) # Updates when the CSV file changes.
+)
+
+make(plan)
+```
+
+YOUR TURN: remove the last data row in `../data/customer_churn.csv` and run `make(plan)` again. Both `data_file` and `churn_data` should automatically rerun.
+
+```{r, eval = FALSE}
+make(plan)
+#> ▶ target data_file
+#> ▶ target churn_data
+```
+
 # Literate programming
 
 R Markdown and `knitr` are not designed for the intense computation that `drake` workflows face. They are not pipeline tools, and they should do as little work as possible. However, they are useful components of `drake` pipelines, especially when they communicate and annotate hard-won results from previous targets. To connect an R Markdown or `knitr` report to `drake`, there are three steps.
