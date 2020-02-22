@@ -894,6 +894,7 @@ drake_cache()$get_value(history$hash[1])
 * [High-performance computing](https://books.ropensci.org/drake/hpc.html)
 * [Efficient data formats](https://books.ropensci.org/drake/plans.html#special-data-formats-for-targets)
 * [Dynamic branching](https://books.ropensci.org/drake/dynamic.html)
+* [Dynamic files](https://books.ropensci.org/drake/plans.html#dynamic-files)
 * [Memory management](https://books.ropensci.org/drake/memory.html)
 
 ```{r, eval = FALSE}
