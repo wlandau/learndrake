@@ -446,13 +446,13 @@ readd(run_relu)
 #&gt; # A tibble: 1 x 6
 #&gt;   accuracy units1 units2 act1  act2  act3   
 #&gt;      &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;  
-#&gt; 1    0.800     16     16 relu  relu  sigmoid
+#&gt; 1    0.803     16     16 relu  relu  sigmoid
 
 readd(run_sigmoid)
 #&gt; # A tibble: 1 x 6
 #&gt;   accuracy units1 units2 act1    act2  act3   
 #&gt;      &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;  
-#&gt; 1    0.801     16     16 sigmoid relu  sigmoid
+#&gt; 1    0.799     16     16 sigmoid relu  sigmoid
 ```
 
 ---
@@ -787,12 +787,12 @@ history &lt;- drake_history() %&gt;%
 #&gt; # A tibble: 6 x 4
 #&gt;   target      act1    exists hash            
 #&gt;   &lt;chr&gt;       &lt;chr&gt;   &lt;lgl&gt;  &lt;chr&gt;           
-#&gt; 1 run_relu    relu    TRUE   1715e93d0906bc90
-#&gt; 2 run_relu    relu    TRUE   df7e172040a1b499
-#&gt; 3 run_sigmoid sigmoid TRUE   9c3cd39da58076f7
-#&gt; 4 run_sigmoid sigmoid TRUE   4caf7e6253cf58fe
-#&gt; 5 run_softmax softmax TRUE   49f938ec53dbc662
-#&gt; 6 run_softmax softmax TRUE   3307c4e416567a9f
+#&gt; 1 run_relu    relu    TRUE   693f38d0cca6df48
+#&gt; 2 run_relu    relu    TRUE   d18e61338781810b
+#&gt; 3 run_sigmoid sigmoid TRUE   bfcea2797b1845c8
+#&gt; 4 run_sigmoid sigmoid TRUE   2b28e18f2a2a88bc
+#&gt; 5 run_softmax softmax TRUE   0fba209a1b82f8a1
+#&gt; 6 run_softmax softmax TRUE   907f0a76c2d5da5b
 ```
 
 ---
@@ -805,7 +805,7 @@ drake_cache()$get_value(history$hash[1])
 #&gt; # A tibble: 1 x 6
 #&gt;   accuracy units1 units2 act1  act2  act3   
 #&gt;      &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;  
-#&gt; 1    0.800     16     16 relu  relu  sigmoid
+#&gt; 1    0.803     16     16 relu  relu  sigmoid
 ```
 
 ---
