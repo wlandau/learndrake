@@ -258,7 +258,7 @@ Open `results.html` and look at the output. You should see quick summaries of ha
 
 # Your turn: edit the R Markdown report
 
-Now, open `results.Rmd` in RStudio and add any comments you want. If you like, click the "Knit" button in RStudio to re-render the report. Afterwards, the `report_step` target should be outdated.
+Now, open `results.Rmd` in RStudio and edit the ordinary text. If you like, click the "Knit" button in RStudio to re-render the report. Afterwards, the `report_step` target should be outdated.
 
 ```{r, eval = FALSE}
 outdated(plan)
