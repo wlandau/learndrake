@@ -260,13 +260,14 @@ Open `results.html` and look at the output. You should see quick summaries of ha
 
 Now, open `results.Rmd` in RStudio and add any comments you want. If you like, click the "Knit" button in RStudio to re-render the report. Afterwards, the `report_step` target should be outdated.
 
-```{r}
+```{r, eval = FALSE}
 outdated(plan)
+#> [1] "report_step"
 ```
 
 When you are finished editing the report, rerun `make(plan)` to bring it up to date in the workflow.
 
-```{r}
+```{r, eval = FALSE}
 make(plan)
+#> ▶ report_step
 ```
-
