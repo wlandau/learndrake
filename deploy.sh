@@ -17,18 +17,18 @@ then
   git push -q origin gh-pages
   cd ..
 
-  echo "Deploying to binder."
-  git config --global user.email "will.landau@gmail.com"
-  git config --global user.name "wlandau"
-  git clone -b binder https://${GITHUB_PAT}@github.com/${TRAVIS_REPO_SLUG}.git binder
-  cd binder
-  ls -a | grep -Ev "^\.$|^\.\.$|^\.git$|^\.binder$" | xargs rm -rf
-  cp -r ../inst/notebooks/* ./
-  git add *
-  git commit -am "Update binder workspace" || true
-  git push -q origin binder
-  cd ..
-  
+#  echo "Deploying to binder."
+#  git config --global user.email "will.landau@gmail.com"
+#  git config --global user.name "wlandau"
+#  git clone -b binder https://${GITHUB_PAT}@github.com/${TRAVIS_REPO_SLUG}.git binder
+#  cd binder
+#  ls -a | grep -Ev "^\.$|^\.\.$|^\.git$|^\.binder$" | xargs rm -rf
+#  cp -r ../inst/notebooks/* ./
+#  git add *
+#  git commit -am "Update binder workspace" || true
+#  git push -q origin binder
+#  cd ..
+#  
 #  echo "Deploying to shinyapps.io."
 #  Rscript shinyapps.R
 fi
