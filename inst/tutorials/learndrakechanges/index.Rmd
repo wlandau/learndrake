@@ -309,7 +309,7 @@ question(
   incorrect = "Let's talk.",
   allow_retry = TRUE,
   random_answer_order = TRUE,
-  answer("`drake` rebuilds `best_run` because its command changed. It skips `best_model` the same because the value of `best_run` is the same as last time.", correct = TRUE),
+  answer("`drake` rebuilds `best_run` because its command changed. It skips `best_model` because the value of `best_run` is the same as last time.", correct = TRUE),
   answer("`drake` rebuilds `best_run` because its command changed. Then it rebuilds `best_model` because it is downstream of `best_run`."),
   answer("Everything, because the plan changed.")
 )
