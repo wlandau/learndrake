@@ -85,7 +85,7 @@ broken_plan
 `test_model()` is only supposed to get a single activation function, not all three.
 
 ```{r, error = TRUE}
-make(broken_plan)
+make(broken_plan, lock_cache = FALSE)
 ```
 
 # Dynamic branching
