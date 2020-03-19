@@ -134,6 +134,12 @@ run_names
 readd(run_names[1], character_only = TRUE)
 ```
 
+Equivalent to the above:
+
+```{r}
+readd(run, subtargets = 1)
+```
+
 A full dynamic target is a "vector" of sub-targets. `drake`'s vector semantics come from the `vctrs` R package, which generalizes the concept of a vector to data frames as well as ordinary atomic vectors. That means our `run` target is automatically a data frame.
 
 ```{r}
