@@ -307,20 +307,15 @@ make(plan)
 Notice now that we have three `best_run` sub-targets, each with the two rows for a given value of `act1`.
 
 ```{r}
-grouped_runs_names <- subtargets(grouped_runs)
-grouped_runs_names
+readd(grouped_runs, subtargets = 1)
 ```
 
 ```{r}
-readd(grouped_runs_names[1], character_only = TRUE)
+readd(grouped_runs, subtargets = 2)
 ```
 
 ```{r}
-readd(grouped_runs_names[2], character_only = TRUE)
-```
-
-```{r}
-readd(grouped_runs_names[3], character_only = TRUE)
+readd(grouped_runs, subtargets = 3)
 ```
 
 A downstream `map()` lets us train the best model for each activation function.
