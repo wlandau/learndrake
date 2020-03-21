@@ -41,10 +41,21 @@ have questions along the way, please post an issue at
 | Dynamic branching    | `5-dynamic/5-dynamic.Rmd`     |
 | Files and R Markdown | `6-files/6-files.Rmd`         |
 
+Notebooks `3-changes/3-changes.Rmd` and `4-static/4-static.Rmd` rely on
+the following Shiny apps.
+
+| App                                             | Notebook                  |
+| ----------------------------------------------- | ------------------------- |
+| <http://wlandau.shinyapps.io/learndrakechanges> | `3-changes/3-changes.Rmd` |
+| <http://wlandau.shinyapps.io/learndrakestatic>  | `4-static/4-static.Rmd`   |
+| <http://wlandau.shinyapps.io/drakeplanner>      | `4-static/4-static.Rmd`   |
+
 # The `learndrake` package
 
 The [`learndrake`](https://github.com/wlandau/learndrake) R package
-contains the materials of the short course.
+contains the materials of the short course. It helps students take the
+workshop locally if they so choose, and it helps educators and
+administrators host the workshop from alternative platforms.
 
 ## Installation
 
@@ -71,67 +82,17 @@ downgrading TensorFlow to version 1.13.1. Note: `install_keras()`
 silently tries to upgrade TensorFlow to version \>= 2, so you will need
 to run it with `tensorflow = "1.13.1`.
 
-## Local usage
+## Usage
 
-The functions in `learndrake` help navigate and deploy the workshop
-materials. If you installed the package and dependencies as above, you
-can take the workshop locally without an internet connection. Start with
-the introductory slides, then move on to the notebooks. Launch apps
-along the way as directed.
+The functions in `learndrake` deploy and serve the workshop materials.
 
-| Function           | Purpose                                                                                                                                                  |
-| ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `launch_app()`     | Launch a Shiny app that accompanies a tutorial.                                                                                                          |
-| `save_app()`       | Save the app files so you can deploy to [shinyapps.io](https://www.shinyapps.io) or [Shiny Server](https://www.rstudio.com/products/shiny/shiny-server). |
-| `save_notebooks()` | Save the tutorials to your computer: R notebooks and supporting files.                                                                                   |
-| `save_slides()`    | Save the introductory slides to your computer.                                                                                                           |
-| `view_slides()`    | Open the introductory slides in a web browser.                                                                                                           |
-
-# Introductory presentation
-
-The workshop begins with an introductory presentation on
-[`drake`](https://github.com/ropensci/drake). You can find a video
-recording [here](https://ropensci.org/commcalls/2019-09-24/).
-Alternatively, you can view the slides at
-<https://wlandau.github.io/learndrake/index.html> or open them yourself
-in a browser with `view_slides()`.
-
-<center>
-
-<a href="https://ropensci.org/commcalls/2019-09-24/">
-<img src="https://docs.ropensci.org/drake/reference/figures/commcall.png" alt="commcall" align="center" style = "border: none; float: center;">
-</a>
-
-</center>
-
-<br> <br>
-
-# Tutorials
-
-After the introductory presentation, students work through a sequence of
-R notebooks in order. Use `save_notebooks()` to save the notebooks and
-supporting files to your computer.
-
-| Topic                | Notebook                                                                                                                      |
-| -------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| Custom functions     | [`1-functions/1-functions.Rmd`](https://github.com/wlandau/learndrake/blob/master/inst/notebooks/1-functions/1-functions.Rmd) |
-| `drake` plans        | [`2-plans/2-plans.Rmd`](https://github.com/wlandau/learndrake/blob/master/inst/notebooks/2-plans/2-plans.Rmd)                 |
-| Changing workflows   | [`3-changes/3-changes.Rmd`](https://github.com/wlandau/learndrake/blob/master/inst/notebooks/3-changes/3-changes.Rmd)         |
-| Static branching     | [`4-static/4-static.Rmd`](https://github.com/wlandau/learndrake/blob/master/inst/notebooks/4-static/4-static.Rmd)             |
-| Dynamic branching    | [`5-dynamic/5-dynamic.Rmd`](https://github.com/wlandau/learndrake/blob/master/inst/notebooks/5-dynamic/5-dynamic.Rmd)         |
-| Files and R Markdown | [`6-files/6-files.Rmd`](https://github.com/wlandau/learndrake/blob/master/inst/notebooks/6-files/6-files.Rmd)                 |
-
-# Apps
-
-Notebooks `3-changes.Rmd` and `4-static.Rmd` come with supporting Shiny
-apps to conduct the learning exercises. Use `launch_app()` to run any of
-these apps locally.
-
-| App                                             | Notebook                                                                                                              |
-| ----------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
-| <http://wlandau.shinyapps.io/learndrakechanges> | [`3-changes/3-changes.Rmd`](https://github.com/wlandau/learndrake/blob/master/inst/notebooks/3-changes/3-changes.Rmd) |
-| <http://wlandau.shinyapps.io/learndrakestatic>  | [`4-static/4-static.Rmd`](https://github.com/wlandau/learndrake/blob/master/inst/notebooks/4-static/4-static.Rmd)     |
-| <http://wlandau.shinyapps.io/drakeplanner>      | [`4-static/4-static.Rmd`](https://github.com/wlandau/learndrake/blob/master/inst/notebooks/4-static/4-static.Rmd)     |
+| Function           | Purpose                                        |
+| ------------------ | ---------------------------------------------- |
+| `save_notebooks()` | Save the `*.Rmd` notebooks to your computer.   |
+| `view_slides()`    | Open the intro slides in a web browser.        |
+| `save_slides()`    | Save the intro slides to your computer.        |
+| `launch_app()`     | Launch a supporting Shiny app.                 |
+| `save_app()`       | Save the code files of a supporting Shiny app. |
 
 # Thanks
 
