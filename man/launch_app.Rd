@@ -8,7 +8,7 @@ launch_app(app = c("learndrakechanges", "learndrakestatic", "drakeplanner"))
 }
 \arguments{
 \item{app}{Character, name of the app to launch. Must be one of
-\code{"flow"}, \code{"plans"}, or \code{"drakeplanner"}.}
+\code{"learndrakechanges"}, \code{"learndrakeplans"}, or \code{"drakeplanner"}.}
 }
 \description{
 The notebooks \code{3-changes.Rmd} and \code{4-plans.Rmd}

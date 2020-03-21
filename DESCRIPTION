@@ -1,6 +1,6 @@
 Package: learndrake
-Title: Materials to Learn Machine Learning Workflow Management With Drake
-Description: Machine learning workflows can be difficult to manage.
+Title: Short Course on the Drake R Package
+Description: Ambitious workflows in R can be difficult to manage.
   A single round of computation can take several hours to complete,
   and routine updates to the code and data tend to invalidate
   hard-earned results. You can enhance the maintainability, hygiene,

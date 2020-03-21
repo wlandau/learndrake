@@ -12,7 +12,7 @@
 #' @export
 #' @seealso [save_notebooks()], [view_slides()]
 #' @param app Character, name of the app to launch. Must be one of
-#'   `"flow"`, `"plans"`, or `"drakeplanner"`.
+#'   `"learndrakechanges"`, `"learndrakestatic"`, or `"drakeplanner"`.
 #' @examples
 #' \dontrun{
 #' launch_app("learndrakechanges")
