@@ -84,7 +84,7 @@ to run it with `tensorflow = "1.13.1`.
 
 ## Usage
 
-The functions in `learndrake` deploy and serve the workshop materials.
+The functions in `learndrake` deploy and serve the course materials.
 
 | Function           | Purpose                                        |
 | ------------------ | ---------------------------------------------- |
@@ -96,8 +96,8 @@ The functions in `learndrake` deploy and serve the workshop materials.
 
 # Thanks
 
-| Thanks to                                   | For                                                                                                                                                         |
-| ------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [Edgar Ruiz](https://github.com/edgararuiz) | Uniting `drake` and `keras` at <https://github.com/sol-eng/tensorflow-w-r> and providing valuable advice on the construction of the workshop.               |
-| [Matt Dancho](https://github.com/mdancho84) | Publishing the original [blog post](https://blogs.rstudio.com/tensorflow/posts/2018-01-11-keras-customer-churn/) with the workshop’s underlying case study. |
-| [Eric Nantz](https://github.com/rpodcast)   | Reviewing and providing feedback on this workshop.                                                                                                          |
+| Thanks to                                   | For                                                                                                                                                       |
+| ------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [Edgar Ruiz](https://github.com/edgararuiz) | Uniting `drake` and `keras` at <https://github.com/sol-eng/tensorflow-w-r> and providing valuable advice on the construction of the course.               |
+| [Matt Dancho](https://github.com/mdancho84) | Publishing the original [blog post](https://blogs.rstudio.com/tensorflow/posts/2018-01-11-keras-customer-churn/) with the course’s underlying case study. |
+| [Eric Nantz](https://github.com/rpodcast)   | Reviewing the materials and providing feedback.                                                                                                           |
