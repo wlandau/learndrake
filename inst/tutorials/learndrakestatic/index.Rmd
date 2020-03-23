@@ -190,7 +190,7 @@ dp_graph(expected)
 
 Create the above plan in the text editor below. Use the [drakeplanner](https://wlandau.shinyapps.io/drakeplanner) app to help you. When you are ready, click the "Submit Answer" button to the right of the editor.
 
-```{r largermap, exercise = TRUE, echo = FALSE, exercise.lines = 16, paged.print = FALSE}
+```{r largermap, exercise = TRUE, echo = FALSE, exercise.lines = 18, paged.print = FALSE}
 drake_plan(
   churn_data = split_data(file_in("data/customer_churn.csv")),
   churn_recipe = prepare_recipe(churn_data), 
@@ -202,7 +202,10 @@ drake_plan(
         "elu", "selu", "hard_sigmoid", "linear",
         "softplus", "softsign", "tanh", "exponential"
       ),
-      units = ??? # What goes here?
+      units = ??? # Write out a numeric vector by hand
+      # with literal elements 16, 17, 18, 19, 20, 21, 22, and 23.
+      # Shortcuts like 16:23 and seq(16, 23, by = 1) do not work here.
+      # Later exercises explain why and give compact alternatives.
     )
   )
 )
