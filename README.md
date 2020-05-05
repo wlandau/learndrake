@@ -96,15 +96,15 @@ The functions in `learndrake` deploy and serve the course materials.
 
 ## Accompanying resources
 
-This workshop focuses mostly on `drake`’s mental model and core
+This short course focuses mostly on `drake`’s mental model and core
 concepts.
 
   - How to break up a project into functions.
   - How to think about and create `drake` plans.
   - How `drake` decides what is up to date and what is outdated.
 
-The following resources cover important topics left out of the short
-course.
+The following resources cover important topics that did not make it into
+the syllabus.
 
 ### In practice
 
