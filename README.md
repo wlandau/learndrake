@@ -94,6 +94,41 @@ The functions in `learndrake` deploy and serve the course materials.
 | `launch_app()`     | Launch a supporting Shiny app.                 |
 | `save_app()`       | Save the code files of a supporting Shiny app. |
 
+## Other resources
+
+This workshop focuses mostly on `drake`’s mental model and core
+concepts.
+
+  - How to break up a project into functions.
+  - How to think about and create `drake` plans.
+  - How `drake` decides what is up to date and what is outdated.
+
+The following resources cover important topics left out of the short
+course.
+
+### Practical project setup and management
+
+  - [Miles McBain](https://github.com/MilesMcBain)’s [excellent blog
+    post](https://milesmcbain.xyz/the-drake-post/) explains the
+    practical issues {drake} solves for most projects, how to set up a
+    project as quickly and painlessly as possible, and how to overcome
+    common obstacles.
+  - Miles’ [`dflow`](https://github.com/MilesMcBain/dflow) package
+    generates the file structure for a boilerplate `drake` project. It
+    is a more thorough alternative to `drake::use_drake()`.
+  - `drake` is heavily function-oriented by design, and Miles’
+    [`fnmate`](https://github.com/MilesMcBain/fnmate) package
+    automatically generates boilerplate code and docstrings for
+    functions you mention in `drake` plans.
+
+### High-performance computing
+
+  - The [official manual](https://books.ropensci.org/drake) has a
+    [chapter on `drake`’s high-performance
+    computing](https://books.ropensci.org/drake/hpc.html) capabilities,
+    which range from multicore computing on a local machine to
+    large-scale deployment to a cluster.
+
 # Thanks
 
 | Thanks to                                   | For                                                                                                                                                       |
