@@ -453,7 +453,7 @@ act_values <- c(
   "softplus", "softsign", "tanh", "exponential"
 )
 
-unit_values <- 16:23 # No need for !! in this line.
+units_values <- 16:23 # No need for !! in this line.
 
 expected <- drake_plan(
   churn_data = split_data(file_in("data/customer_churn.csv")),
@@ -462,7 +462,7 @@ expected <- drake_plan(
     test_model(act1 = act, units1 = units, churn_data, churn_recipe),
     transform = map(
       act = !!act_values,
-      units = !!unit_values
+      units = !!units_values
     )
   )
 )
@@ -484,7 +484,7 @@ act_values <- c(
   "softplus", "softsign", "tanh", "exponential"
 )
 
-unit_values <- 16:23
+units_values <- 16:23
 
 drake_plan(
   churn_data = split_data(file_in("data/customer_churn.csv")),
@@ -504,7 +504,7 @@ act = !!act_values
 ```
 
 ```{r external-hint-2}
-units = !!unit_values
+units = !!units_values
 ```
 
 ```{r external-hint-3}
@@ -517,7 +517,7 @@ act_values <- c(
   "softplus", "softsign", "tanh", "exponential"
 )
 
-unit_values <- 16:23
+units_values <- 16:23
 
 drake_plan(
   churn_data = split_data(file_in("data/customer_churn.csv")),
@@ -526,7 +526,7 @@ drake_plan(
     test_model(act1 = act, units1 = units, churn_data, churn_recipe),
     transform = map(
       act = !!act_values,
-      units = !!unit_values
+      units = !!units_values
     )
   )
 )
@@ -538,7 +538,7 @@ act_values <- c(
   "softplus", "softsign", "tanh", "exponential"
 )
 
-unit_values <- 16:23
+units_values <- 16:23
 
 drake_plan(
   churn_data = split_data(file_in("data/customer_churn.csv")),
@@ -547,7 +547,7 @@ drake_plan(
     test_model(act1 = act, units1 = units, churn_data, churn_recipe),
     transform = map(
       act = !!act_values,
-      units = !!unit_values
+      units = !!units_values
     )
   )
 )
@@ -725,7 +725,7 @@ drake_plan(
 
 ## Target names
 
-The names of static branching targets can get quite long. The custom `.id` argument of `map()` to exclude the values of `fun_run` from the names, e.g. `.id = act_values` or `.id = c(act_values, unit_values)`. (`.id = FALSE` shortens the names even more.)
+The names of static branching targets can get quite long. Use the custom `.id` argument of `map()` to exclude the values of `fun_run` from the names, e.g. `.id = act_values` or `.id = c(act_values, units_values)`. (`.id = FALSE` shortens the names even more.)
 
 ```{r}
 grid <- tibble::tibble(
@@ -739,7 +739,7 @@ expected <- drake_plan(
   churn_recipe = prepare_recipe(churn_data), 
   run = target(
     fun_run(churn_data, churn_recipe, act1 = act_values, units = units_values),
-    transform = map(.data = !!grid, .id = c(act_values, unit_values))
+    transform = map(.data = !!grid, .id = c(act_values, units_values))
   )
 )
 ```
@@ -752,7 +752,7 @@ dp_table(expected)
 dp_graph(expected)
 ```
 
-Create the above plan. Use `act_values` and `unit_values` to construct target names.
+Create the above plan. Use `act_values` and `units_values` to construct target names.
 
 ```{r names, exercise = TRUE, exercise.lines = 17, paged.print = FALSE}
 grid <- tibble::tibble(
@@ -775,7 +775,7 @@ drake_plan(
 ```
 
 ```{r names-hint-1}
-transform = map(.data = !!grid, .id = c(act_values, unit_values))
+transform = map(.data = !!grid, .id = c(act_values, units_values))
 ```
 
 ```{r names-hint-2}
@@ -794,7 +794,7 @@ drake_plan(
   churn_recipe = prepare_recipe(churn_data), 
   run = target(
     fun_run(churn_data, churn_recipe, act1 = act_values, units = units_values),
-    transform = map(.data = !!grid, .id = c(act_values, unit_values))
+    transform = map(.data = !!grid, .id = c(act_values, units_values))
   )
 )
 ```
@@ -810,7 +810,7 @@ drake_plan(
   churn_recipe = prepare_recipe(churn_data), 
   run = target(
     fun_run(churn_data, churn_recipe, act1 = act_values, units = units_values),
-    transform = map(.data = !!grid, .id = c(act_values, unit_values))
+    transform = map(.data = !!grid, .id = c(act_values, units_values))
   )
 )
 ```
