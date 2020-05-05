@@ -94,7 +94,7 @@ The functions in `learndrake` deploy and serve the course materials.
 | `launch_app()`     | Launch a supporting Shiny app.                 |
 | `save_app()`       | Save the code files of a supporting Shiny app. |
 
-## Other resources
+## Accompanying resources
 
 This workshop focuses mostly on `drake`’s mental model and core
 concepts.
@@ -106,13 +106,13 @@ concepts.
 The following resources cover important topics left out of the short
 course.
 
-### Practical project setup and management
+### In practice
 
   - [Miles McBain](https://github.com/MilesMcBain)’s [excellent blog
     post](https://milesmcbain.xyz/the-drake-post/) explains the
-    practical issues {drake} solves for most projects, how to set up a
-    project as quickly and painlessly as possible, and how to overcome
-    common obstacles.
+    motivating factors and practical issues {drake} addresses for most
+    projects, how to set up a project as quickly and painlessly as
+    possible, and how to overcome common obstacles.
   - Miles’ [`dflow`](https://github.com/MilesMcBain/dflow) package
     generates the file structure for a boilerplate `drake` project. It
     is a more thorough alternative to `drake::use_drake()`.
