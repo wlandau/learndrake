@@ -3,10 +3,6 @@
 Cloud](https://img.shields.io/badge/RStudio-Cloud-blue)](https://rstudio.cloud/project/627076)
 [![Launch RStudio
 Binder](http://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/wlandau/learndrake/binder?urlpath=rstudio)
-[![Travis build
-status](https://travis-ci.org/wlandau/learndrake.svg?branch=master)](https://travis-ci.org/wlandau/learndrake)
-[![Codecov test
-coverage](https://codecov.io/gh/wlandau/learndrake/branch/master/graph/badge.svg)](https://codecov.io/gh/wlandau/learndrake?branch=master)
 
 # The drake short course
 
@@ -42,7 +38,8 @@ have questions along the way, please post an issue at
 | Files and R Markdown | `6-files/6-files.Rmd`         |
 
 Notebooks `3-changes/3-changes.Rmd` and `4-static/4-static.Rmd` rely on
-the following Shiny apps.
+the following Shiny
+apps.
 
 | App                                             | Notebook                  |
 | ----------------------------------------------- | ------------------------- |
@@ -127,7 +124,8 @@ the syllabus.
     [chapter on `drake`’s high-performance
     computing](https://books.ropensci.org/drake/hpc.html) capabilities,
     which range from multicore computing on a local machine to
-    large-scale deployment to a cluster.
+    large-scale deployment to a
+cluster.
 
 # Thanks
 
