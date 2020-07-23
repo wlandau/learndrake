@@ -30,7 +30,7 @@ source("R/functions.R")
 
 # Limitations of static branching
 
-In static branching, the *definition* of each target can depend on the *names* other targets.
+In static branching, the *definition* of each target depends only on the *names* other targets, and all targets are declared in advance up front.
 
 ```{r, paged.print = FALSE}
 drake_plan(
@@ -53,7 +53,7 @@ drake_plan(
 )
 ```
 
-But what if the *definition* of a target depends on the *values* of other targets? Static branching does not allow this. The plan below is broken.
+But what if the *definition* of a target depends on the *values* of other targets? What if you need to run some targets first before you know how to define the targets downstream? Static branching does not allow this. The plan below is broken.
 
 ```{r}
 broken_plan <- drake_plan(
@@ -90,7 +90,7 @@ make(broken_plan, lock_cache = FALSE)
 
 # Dynamic branching
 
-In dynamic branching, the *definition* of a target can depend on the *values* of other targets. Let's dynamically create a model run for each activation function.
+In dynamic branching, the *definition* of a target can depend on the *values* of other targets, and new "sub-targets" are defined while `make()` is running. Let's dynamically create a model run for each activation function.
 
 ```{r}
 plan <- drake_plan(
@@ -142,7 +142,7 @@ Equivalent to the above:
 readd(run, subtargets = 1)
 ```
 
-A full dynamic target is a "vector" of sub-targets. `drake`'s vector semantics come from the `vctrs` R package, which generalizes the concept of a vector to data frames as well as ordinary atomic vectors. That means our `run` target is automatically a data frame.
+A full dynamic target is a "vector" of sub-targets. `drake`'s vector semantics come from the `vctrs` R package, which generalizes the concept of a vector to data frames as well as ordinary atomic vectors. That means our `run` target is automatically a data frame of aggregated sub-targets.
 
 ```{r}
 readd(run)
@@ -292,7 +292,7 @@ plan <- drake_plan(
   grouped_runs = target(
     run,
     # YOUR TURN: Use group() to get the best run for each activation function.
-    # Hint: use apply group() to both run and run_act, and supply run_act to .by.
+    # Hint: apply group() to both run and run_act, and supply run_act to .by.
     dynamic = ???
   )
 )
