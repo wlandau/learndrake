@@ -88,13 +88,13 @@ Targets `churn_data` and `churn_recipe` now live in a special `.drake/` folder.
 list.files(all = TRUE)
 ```
 
-The `.drake/` folder is a special kind of cache (<https://github.com/richfitz/storr>) and the files and subfolders were designed for machines only. No humans allowed!
+The `.drake/` folder is a special kind of cache (<https://github.com/richfitz/storr>) and the files and subfolders are too complicated to work with manually.
 
 ```{r}
 list.files(".drake/data")
 ```
 
-To get the targets from the cache, use safe `drake` functions `loadd()` and `readd()`. Let's use them to check the data for potential problems.
+To get the targets from the cache, use `drake` functions `loadd()` and `readd()`. Let's use them to check the data for potential problems.
 
 ```{r, paged.print = FALSE}
 readd(churn_data)
@@ -129,9 +129,7 @@ deps_target(churn_data, plan)
 deps_target(churn_recipe, plan)
 ```
 
-How does `drake` know all this? Because it uses static code analysis: <http://adv-r.had.co.nz/Expressions.html#ast-funs>. In other words, `drake` inspects and dissects your code without actually running it. It uses the structure of your commands and functions to deduce the structure of your workflow.
-
-hat means the order of the targets in the plan does not matter. In fact, if we reverse the recipe and the data, it has no effect.
+`drake` learns all this through [static code analysis](http://adv-r.had.co.nz/Expressions.html#ast-funs), which detects the names of the symbols in the code without running the code just yet. The symbols you use determine the dependency relationships among the targets, which in turn determines execution order. That is why you can write targets in any order without breaking the plan.
 
 ```{r}
 plan <- drake_plan(
@@ -431,7 +429,7 @@ This is tangible evidence of reproducibility. It is tangible evidence that your 
 
 # Recap
 
-Rome was not built in a day, and neither is a `drake` plan. Building up a plan is an gradual, iterative process.
+Building up a plan is an gradual, iterative process:
 
 1. Add or change some targets targets in the plan.
 2. Check the plan with `outdated(plan)` and `vis_drake_graph(plan)`.
