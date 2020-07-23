@@ -32,7 +32,7 @@ Some targets depend on external files. When an important file changes, we want `
 
 # Input and output files.
 
-For a moment, let's forget that `drake` can save Keras models as targets (i.e. <https://books.ropensci.org/drake/plans.html#special-data-formats-for-targets>). Let's store all our models as external output files and then read them back in to compute test accuracy. Our initial plan has problems.
+For demonstration purposes, let's store all our models as external output files and then read them back in to compute test accuracy. Our initial plan has problems.
 
 ```{r}
 broken_plan <- drake_plan(
@@ -129,7 +129,7 @@ make(plan)
 
 # Limitations of file_in() and friends
 
-Except for dynamic branching, `drake_plan()` is all about symbols and expressions. To figure out dependency relationships, `drake` scans the plan without running any of its commands. In other words, it needs to understand your `file_in()` statements without having to run the code.
+`drake` needs to understand your `file_in()` statements without having to run the code, so you should always apply literal strings to `file_in()` and friends.
 
 ```{r}
 good_plan <- drake_plan(
@@ -139,19 +139,35 @@ good_plan <- drake_plan(
 vis_drake_graph(good_plan)
 ```
 
-You must supply *literal strings* to `file_in()` and friends. No variables allowed.
+If you supply a symbol name, `drake` cannot detect the file.
 
 ```{r}
 path <- "../data/customer_churn.csv"
 
 broken_plan <- drake_plan(
-  churn_data = split_data(file_in(path)) # No variables allowed!
+  churn_data = split_data(file_in(path))
 )
+
+broken_plan
 
 vis_drake_graph(broken_plan) # The file is missing!
 ```
 
-Also, `file_in()` and friends must literally wrap around the strings you supply. Pipe operators like `magrittr`'s `%>%` are not allowed.
+Tidy evaluation with `!!` works around this problem by directly inserting the contents of the symbol when the plan gets created.
+
+```{r}
+path <- "../data/customer_churn.csv"
+
+broken_plan <- drake_plan(
+  churn_data = split_data(file_in(!!path)) # Use tidy evaluation
+)
+
+broken_plan
+
+vis_drake_graph(broken_plan) # The file is missing!
+```
+
+`file_in()` and friends must literally wrap around the strings you supply. Pipe operators like `magrittr`'s `%>%` can get in the way of this.
 
 ```{r}
 broken_plan <- drake_plan(
@@ -167,9 +183,9 @@ In addition, `file_out()` is incompatible with dynamic branching. And if you use
 
 # Dynamic files
 
-To overcome the limitations of `file_in()` and friends, `drake` supports dynamic files (in version 7.11.0 and up). With dynamic files, `drake` can watch local files without knowing them in advance. This is a more flexible alternative to `file_out()` and `file_in()`, and it is fully compatible with dynamic branching. To use dynamic files, there are three rules:
+To overcome the limitations of `file_in()` and friends, `drake` supports dynamic files. With dynamic files, `drake` can track changes to local files without knowing the names of those files in advance. This is a more flexible alternative to `file_out()` and `file_in()`, and it is fully compatible with dynamic branching. To use dynamic files, there are three rules:
 
-1. Set format = "file" in target() within drake_plan().
+1. Set format = "file" in `target()` within `drake_plan()`.
 2. Return the paths to local files from the target.
 3. To link targets together in dependency relationships, reference target names and not literal character strings.
 
