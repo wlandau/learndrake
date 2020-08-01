@@ -294,7 +294,7 @@ transform = map(fun_run = c(good_run, bad_run, benchmark_run))
 ```
 
 ```{r symbolmap-hint-2}
-#The next hint has the full solution.
+# The next hint has the full solution.
 ```
 
 ```{r symbolmap-hint-3}
@@ -406,7 +406,7 @@ units = !!(16:23)
 ```
 
 ```{r bangbang-hint-2}
-#The next hint has the full solution.
+# The next hint has the full solution.
 ```
 
 ```{r bangbang-hint-3}
@@ -508,7 +508,7 @@ units = !!units_values
 ```
 
 ```{r external-hint-3}
-#The next hint has the full solution.
+# The next hint has the full solution.
 ```
 
 ```{r external-hint-4}
@@ -604,7 +604,7 @@ transform = map(fun_run = !!function_syms)
 ```
 
 ```{r externalsymbols-hint-3}
-#The next hint has the full solution.
+# The next hint has the full solution.
 ```
 
 ```{r externalsymbols-hint-4}
@@ -687,7 +687,7 @@ transform = map(.data = !!grid)
 ```
 
 ```{r grids-hint-2}
-#The next hint has the full solution.
+# The next hint has the full solution.
 ```
 
 ```{r grids-hint-3}
@@ -779,7 +779,7 @@ transform = map(.data = !!grid, .id = c(act_values, units_values))
 ```
 
 ```{r names-hint-2}
-#The next hint has the full solution.
+# The next hint has the full solution.
 ```
 
 ```{r names-hint-3}
@@ -870,7 +870,7 @@ transform = cross(
 ```
 
 ```{r cross-hint-2}
-#The next hint has the full solution.
+# The next hint has the full solution.
 ```
 
 ```{r cross-hint-3}
@@ -966,7 +966,7 @@ transform = combine(run)
 ```
 
 ```{r combine-hint-2}
-#The next hint has the complete solution.
+# The next hint has the complete solution.
 ```
 
 ```{r combine-hint-3}
@@ -1072,7 +1072,7 @@ transform = combine(run, .by = fun_run)
 ```
 
 ```{r combinegroups-hint-2}
-#The next hint has the complete solution.
+# The next hint has the complete solution.
 ```
 
 ```{r combinegroups-hint-3}
@@ -1200,7 +1200,9 @@ transform = map(runs, fun_run, .id = fun_run)
 ```
 
 ```{r complicated-hint-3}
-runs = c(target(
+drake_plan(
+# ...
+  runs = target(
     post_process(raw_runs),
     transform = map(raw_runs, .id = fun_run)
   ),
@@ -1208,11 +1210,12 @@ runs = c(target(
     plot_runs(runs, fun_run),
     transform = map(runs, fun_run, .id = fun_run)
   )
+# ...
 )
 ```
 
 ```{r complicated-hint-4}
-#The next hint has the complete solution.
+# The next hint has the complete solution.
 ```
 
 ```{r complicated-hint-5}
