@@ -22,7 +22,7 @@ source("../config/options.R")
 
 # Instructions 
 
-Navigate to the <https://wlandau.shinyapps.io/learndrakechanges> and complete the exercises in order. If the app does not load in the browser, you can launch it locally with `learndrake::launch_app("learndrakechanges")`.
+Navigate to the <https://colorado.rstudio.com/rsc/learndrake/changes/> and complete the exercises in order. If the app does not load in the browser, you can launch it locally with `learndrake::launch_app("learndrakechanges")`.
 
 # Write your scratch work below
 

@@ -1,6 +1,6 @@
-# Go to <https://wlandau.shinyapps.io/learndrakestatic>
+# Go to <https://colorado.rstudio.com/rsc/learndrake/planner/>
 # and complete the exercises.
-# The app at <https://wlandau.shinyapps.io/drakeplanner> will help you.
+# The app at <https://colorado.rstudio.com/rsc/learndrake/planner/> will help you.
 # You can also use this script for scratch work.
 # For more information on static branching,
 # visit <https://books.ropensci.org/drake/static.html>.

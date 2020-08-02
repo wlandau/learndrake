@@ -188,7 +188,7 @@ The graph should look like this.
 dp_graph(expected)
 ```
 
-Create the above plan in the text editor below. Use the [drakeplanner](https://wlandau.shinyapps.io/drakeplanner) app to help you. When you are ready, click the "Submit Answer" button to the right of the editor.
+Create the above plan in the text editor below. Use the [drakeplanner](https://colorado.rstudio.com/rsc/learndrake/planner/) app to help you. When you are ready, click the "Submit Answer" button to the right of the editor.
 
 ```{r largermap, exercise = TRUE, echo = FALSE, exercise.lines = 18, paged.print = FALSE}
 drake_plan(
@@ -276,7 +276,7 @@ dp_table(expected)
 dp_graph(expected)
 ```
 
-Create the above plan. As always, use the [drakeplanner](https://wlandau.shinyapps.io/drakeplanner) app to help you.
+Create the above plan. As always, use the [drakeplanner](https://colorado.rstudio.com/rsc/learndrake/planner/) app to help you.
 
 ```{r symbolmap, exercise = TRUE, exercise.lines = 9, paged.print = FALSE}
 drake_plan(

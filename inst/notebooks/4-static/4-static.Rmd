@@ -4,7 +4,7 @@ subtitle: "Short code for long plans"
 output: html_document
 ---
 
-Go to <https://wlandau.shinyapps.io/learndrakestatic> and complete the exercises. The app at <https://wlandau.shinyapps.io/drakeplanner> will help you. You can also use this notebook for scratch work. For more information on static branching, visit <https://books.ropensci.org/drake/static.html>.
+Go to <https://colorado.rstudio.com/rsc/learndrake/static/> and complete the exercises. The app at <https://colorado.rstudio.com/rsc/learndrake/planner/> will help you. You can also use this notebook for scratch work. For more information on static branching, visit <https://books.ropensci.org/drake/static.html>.
 
 ```{r}
 library(drake)
