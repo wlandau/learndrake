@@ -24,7 +24,7 @@ knitr::opts_chunk$set(
 ## Instructions
 
 1. Download the HTML notebooks and supporting files with [`learndrake::save_notebooks()`](https://github.com/wlandau/learndrake).
-2. Open [3-changes/3-changes.Rmd](https://github.com/wlandau/learndrake/blob/master/inst/notebooks/3-changes/3-changes.Rmd) in a fresh R session.
+2. Open [3-changes/3-changes.Rmd](https://github.com/wlandau/learndrake/blob/main/inst/notebooks/3-changes/3-changes.Rmd) in a fresh R session.
 3. Make sure your working directory is `3-changes/`.
 4. Step through these exercises in order. Unless otherwise indicated, run the code chunks in your R console. Check the answers as you go along.
 5. If something breaks along the way, you restart your R session and get a fresh copy of the notebooks and supporting files ([`learndrake::save_notebooks()`](https://github.com/wlandau/learndrake)).
