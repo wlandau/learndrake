@@ -1721,34 +1721,6 @@
         "Built": "R 4.0.2; ; 2020-07-16 18:12:59 UTC; unix"
       }
     },
-    "lifecycle": {
-      "Source": "CRAN",
-      "Repository": "https://cloud.r-project.org",
-      "description": {
-        "Package": "lifecycle",
-        "Title": "Manage the Life Cycle of your Package Functions",
-        "Version": "0.2.0",
-        "Authors@R": "\n    c(\n      person(given = \"Lionel\", family = \"Henry\", role = c(\"aut\", \"cre\"), email = \"lionel@rstudio.com\"),\n      person(given = \"RStudio\", role = \"cph\")\n    )",
-        "Description": "Manage the life cycle of your exported functions with\n    shared conventions, documentation badges, and non-invasive\n    deprecation warnings. The 'lifecycle' package defines four\n    development stages (experimental, maturing, stable, and\n    questioning) and three deprecation stages (soft-deprecated,\n    deprecated, and defunct). It makes it easy to insert badges\n    corresponding to these stages in your documentation. Usage of\n    deprecated functions are signalled with increasing levels of\n    non-invasive verbosity.",
-        "License": "GPL-3",
-        "Encoding": "UTF-8",
-        "LazyData": "true",
-        "Depends": "R (>= 3.2)",
-        "Imports": "glue, rlang (>= 0.4.0)",
-        "Suggests": "covr, crayon, knitr, rmarkdown, testthat (>= 2.1.0)",
-        "RoxygenNote": "7.0.2",
-        "URL": "https://lifecycle.r-lib.org/, https://github.com/r-lib/lifecycle",
-        "BugReports": "https://github.com/r-lib/lifecycle/issues",
-        "VignetteBuilder": "knitr",
-        "NeedsCompilation": "no",
-        "Packaged": "2020-03-06 15:50:11 UTC; lionel",
-        "Author": "Lionel Henry [aut, cre],\n  RStudio [cph]",
-        "Maintainer": "Lionel Henry <lionel@rstudio.com>",
-        "Repository": "CRAN",
-        "Date/Publication": "2020-03-06 16:20:02 UTC",
-        "Built": "R 4.0.2; ; 2020-07-15 06:19:05 UTC; unix"
-      }
-    },
     "lubridate": {
       "Source": "CRAN",
       "Repository": "https://cloud.r-project.org",
