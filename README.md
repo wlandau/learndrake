@@ -4,6 +4,10 @@ Cloud](https://img.shields.io/badge/RStudio-Cloud-blue)](https://rstudio.cloud/p
 [![Launch RStudio
 Binder](http://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/wlandau/learndrake/binder?urlpath=rstudio)
 
+# Consider targets
+
+The [`targets`](https://docs.ropensci.org/targets) R package is the long-term successor of `drake`, and it is more robust and easier to use. Please visit <https://books.ropensci.org/targets/drake.html> for full context and advice on transitioning. A short course on `targets` is available at <https://github.com/wlandau/targets-tutorial>.
+
 # The drake short course
 
 `learndrake` is a free online short course on the [`drake` R
